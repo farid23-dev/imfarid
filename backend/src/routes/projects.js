@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { supabase } from "../config/supabase.js";
 import { defaultProjects } from "../data/defaultProjects.js";
-import { attachLikeCounts, getLikeCount } from "../utils/likesStore.js";
+import { attachLikeCounts, getLikeCount, removeLikesForItem } from "../utils/likesStore.js";
 
 const router = Router();
 
@@ -240,6 +240,7 @@ router.delete("/:id", async (req, res) => {
 
       if (!error) {
         projects = projects.filter((p) => String(p.id) !== String(id));
+        removeLikesForItem("projects", id);
         return res.json({ success: true });
       }
       console.warn("Supabase delete project failed, using memory:", error?.message);
@@ -252,6 +253,7 @@ router.delete("/:id", async (req, res) => {
       return res.status(404).json({ error: "Project not found" });
     }
 
+    removeLikesForItem("projects", id);
     res.json({ success: true });
   } catch (error) {
     console.error("Error deleting project:", error);
@@ -259,6 +261,7 @@ router.delete("/:id", async (req, res) => {
     const before = projects.length;
     projects = projects.filter((p) => String(p.id) !== String(id));
     if (projects.length < before) {
+      removeLikesForItem("projects", id);
       return res.json({ success: true });
     }
 

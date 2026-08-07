@@ -115,3 +115,16 @@ export const attachLikeCounts = (type, items = []) => {
     like_count: getLikeCount(type, item.id),
   }));
 };
+
+export const removeLikesForItem = (type, id) => {
+  const key = normalizeType(type);
+  if (!key || id === undefined || id === null) return 0;
+
+  const itemId = String(id);
+  const removed = (store[key][itemId] || []).length;
+  if (store[key][itemId]) {
+    delete store[key][itemId];
+    saveLikes(store);
+  }
+  return removed;
+};

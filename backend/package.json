@@ -1,0 +1,22 @@
+{
+  "name": "imfarid-backend",
+  "version": "1.0.0",
+  "description": "Backend API for imfarid.com",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "keywords": [],
+  "author": "Farid Ismayilov",
+  "license": "ISC",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.8",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "multer": "^1.4.5-lts.2",
+    "sharp": "^0.34.2"
+  }
+}

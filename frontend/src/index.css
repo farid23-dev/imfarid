@@ -1,0 +1,47 @@
+:root {
+  --bg: #04060d;
+  --fg: #f7f8fc;
+  --cyan: #2ef2c8;
+  --font-display: "Bricolage Grotesque", system-ui, sans-serif;
+  --font-sans: "Outfit", system-ui, sans-serif;
+  --nav-h: 4.5rem;
+  color-scheme: dark;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--fg);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  background: none;
+  border: 0;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+::selection {
+  background: rgba(46, 242, 200, 0.3);
+}

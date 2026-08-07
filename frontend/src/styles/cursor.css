@@ -1,0 +1,46 @@
+@media (pointer: fine) {
+  html { cursor: none; }
+  a, button, [role="button"] { cursor: none; }
+}
+
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  pointer-events: none;
+  mix-blend-mode: difference;
+}
+
+.cursor__dot {
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.cursor__ring {
+  position: absolute;
+  top: -16px;
+  left: -16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+}
+
+.cursor.hover .cursor__dot {
+  background: var(--cyan);
+}
+
+.cursor.hover .cursor__ring {
+  border-color: var(--cyan);
+}
+
+@media (hover: none), (pointer: coarse) {
+  .cursor { display: none; }
+  html, a, button { cursor: auto; }
+}

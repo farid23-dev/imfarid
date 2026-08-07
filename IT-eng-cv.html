@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Farid Ismayilov - CV</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background-color: #ffffff;
+      color: #1e293b;
+      line-height: 1.6;
+      padding: 40px 20px;
+    }
+
+    .cv-container {
+      max-width: 850px;
+      margin: 0 auto;
+      background: #ffffff;
+    }
+
+    header {
+      border-bottom: 2px solid #1e3a5f;
+      padding-bottom: 20px;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+      color: #1e293b;
+    }
+
+    .job-title {
+      font-size: 16px;
+      font-weight: 500;
+      color: #1e3a5f;
+      margin-bottom: 15px;
+      letter-spacing: 0.5px;
+    }
+
+    .contact-info {
+      font-size: 14px;
+      color: #475569;
+      line-height: 1.8;
+    }
+
+    .contact-info a {
+      color: #1e3a5f;
+      text-decoration: none;
+      word-break: break-word;
+    }
+
+    .contact-divider {
+      color: #94a3b8;
+      margin: 0 10px;
+    }
+
+    .content {
+      padding: 0;
+    }
+
+    section {
+      margin-bottom: 25px;
+    }
+
+    header, .experience-item, .education-item {
+  page-break-inside: avoid;
+}
+
+    h2 {
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #1e3a5f;
+      padding-bottom: 8px;
+      margin-bottom: 15px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .summary {
+      font-size: 14px;
+      color: #475569;
+      text-align: justify;
+    }
+
+    .experience-item {
+      margin-bottom: 20px;
+      padding-left: 14px;
+      border-left: 2px solid #1e3a5f;
+    }
+
+    .experience-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .company-name {
+      font-weight: 700;
+      font-size: 15px;
+      color: #1e293b;
+    }
+
+    .date {
+      font-size: 13px;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .position {
+      font-weight: 600;
+      font-size: 14px;
+      color: #334155;
+      margin-bottom: 2px;
+    }
+
+    .location {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 6px;
+    }
+
+    ul {
+      margin-left: 18px;
+      margin-top: 6px;
+    }
+
+    li {
+      font-size: 13px;
+      color: #475569;
+      margin-bottom: 3px;
+    }
+
+    .education-item {
+      margin-bottom: 14px;
+      padding-left: 14px;
+      border-left: 2px solid #1e3a5f;
+    }
+
+    .degree {
+      font-weight: 600;
+      font-size: 14px;
+      color: #1e293b;
+    }
+
+    .school {
+      font-size: 14px;
+      color: #334155;
+      font-weight: 500;
+    }
+
+    .skills-category {
+      margin-bottom: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: baseline;
+    }
+
+    .skills-label {
+      font-weight: 600;
+      font-size: 13px;
+      color: #1e293b;
+      min-width: 160px;
+    }
+
+    .skills-list {
+      font-size: 13px;
+      color: #475569;
+      flex: 1;
+    }
+
+    .lang-item {
+      display: inline-block;
+      margin-right: 20px;
+      font-size: 14px;
+    }
+
+    .lang-item strong {
+      color: #1e293b;
+    }
+
+    .lang-level {
+      color: #64748b;
+      font-size: 13px;
+    }
+
+    @media print {
+  @page { size: A4; margin: 12mm; }
+
+  body { padding: 0 !important; }
+
+  /* IMPORTANT: allow breaking */
+  section,
+  .experience-item,
+  .education-item,
+  ul,
+  li {
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+  }
+
+  /* If you used these before, they create whitespace */
+  section { page-break-inside: auto !important; }
+  .experience-item { page-break-inside: auto !important; }
+
+  /* Improve how headings behave */
+  h2 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  /* Avoid orphan heading at page bottom */
+  h2, .experience-header {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Optional: make long sections flow naturally */
+  .cv-container { max-width: 100%; }
+}
+
+    @media (max-width: 600px) {
+      body {
+        padding: 20px 15px;
+      }
+
+      h1 {
+        font-size: 26px;
+      }
+
+      .experience-header {
+        flex-direction: column;
+        gap: 3px;
+      }
+
+      .skills-category {
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .skills-label {
+        min-width: auto;
+      }
+
+      .contact-divider {
+        margin: 0 6px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="cv-container">
+    <header>
+      <h1>Farid Ismayilov</h1>
+      <div class="job-title">IT Specialist | Full-Stack Web Developer</div>
+      <div class="contact-info">
+        Baku, Azerbaijan <span class="contact-divider">|</span>
+        +994 51 301 99 71 <span class="contact-divider">|</span>
+        <a href="mailto:ismayilovf@outlook.com">ismayilovf@outlook.com</a>
+        <br />
+        <a href="https://www.imfarid.com">www.imfarid.com</a>
+        <span class="contact-divider">|</span>
+        <a href="https://www.linkedin.com/in/ismayilov24">linkedin.com/in/ismayilov24</a>
+        <span class="contact-divider">|</span>
+        <a href="https://github.com/farid23-dev">github.com/farid23-dev</a>
+      </div>
+    </header>
+
+    <div class="content">
+      <section>
+        <h2>Professional Summary</h2>
+        <p class="summary">
+          IT Specialist and Full-Stack Web Developer with hands-on expertise in building and deploying web applications using PHP, Next.js, React, and C# (former). Skilled in managing hosting environments, domains and DNS, implementing RESTful APIs, and integrating tracking and traffic filtering systems. Experienced in IT operations, production monitoring, and delivering technical support in remote and hybrid teams. Additional background in performance marketing and Android development with Kotlin (MVVM, Room, Retrofit, Coroutines).
+        </p>
+      </section>
+
+      <section>
+        <h2>Professional Experience</h2>
+
+        <div class="experience-item">
+          <div class="experience-header">
+            <span class="company-name">Meridian Media</span>
+            <span class="date">August 2026 - Current</span>
+          </div>
+          <div class="position">Lead IT Specialist</div>
+          <div class="location">Remote</div>
+          <ul>
+            <li>Developed and deployed PHP-based, React-based, and Next.js-based websites integrated with internal affiliate and tracking and traffic filtering systems</li>
+            <li>Managed server-side hosting environments, including configuration, deployment, and maintenance</li>
+            <li>Coordinated product management, inventory workflows, and order processing systems</li>
+            <li>Providing technical support to the customers</li>
+          </ul>
+        </div>
+
+        <div class="experience-item">
+          <div class="experience-header">
+            <span class="company-name">Kodely</span>
+            <span class="date">August 2026 - Current</span>
+          </div>
+          <div class="position">Co-Founder & CTO</div>
+          <div class="location">Remote</div>
+          <ul>
+            <li>Developed and deployed PHP-based, React-based, and Next.js-based websites integrated with internal affiliate and tracking and traffic filtering systems</li>
+            <li>Managed server-side hosting environments, including configuration, deployment, and maintenance</li>
+            <li>Coordinated product management, inventory workflows, and order processing systems</li>
+            <li>Providing technical support to the customers</li>
+          </ul>
+        </div>
+
+        <div class="experience-item">
+          <div class="experience-header">
+            <span class="company-name">Lumex Ltd.</span>
+            <span class="date">June 2026 - Current</span>
+          </div>
+          <div class="position">Lead IT Specialist</div>
+          <div class="location">Hybrid</div>
+          <ul>
+            <li>Developed and deployed PHP-based, React-based, and Next.js-based websites integrated with internal affiliate and tracking and traffic filtering systems</li>
+            <li>Managed server-side hosting environments, including configuration, deployment, and maintenance</li>
+            <li>Implemented tracking solutions (pixels, analytics, data flow) to ensure accurate performance</li>
+            <li>Coordinated product management, inventory workflows, and order processing systems</li>
+            <li>Monitored production environments and resolved hosting, domain, and deployment-related issues</li>
+          </ul>
+        </div>
+
+        <div class="experience-item">
+          <div class="experience-header">
+            <span class="company-name">Solidleads Ltd.</span>
+            <span class="date">May 2026 - Current</span>
+          </div>
+          <div class="position">IT Specialist</div>
+          <div class="location">On-Site</div>
+          <ul>
+            <li>Developed and deployed PHP-based, React-based, and Next.js-based websites integrated with internal affiliate and tracking systems</li>
+            <li>Managed server-side hosting environments, including configuration, deployment, and maintenance</li>
+            <li>Implemented tracking solutions (pixels, analytics, data flow) to ensure accurate performance monitoring</li>
+            <li>Monitored production environments and resolved hosting, domain, and deployment-related issues</li>
+          </ul>
+        </div>
+
+        <div class="experience-item">
+          <div class="experience-header">
+            <span class="company-name">ROI House</span>
+            <span class="date">March 2026 - June 2026</span>
+          </div>
+          <div class="position">IT Specialist</div>
+          <div class="location">Remote</div>
+          <ul>
+            <li>Developed and deployed PHP-based, React-based, and Next.js-based websites integrated with internal affiliate and tracking and traffic filtering systems</li>
+            <li>Managed server-side hosting environments, including configuration, deployment, and maintenance</li>
+            <li>Implemented tracking solutions (pixels, analytics, data flow) to ensure accurate performance monitoring</li>
+            <li>Monitored production environments and resolved hosting, domain, and deployment-related issues</li>
+          </ul>
+        </div>
+
+        <div class="experience-item">
+          <div class="experience-header">
+            <span class="company-name">Traffbraza LLC</span>
+            <span class="date">December 2025 - July 2026</span>
+          </div>
+          <div class="position">IT Specialist</div>
+          <div class="location">Remote</div>
+          <ul>
+            <li>Developed and deployed PHP-based, React-based, and Next.js-based websites integrated with internal affiliate and tracking and traffic filtering systems</li>
+            <li>Managed server-side hosting environments, including configuration, deployment, and maintenance</li>
+            <li>Implemented tracking solutions (pixels, analytics, data flow) to ensure accurate performance monitoring</li>
+            <li>Monitored production environments and resolved hosting, domain, and deployment-related issues</li>
+          </ul>
+        </div>
+
+        <div class="experience-item">
+          <div class="experience-header">
+            <span class="company-name">ROI House</span>
+            <span class="date">July 2025 - January 2026</span>
+          </div>
+          <div class="position">Affiliate Mediabuyer</div>
+          <div class="location">Remote</div>
+          <ul>
+            <li>Launched and optimized performance-driven campaigns through Google Ads for affiliate offers</li>
+            <li>Monitored campaign performance, budgets, and conversion tracking to maximize ROI and lead quality</li>
+          </ul>
+        </div>
+
+        <div class="experience-item">
+          <div class="experience-header">
+            <span class="company-name">Traffle Agency</span>
+            <span class="date">January 2025 - November 2025</span>
+          </div>
+          <div class="position">IT Specialist and IT Operations Manager</div>
+          <div class="location">Remote</div>
+          <ul>
+            <li>Developed and deployed PHP-based, React-based, and Next.js-based websites integrated with internal affiliate and tracking and traffic filtering systems</li>
+            <li>Managed hosting environments, server configurations, and technical infrastructure</li>
+            <li>Oversaw IT operations to ensure smooth workflow, system stability, and timely project delivery</li>
+            <li>Coordinated technical processes between development and marketing teams to maintain operational efficiency</li>
+          </ul>
+        </div>
+
+        <div class="experience-item">
+          <div class="experience-header">
+            <span class="company-name">Selcany.com, Kennzy.com & Hexamats.com - Solidleads Ltd. Side Projects</span>
+            <span class="date">January 2022 - February 2023</span>
+          </div>
+          <div class="position">Ecommerce Manager</div>
+          <div class="location">Hybrid</div>
+          <ul>
+            <li>Managed technical operations of three e-commerce platforms, ensuring website stability, performance, and user experience</li>
+            <li>Oversaw hosting environments, frontend updates, and platform maintenance</li>
+            <li>Coordinated product management, inventory workflows, and order processing systems</li>
+          </ul>
+        </div>
+
+        <div class="experience-item">
+          <div class="experience-header">
+            <span class="company-name">Solidleads Ltd.</span>
+            <span class="date">February 2021 - April 2025</span>
+          </div>
+          <div class="position">IT Specialist and Affiliate Mediabuyer</div>
+          <div class="location">On-site</div>
+          <ul>
+            <li>Developed and deployed PHP-based websites integrated with internal affiliate and tracking systems</li>
+            <li>Managed hosting environments, server configurations, and technical infrastructure for performance campaigns</li>
+            <li>Managed high-budget advertising campaigns across Google Ads, Microsoft (Bing) Ads, Meta Ads, Kayzen, UAC, and in-app traffic sources</li>
+            <li>Optimized campaigns through audience targeting, bid strategies, funnel testing, and continuous performance analysis</li>
+            <li>Executed App Store Optimization (ASO) strategies to improve app visibility, organic traffic, and conversion rates</li>
+            <li>Monitored and scaled campaigns based on KPIs such as CPA, ROI, and lifetime value (LTV), ensuring efficient budget allocation</li>
+          </ul>
+        </div>
+
+        <div class="experience-item">
+          <div class="experience-header">
+            <span class="company-name">SM Consulting</span>
+            <span class="date">September 2020 - January 2021</span>
+          </div>
+          <div class="position">Full Stack Web Developer Intern</div>
+          <div class="location">On-site</div>
+          <ul>
+            <li>Developed web applications using C# and .NET technologies, implementing business logic and application features</li>
+            <li>Built and maintained responsive front-end interfaces using HTML, CSS, and JavaScript</li>
+            <li>Collaborated with team members to implement new functionalities, debug issues, and improve overall code quality</li>
+          </ul>
+        </div>
+
+        <div class="experience-item">
+          <div class="experience-header">
+            <span class="company-name">Zipatto Smart Home Systems</span>
+            <span class="date">December 2019 - February 2020</span>
+          </div>
+          <div class="position">Full Stack Web Developer Intern</div>
+          <div class="location">On-site</div>
+          <ul>
+            <li>Developed web applications using C# and .NET technologies, implementing business logic and application features</li>
+            <li>Built and maintained responsive front-end interfaces using HTML, CSS, and JavaScript</li>
+            <li>Collaborated with team members to implement new functionalities, debug issues, and improve overall code quality</li>
+          </ul>
+        </div>
+
+        <div class="experience-item">
+          <div class="experience-header">
+            <span class="company-name">Millisoft</span>
+            <span class="date">June 2019 - November 2019</span>
+          </div>
+          <div class="position">Information Technology Mentor</div>
+          <div class="location">On-site</div>
+          <ul>
+            <li>Mentored students in web development fundamentals, guiding them through practical coding exercises and real-world project implementation</li>
+            <li>Provided code reviews, technical feedback, and problem-solving support to improve students' programming skills and development practices</li>
+          </ul>
+        </div>
+      </section>
+
+      <section>
+        <h2>Education</h2>
+
+        <div class="education-item">
+          <div class="experience-header">
+            <span class="degree">Master's Degree in Computer Engineering</span>
+            <span class="date">September 2021 - June 2023</span>
+          </div>
+          <div class="school">Odlar Yurdu University</div>
+        </div>
+
+        <div class="education-item">
+          <div class="experience-header">
+            <span class="degree">Bachelor's Degree in Computer Sciences</span>
+            <span class="date">September 2017 - June 2021</span>
+          </div>
+          <div class="school">Azerbaijan Oil and Industrial University</div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Technical Skills</h2>
+
+        <div class="skills-category">
+          <span class="skills-label">Programming Languages:</span>
+          <span class="skills-list">PHP, JavaScript, Next.js, React.js, C# (former), Kotlin, Dart (former), Flutter (former)</span>
+        </div>
+
+        <div class="skills-category">
+          <span class="skills-label">Development Principles:</span>
+          <span class="skills-list">Clean Code, SOLID Principles, Object-Oriented Programming (OOP), Version Control (Git)</span>
+        </div>
+
+        <div class="skills-category">
+          <span class="skills-label">Web Development:</span>
+          <span class="skills-list">HTML5, CSS3, React.js, Next.js, Responsive Web Design, SQL, Supabase, REST API Integration</span>
+        </div>
+
+        <div class="skills-category">
+          <span class="skills-label">Hosting and Deployment:</span>
+          <span class="skills-list">Web Hosting Management, Domain and DNS Configuration, Production Deployment, Server and Infrastructure Monitoring, CI/CD (GitHub Actions, GitLab CI/CD), Vercel, Netlify</span>
+        </div>
+
+        <div class="skills-category">
+          <span class="skills-label">AI Tools:</span>
+          <span class="skills-list">ChatGPT, Claude, Gemini, Perplexity, Cursor, Antigravity, Grok</span>
+        </div>
+
+        <div class="skills-category">
+          <span class="skills-label">Tools:</span>
+          <span class="skills-list">Git, GitHub, Microsoft Office, Google Workspace, Figma, Jira, Trello, Notion, Monday, Slack, Microsoft Teams, Google Cloud Platform, Android Studio, Gradle</span>
+        </div>
+
+        <div class="skills-category">
+          <span class="skills-label">Mobile Development:</span>
+          <span class="skills-list">Android (Kotlin), MVVM Architecture, Room Database, Retrofit, Coroutines, RESTful APIs, Hilt / Dagger (Basic), Flow / StateFlow (Basic), Firebase, Material Design, LiveData, Data Binding, Google Play Console</span>
+        </div>
+
+        <div class="skills-category">
+          <span class="skills-label">Digital Marketing:</span>
+          <span class="skills-list">Google Ads (UAC), App Store Optimization (ASO), In-App Advertising, Conversion Tracking, Performance Monitoring (CPA, ROI, LTV)</span>
+        </div>
+      </section>
+
+      <section>
+        <h2>Languages</h2>
+        <div>
+          <span class="lang-item"><strong>Azerbaijani</strong> <span class="lang-level">(Native)</span></span>
+          <span class="lang-item"><strong>English</strong> <span class="lang-level">(Upper Intermediate)</span></span>
+          <span class="lang-item"><strong>Turkish</strong> <span class="lang-level">(Upper Intermediate)</span></span>
+          <span class="lang-item"><strong>Russian</strong> <span class="lang-level">(Elementary)</span></span>
+        </div>
+      </section>
+
+      <section>
+        <h2>Certifications</h2>
+        <ul>
+          <li>Full Stack Web Development – Millisoft</li>
+          <li>Android Development – Matrix Academy</li>
+        </ul>
+      </section>
+    </div>
+  </div>
+</body>
+</html>

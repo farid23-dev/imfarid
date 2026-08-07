@@ -1,15 +1,12 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
+import AboutPage from "./pages/AboutPage";
+import ProjectsPage from "./pages/ProjectsPage";
+import ContactPage from "./pages/ContactPage";
+import BlogPage from "./pages/BlogPage";
+import BlogPostPage from "./pages/BlogPostPage";
 import PlaceholderPage from "./pages/PlaceholderPage";
-
-const pages = [
-  { path: "about", title: "About", blurb: "My story and background — coming soon." },
-  { path: "services", title: "Services", blurb: "Web development, Google Ads, consulting." },
-  { path: "projects", title: "Projects", blurb: "Selected work — coming soon." },
-  { path: "contact", title: "Contact", blurb: "Get in touch with me." },
-  { path: "blog", title: "Blog", blurb: "Thoughts on web, ads, and Android." },
-];
 
 export default function App() {
   return (
@@ -17,13 +14,12 @@ export default function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route index element={<Home />} />
-          {pages.map((page) => (
-            <Route
-              key={page.path}
-              path={page.path}
-              element={<PlaceholderPage title={page.title} blurb={page.blurb} />}
-            />
-          ))}
+          <Route path="about" element={<AboutPage />} />
+          <Route path="projects" element={<ProjectsPage />} />
+          <Route path="contact" element={<ContactPage />} />
+          <Route path="blog" element={<BlogPage />} />
+          <Route path="blog/:slug" element={<BlogPostPage />} />
+          <Route path="services" element={<PlaceholderPage title="Services" blurb="Web development, Google Ads, consulting — coming soon." />} />
         </Route>
       </Routes>
     </BrowserRouter>

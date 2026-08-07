@@ -22,6 +22,17 @@ export async function fetchProjects() {
   }
 }
 
+export async function fetchFeaturedProjects() {
+  try {
+    const response = await fetch(`${API_URL}/projects/featured`);
+    if (!response.ok) throw new Error("Failed to fetch");
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching featured projects:", error);
+    return null;
+  }
+}
+
 export async function fetchPosts() {
   try {
     const response = await fetch(`${API_URL}/posts`);

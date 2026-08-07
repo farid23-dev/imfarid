@@ -66,6 +66,12 @@ CREATE POLICY "Public read published posts" ON posts FOR SELECT USING (published
 CREATE POLICY "Public read projects" ON projects FOR SELECT USING (true);
 CREATE POLICY "Public read skills" ON skills FOR SELECT USING (true);
 
+-- Insert default projects (dummy data - delete later)
+INSERT INTO projects (title, slug, description, image, live_url, featured, sort_order) VALUES
+('NexusPro Dashboard', 'nexuspro-dashboard', 'A modern analytics dashboard for SaaS businesses with real-time data visualization.', '/project-1.png', 'https://example.com/nexuspro', true, 1),
+('Shopline E-commerce', 'shopline-ecommerce', 'Full-featured e-commerce platform with modern UI and seamless checkout experience.', '/project-2.png', 'https://example.com/shopline', true, 2),
+('Flowly Mobile App', 'flowly-app', 'Productivity app landing page with app store integration and feature showcase.', '/project-3.png', 'https://example.com/flowly', true, 3);
+
 -- Insert default experiences
 INSERT INTO experiences (company, position, location, start_date, end_date, description, sort_order) VALUES
 ('Meridian Media', 'Lead IT Specialist', 'Remote', 'August 2026', 'Present', ARRAY['Developed and deployed PHP-based, React-based, and Next.js-based websites integrated with internal affiliate and tracking systems', 'Managed server-side hosting environments, including configuration, deployment, and maintenance', 'Coordinated product management, inventory workflows, and order processing systems', 'Providing technical support to the customers'], 1),

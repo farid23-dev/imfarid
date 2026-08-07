@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { fetchAllPosts, fetchAllProjects, fetchMessages, fetchAllExperiences } from "../../api/admin";
+import {
+  fetchAllPosts,
+  fetchAllProjects,
+  fetchMessages,
+  fetchAllExperiences,
+  fetchLikesSummary,
+} from "../../api/admin";
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
@@ -9,6 +15,9 @@ export default function AdminDashboard() {
     messages: 0,
     unreadMessages: 0,
     experiences: 0,
+    postLikes: 0,
+    projectLikes: 0,
+    totalLikes: 0,
   });
   const [recentMessages, setRecentMessages] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -16,11 +25,12 @@ export default function AdminDashboard() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [posts, projects, messages, experiences] = await Promise.all([
+        const [posts, projects, messages, experiences, likes] = await Promise.all([
           fetchAllPosts().catch(() => []),
           fetchAllProjects().catch(() => []),
           fetchMessages().catch(() => []),
           fetchAllExperiences().catch(() => []),
+          fetchLikesSummary().catch(() => ({ totals: { posts: 0, projects: 0, all: 0 } })),
         ]);
 
         setStats({
@@ -29,6 +39,9 @@ export default function AdminDashboard() {
           messages: messages.length,
           unreadMessages: messages.filter((m) => !m.read).length,
           experiences: experiences.length,
+          postLikes: likes?.totals?.posts || 0,
+          projectLikes: likes?.totals?.projects || 0,
+          totalLikes: likes?.totals?.all || 0,
         });
 
         setRecentMessages(messages.slice(0, 5));
@@ -64,6 +77,7 @@ export default function AdminDashboard() {
           <div className="admin-stat__info">
             <span className="admin-stat__value">{stats.posts}</span>
             <span className="admin-stat__label">Blog Posts</span>
+            <span className="admin-stat__sub">{stats.postLikes} likes</span>
           </div>
           <Link to="/admin/posts" className="admin-stat__link">Manage →</Link>
         </div>
@@ -79,6 +93,7 @@ export default function AdminDashboard() {
           <div className="admin-stat__info">
             <span className="admin-stat__value">{stats.projects}</span>
             <span className="admin-stat__label">Projects</span>
+            <span className="admin-stat__sub">{stats.projectLikes} likes</span>
           </div>
           <Link to="/admin/projects" className="admin-stat__link">Manage →</Link>
         </div>
@@ -114,6 +129,21 @@ export default function AdminDashboard() {
             <span className="admin-stat__label">Messages</span>
           </div>
           <Link to="/admin/messages" className="admin-stat__link">View →</Link>
+        </div>
+
+        <div className="admin-stat">
+          <div className="admin-stat__icon admin-stat__icon--likes">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="1">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+            </svg>
+          </div>
+          <div className="admin-stat__info">
+            <span className="admin-stat__value">{stats.totalLikes}</span>
+            <span className="admin-stat__label">Total Likes</span>
+            <span className="admin-stat__sub">
+              {stats.postLikes} posts · {stats.projectLikes} projects
+            </span>
+          </div>
         </div>
       </div>
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { fetchPost } from "../api";
 import Footer from "../components/Footer";
+import LikeButton from "../components/LikeButton";
 import "../styles/blog-post-page.css";
 
 export default function BlogPostPage() {
@@ -86,6 +87,7 @@ export default function BlogPostPage() {
         />
 
         <footer className="blog-post-page__footer">
+          <LikeButton type="posts" id={post.id} initialCount={post.like_count || 0} size="large" />
           <Link to="/blog" className="blog-post-page__back-link">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M19 12H5M12 19l-7-7 7-7" />

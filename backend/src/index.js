@@ -9,13 +9,19 @@ import projectsRouter from "./routes/projects.js";
 import postsRouter from "./routes/posts.js";
 import contactRouter from "./routes/contact.js";
 import uploadRouter from "./routes/upload.js";
+import likesRouter from "./routes/likes.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
@@ -26,6 +32,7 @@ app.use("/api/projects", projectsRouter);
 app.use("/api/posts", postsRouter);
 app.use("/api/contact", contactRouter);
 app.use("/api/upload", uploadRouter);
+app.use("/api/likes", likesRouter);
 
 // Health check
 app.get("/api/health", (req, res) => {

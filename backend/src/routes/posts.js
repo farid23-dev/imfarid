@@ -1,6 +1,7 @@
 import express from "express";
 import { supabase } from "../config/supabase.js";
 import defaultPosts from "../data/defaultPosts.js";
+import { attachLikeCounts, getLikeCount } from "../utils/likesStore.js";
 
 const router = express.Router();
 
@@ -53,7 +54,7 @@ router.get("/", async (req, res) => {
       const { data, error } = await query;
 
       if (!error && data && data.length > 0) {
-        return res.json(data);
+        return res.json(attachLikeCounts("posts", data));
       }
     }
 
@@ -74,7 +75,7 @@ router.get("/", async (req, res) => {
       })
     );
 
-    res.json(postsPreview);
+    res.json(attachLikeCounts("posts", postsPreview));
   } catch (error) {
     console.error("Error fetching posts:", error);
     res.status(500).json({ error: "Failed to fetch posts" });
@@ -111,12 +112,12 @@ router.get("/:slug", async (req, res) => {
         .single();
 
       if (!error && data) {
-        return res.json(data);
+        return res.json({ ...data, like_count: getLikeCount("posts", data.id) });
       }
     }
 
     const post = posts.find((p) => p.slug === slug);
-    if (post) return res.json(post);
+    if (post) return res.json({ ...post, like_count: getLikeCount("posts", post.id) });
 
     res.status(404).json({ error: "Post not found" });
   } catch (error) {

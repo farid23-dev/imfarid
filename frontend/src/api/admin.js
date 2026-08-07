@@ -247,3 +247,10 @@ export async function deleteMessage(id) {
   if (!response.ok) throw new Error("Failed to delete message");
   return response.json();
 }
+
+// === LIKES ===
+export async function fetchLikesSummary() {
+  const response = await fetch(`${API_URL}/likes/summary`, { headers: authHeaders() });
+  if (!response.ok) throw new Error("Failed to fetch likes summary");
+  return response.json();
+}

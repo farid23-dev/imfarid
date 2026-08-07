@@ -328,3 +328,7 @@
   background: rgba(46, 242, 200, 0.1);
   border-radius: 4px;
 }
+
+.projects-page__card-actions {
+  margin-top: 1rem;
+}

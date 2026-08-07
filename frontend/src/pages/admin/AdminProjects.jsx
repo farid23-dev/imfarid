@@ -225,13 +225,14 @@ export default function AdminProjects() {
               <th>Title</th>
               <th>Technologies</th>
               <th>Featured</th>
+              <th>Likes</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {projects.length === 0 ? (
               <tr>
-                <td colSpan="5" className="admin-table__empty">No projects yet</td>
+                <td colSpan="6" className="admin-table__empty">No projects yet</td>
               </tr>
             ) : (
               projects.map((project, index) => (
@@ -257,6 +258,7 @@ export default function AdminProjects() {
                       {project.featured ? "Yes" : "No"}
                     </span>
                   </td>
+                  <td>{project.like_count ?? 0}</td>
                   <td>
                     <div className="admin-table__actions">
                       <button onClick={() => handleEdit(project)} className="admin-btn admin-btn--small">

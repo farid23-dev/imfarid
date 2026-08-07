@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { fetchProjects } from "../api";
 import Footer from "../components/Footer";
+import LikeButton from "../components/LikeButton";
 import "../styles/projects-page.css";
 
 export default function ProjectsPage() {
@@ -145,6 +146,9 @@ export default function ProjectsPage() {
                         ))}
                       </div>
                     )}
+                    <div className="projects-page__card-actions">
+                      <LikeButton type="projects" id={project.id} initialCount={project.like_count || 0} size="compact" />
+                    </div>
                   </div>
                 </article>
               ))}

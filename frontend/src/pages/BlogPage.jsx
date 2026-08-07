@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { fetchPosts } from "../api";
 import Footer from "../components/Footer";
+import LikeButton from "../components/LikeButton";
 import "../styles/blog-page.css";
 
 export default function BlogPage() {
@@ -106,6 +107,9 @@ export default function BlogPage() {
                       </span>
                     </div>
                   </Link>
+                  <div className="blog-page__card-actions">
+                    <LikeButton type="posts" id={post.id} initialCount={post.like_count || 0} size="compact" />
+                  </div>
                 </article>
               ))}
             </div>

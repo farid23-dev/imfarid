@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { supabase } from "../config/supabase.js";
 import { defaultProjects } from "../data/defaultProjects.js";
+import { attachLikeCounts, getLikeCount } from "../utils/likesStore.js";
 
 const router = Router();
 
@@ -55,14 +56,14 @@ router.get("/", async (req, res) => {
         .order("sort_order", { ascending: true });
 
       if (!error && data && data.length > 0) {
-        return res.json(data);
+        return res.json(attachLikeCounts("projects", data));
       }
     }
 
-    res.json(sortByOrder(projects));
+    res.json(attachLikeCounts("projects", sortByOrder(projects)));
   } catch (error) {
     console.error("Error fetching projects:", error);
-    res.json(sortByOrder(projects));
+    res.json(attachLikeCounts("projects", sortByOrder(projects)));
   }
 });
 
@@ -77,14 +78,14 @@ router.get("/featured", async (req, res) => {
         .order("sort_order", { ascending: true });
 
       if (!error && data && data.length > 0) {
-        return res.json(data);
+        return res.json(attachLikeCounts("projects", data));
       }
     }
 
-    res.json(sortByOrder(projects.filter((p) => p.featured)));
+    res.json(attachLikeCounts("projects", sortByOrder(projects.filter((p) => p.featured))));
   } catch (error) {
     console.error("Error fetching featured projects:", error);
-    res.json(sortByOrder(projects.filter((p) => p.featured)));
+    res.json(attachLikeCounts("projects", sortByOrder(projects.filter((p) => p.featured))));
   }
 });
 
@@ -116,15 +117,19 @@ router.get("/:slug", async (req, res) => {
         .single();
 
       if (!error && data) {
-        return res.json(data);
+        return res.json({ ...data, like_count: getLikeCount("projects", data.id) });
       }
     }
 
     const project = projects.find((p) => p.slug === req.params.slug);
-    return project ? res.json(project) : res.status(404).json({ error: "Not found" });
+    return project
+      ? res.json({ ...project, like_count: getLikeCount("projects", project.id) })
+      : res.status(404).json({ error: "Not found" });
   } catch (error) {
     const project = projects.find((p) => p.slug === req.params.slug);
-    return project ? res.json(project) : res.status(404).json({ error: "Project not found" });
+    return project
+      ? res.json({ ...project, like_count: getLikeCount("projects", project.id) })
+      : res.status(404).json({ error: "Project not found" });
   }
 });
 

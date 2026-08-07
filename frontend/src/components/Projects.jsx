@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { fetchFeaturedProjects } from "../api";
+import LikeButton from "./LikeButton";
 import "../styles/projects.css";
 
 const DISPLAY_COUNT = 3;
@@ -79,19 +80,22 @@ export default function Projects() {
                   </div>
                   <div className="projects__info">
                     <h3 className="projects__name">{project.title}</h3>
-                    {project.live_url && (
-                      <a
-                        href={project.live_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="projects__link"
-                      >
-                        Visit Site
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3" />
-                        </svg>
-                      </a>
-                    )}
+                    <div className="projects__meta">
+                      <LikeButton type="projects" id={project.id} initialCount={project.like_count || 0} size="compact" />
+                      {project.live_url && (
+                        <a
+                          href={project.live_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="projects__link"
+                        >
+                          Visit Site
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3" />
+                          </svg>
+                        </a>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}

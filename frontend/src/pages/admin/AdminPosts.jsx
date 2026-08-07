@@ -195,6 +195,7 @@ export default function AdminPosts() {
               <th>Title</th>
               <th>Slug</th>
               <th>Status</th>
+              <th>Likes</th>
               <th>Created</th>
               <th>Actions</th>
             </tr>
@@ -202,7 +203,7 @@ export default function AdminPosts() {
           <tbody>
             {posts.length === 0 ? (
               <tr>
-                <td colSpan="6" className="admin-table__empty">No posts yet</td>
+                <td colSpan="7" className="admin-table__empty">No posts yet</td>
               </tr>
             ) : (
               posts.map((post, index) => (
@@ -215,6 +216,7 @@ export default function AdminPosts() {
                       {post.published ? "Published" : "Draft"}
                     </span>
                   </td>
+                  <td>{post.like_count ?? 0}</td>
                   <td>{new Date(post.created_at).toLocaleDateString()}</td>
                   <td>
                     <div className="admin-table__actions">

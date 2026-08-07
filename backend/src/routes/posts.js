@@ -116,7 +116,7 @@ router.post("/", async (req, res) => {
       created_at: now,
       updated_at: now,
     };
-    posts.push(newPost);
+    posts.unshift(newPost);
     res.status(201).json(newPost);
   } catch (error) {
     console.error("Error creating post:", error);

@@ -8,6 +8,22 @@ const router = Router();
 let projects = defaultProjects.map((p) => ({ ...p }));
 let nextId = Math.max(0, ...projects.map((p) => p.id)) + 1;
 
+const sortNewestFirst = (list) =>
+  [...list].sort((a, b) => {
+    const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
+    const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+    if (dateA || dateB) {
+      if (dateA !== dateB) return dateB - dateA;
+    }
+    // Lower sort_order = higher priority / newer
+    return (a.sort_order ?? 9999) - (b.sort_order ?? 9999);
+  });
+
+const nextTopSortOrder = (list) => {
+  if (!list.length) return 0;
+  return Math.min(...list.map((item) => item.sort_order ?? 0)) - 1;
+};
+
 const normalizeProject = (body, existing = {}) => ({
   title: body.title ?? existing.title ?? "",
   slug: body.slug ?? existing.slug ?? "",
@@ -19,6 +35,7 @@ const normalizeProject = (body, existing = {}) => ({
   technologies: body.technologies ?? existing.technologies ?? [],
   featured: body.featured ?? existing.featured ?? false,
   sort_order: body.sort_order ?? existing.sort_order ?? 0,
+  created_at: existing.created_at,
 });
 
 // Get all projects
@@ -28,17 +45,17 @@ router.get("/", async (req, res) => {
       const { data, error } = await supabase
         .from("projects")
         .select("*")
-        .order("sort_order", { ascending: true });
+        .order("created_at", { ascending: false });
 
       if (!error && data && data.length > 0) {
         return res.json(data);
       }
     }
 
-    res.json([...projects].sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0)));
+    res.json(sortNewestFirst(projects));
   } catch (error) {
     console.error("Error fetching projects:", error);
-    res.json([...projects].sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0)));
+    res.json(sortNewestFirst(projects));
   }
 });
 
@@ -50,17 +67,17 @@ router.get("/featured", async (req, res) => {
         .from("projects")
         .select("*")
         .eq("featured", true)
-        .order("sort_order", { ascending: true });
+        .order("created_at", { ascending: false });
 
       if (!error && data && data.length > 0) {
         return res.json(data);
       }
     }
 
-    res.json(projects.filter((p) => p.featured).sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0)));
+    res.json(sortNewestFirst(projects.filter((p) => p.featured)));
   } catch (error) {
     console.error("Error fetching featured projects:", error);
-    res.json(projects.filter((p) => p.featured));
+    res.json(sortNewestFirst(projects.filter((p) => p.featured)));
   }
 });
 
@@ -91,10 +108,15 @@ router.get("/:slug", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     const payload = normalizeProject(req.body);
+    const now = new Date().toISOString();
 
     if (!payload.title || !payload.slug) {
       return res.status(400).json({ error: "Title and slug are required" });
     }
+
+    const topSort = nextTopSortOrder(projects);
+    payload.sort_order = req.body.sort_order ?? topSort;
+    payload.created_at = now;
 
     if (supabase) {
       const { data, error } = await supabase
@@ -107,6 +129,7 @@ router.post("/", async (req, res) => {
           live_url: payload.live_url,
           featured: payload.featured,
           sort_order: payload.sort_order,
+          created_at: now,
         }])
         .select()
         .single();
@@ -121,7 +144,7 @@ router.post("/", async (req, res) => {
       id: nextId++,
       ...payload,
     };
-    projects.push(newProject);
+    projects.unshift(newProject);
     res.status(201).json(newProject);
   } catch (error) {
     console.error("Error creating project:", error);

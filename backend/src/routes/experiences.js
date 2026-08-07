@@ -10,6 +10,21 @@ let experiences = defaultExperiences.map((e) => ({
 }));
 let nextId = Math.max(0, ...experiences.map((e) => e.id)) + 1;
 
+const sortNewestFirst = (list) =>
+  [...list].sort((a, b) => {
+    const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
+    const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+    if (dateA || dateB) {
+      if (dateA !== dateB) return dateB - dateA;
+    }
+    return (a.sort_order ?? 9999) - (b.sort_order ?? 9999);
+  });
+
+const nextTopSortOrder = (list) => {
+  if (!list.length) return 0;
+  return Math.min(...list.map((item) => item.sort_order ?? 0)) - 1;
+};
+
 // Get all experiences
 router.get("/", async (req, res) => {
   try {
@@ -17,17 +32,17 @@ router.get("/", async (req, res) => {
       const { data, error } = await supabase
         .from("experiences")
         .select("*")
-        .order("sort_order", { ascending: true });
+        .order("created_at", { ascending: false });
 
       if (!error && data && data.length > 0) {
-        return res.json(data);
+        return res.json(sortNewestFirst(data));
       }
     }
 
-    res.json([...experiences].sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0)));
+    res.json(sortNewestFirst(experiences));
   } catch (error) {
     console.error("Error fetching experiences:", error);
-    res.json([...experiences].sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0)));
+    res.json(sortNewestFirst(experiences));
   }
 });
 
@@ -58,6 +73,8 @@ router.get("/:id", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     const { company, position, location, start_date, end_date, description, sort_order } = req.body;
+    const now = new Date().toISOString();
+    const topSort = sort_order ?? nextTopSortOrder(experiences);
 
     if (!company || !position) {
       return res.status(400).json({ error: "Company and position are required" });
@@ -66,7 +83,16 @@ router.post("/", async (req, res) => {
     if (supabase) {
       const { data, error } = await supabase
         .from("experiences")
-        .insert([{ company, position, location, start_date, end_date, description, sort_order }])
+        .insert([{
+          company,
+          position,
+          location,
+          start_date,
+          end_date,
+          description,
+          sort_order: topSort,
+          created_at: now,
+        }])
         .select()
         .single();
 
@@ -84,9 +110,10 @@ router.post("/", async (req, res) => {
       start_date: start_date || "",
       end_date: end_date || "",
       description: description || [],
-      sort_order: sort_order ?? nextId,
+      sort_order: topSort,
+      created_at: now,
     };
-    experiences.push(newExp);
+    experiences.unshift(newExp);
     res.status(201).json(newExp);
   } catch (error) {
     console.error("Error creating experience:", error);

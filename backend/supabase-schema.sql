@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS posts (
   content TEXT NOT NULL,
   cover_image TEXT,
   published BOOLEAN DEFAULT false,
+  sort_order INTEGER DEFAULT 0,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );

@@ -762,3 +762,34 @@
   font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.45);
 }
+
+/* Drag & drop ordering */
+.admin-table__drag-col {
+  width: 36px;
+  padding-left: 0.75rem !important;
+  padding-right: 0.25rem !important;
+}
+
+.admin-drag-handle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.35);
+  cursor: grab;
+}
+
+.admin-drag-handle:active {
+  cursor: grabbing;
+}
+
+.admin-table__row--sortable {
+  cursor: grab;
+}
+
+.admin-table__row--sortable:active {
+  cursor: grabbing;
+}
+
+.admin-table__row--sortable:hover .admin-drag-handle {
+  color: var(--cyan);
+}

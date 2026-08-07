@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { fetchAllExperiences, createExperience, updateExperience, deleteExperience } from "../../api/admin";
+import { fetchAllExperiences, createExperience, updateExperience, deleteExperience, reorderExperiences } from "../../api/admin";
+import useDragReorder, { DragHandle } from "../../hooks/useDragReorder";
 
 export default function AdminExperiences() {
   const [experiences, setExperiences] = useState([]);
@@ -14,6 +15,8 @@ export default function AdminExperiences() {
     end_date: "",
     description: "",
   });
+
+  const { getRowProps } = useDragReorder(experiences, setExperiences, reorderExperiences);
 
   const loadExperiences = async () => {
     try {
@@ -92,7 +95,7 @@ export default function AdminExperiences() {
       <div className="admin-page__header">
         <div>
           <h1>Work Experiences</h1>
-          <p>Manage your resume experiences</p>
+          <p>Manage your resume experiences · Drag rows to reorder</p>
         </div>
         <button className="admin-btn admin-btn--primary" onClick={() => setShowForm(true)}>
           + New Experience
@@ -186,6 +189,7 @@ export default function AdminExperiences() {
         <table className="admin-table">
           <thead>
             <tr>
+              <th className="admin-table__drag-col"></th>
               <th>Company</th>
               <th>Position</th>
               <th>Location</th>
@@ -196,11 +200,12 @@ export default function AdminExperiences() {
           <tbody>
             {experiences.length === 0 ? (
               <tr>
-                <td colSpan="5" className="admin-table__empty">No experiences yet</td>
+                <td colSpan="6" className="admin-table__empty">No experiences yet</td>
               </tr>
             ) : (
-              experiences.map((exp) => (
-                <tr key={exp.id}>
+              experiences.map((exp, index) => (
+                <tr key={exp.id} {...getRowProps(index)}>
+                  <td className="admin-table__drag-col"><DragHandle /></td>
                   <td><strong>{exp.company}</strong></td>
                   <td>{exp.position}</td>
                   <td>{exp.location || "-"}</td>

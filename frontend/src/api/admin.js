@@ -114,6 +114,17 @@ export async function deletePost(id) {
   return response.json();
 }
 
+export async function reorderPosts(ids) {
+  const response = await fetch(`${API_URL}/posts/reorder`, {
+    method: "PUT",
+    headers: authHeaders(),
+    body: JSON.stringify({ ids }),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || "Failed to reorder posts");
+  return data;
+}
+
 // === PROJECTS ===
 export async function fetchAllProjects() {
   const response = await fetch(`${API_URL}/projects`, { headers: authHeaders() });
@@ -152,6 +163,17 @@ export async function deleteProject(id) {
   return response.json();
 }
 
+export async function reorderProjects(ids) {
+  const response = await fetch(`${API_URL}/projects/reorder`, {
+    method: "PUT",
+    headers: authHeaders(),
+    body: JSON.stringify({ ids }),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || "Failed to reorder projects");
+  return data;
+}
+
 // === EXPERIENCES ===
 export async function fetchAllExperiences() {
   const response = await fetch(`${API_URL}/experiences`, { headers: authHeaders() });
@@ -188,6 +210,17 @@ export async function deleteExperience(id) {
   });
   if (!response.ok) throw new Error("Failed to delete experience");
   return response.json();
+}
+
+export async function reorderExperiences(ids) {
+  const response = await fetch(`${API_URL}/experiences/reorder`, {
+    method: "PUT",
+    headers: authHeaders(),
+    body: JSON.stringify({ ids }),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || "Failed to reorder experiences");
+  return data;
 }
 
 // === CONTACT MESSAGES ===

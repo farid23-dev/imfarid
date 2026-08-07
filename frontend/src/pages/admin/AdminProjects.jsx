@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { fetchAllProjects, createProject, updateProject, deleteProject } from "../../api/admin";
+import { fetchAllProjects, createProject, updateProject, deleteProject, reorderProjects } from "../../api/admin";
 import ImageUpload from "../../components/admin/ImageUpload";
+import useDragReorder, { DragHandle } from "../../hooks/useDragReorder";
 
 export default function AdminProjects() {
   const [projects, setProjects] = useState([]);
@@ -17,6 +18,8 @@ export default function AdminProjects() {
     technologies: "",
     featured: false,
   });
+
+  const { getRowProps } = useDragReorder(projects, setProjects, reorderProjects);
 
   const loadProjects = async () => {
     try {
@@ -106,7 +109,7 @@ export default function AdminProjects() {
       <div className="admin-page__header">
         <div>
           <h1>Projects</h1>
-          <p>Manage your portfolio projects</p>
+          <p>Manage your portfolio projects · Drag rows to reorder</p>
         </div>
         <button className="admin-btn admin-btn--primary" onClick={() => setShowForm(true)}>
           + New Project
@@ -216,6 +219,7 @@ export default function AdminProjects() {
         <table className="admin-table">
           <thead>
             <tr>
+              <th className="admin-table__drag-col"></th>
               <th>Title</th>
               <th>Technologies</th>
               <th>Featured</th>
@@ -225,11 +229,12 @@ export default function AdminProjects() {
           <tbody>
             {projects.length === 0 ? (
               <tr>
-                <td colSpan="4" className="admin-table__empty">No projects yet</td>
+                <td colSpan="5" className="admin-table__empty">No projects yet</td>
               </tr>
             ) : (
-              projects.map((project) => (
-                <tr key={project.id}>
+              projects.map((project, index) => (
+                <tr key={project.id} {...getRowProps(index)}>
+                  <td className="admin-table__drag-col"><DragHandle /></td>
                   <td>
                     <strong>{project.title}</strong>
                     {project.live_url && (

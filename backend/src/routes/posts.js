@@ -4,8 +4,35 @@ import defaultPosts from "../data/defaultPosts.js";
 
 const router = express.Router();
 
-let posts = defaultPosts.map((p) => ({ ...p }));
+let posts = defaultPosts.map((p, index) => ({
+  ...p,
+  sort_order: p.sort_order ?? index,
+}));
 let nextId = Math.max(0, ...posts.map((p) => p.id)) + 1;
+
+const sortByOrder = (list) =>
+  [...list].sort((a, b) => (a.sort_order ?? 9999) - (b.sort_order ?? 9999));
+
+const nextTopSortOrder = (list) => {
+  if (!list.length) return 0;
+  return Math.min(...list.map((item) => item.sort_order ?? 0)) - 1;
+};
+
+const applyOrder = async (ids) => {
+  ids.forEach((id, index) => {
+    const item = posts.find((p) => String(p.id) === String(id));
+    if (item) item.sort_order = index;
+  });
+  posts = sortByOrder(posts);
+
+  if (supabase) {
+    await Promise.all(
+      ids.map((id, index) =>
+        supabase.from("posts").update({ sort_order: index }).eq("id", id)
+      )
+    );
+  }
+};
 
 // GET all posts
 // Use ?all=true for admin (includes drafts)
@@ -16,8 +43,8 @@ router.get("/", async (req, res) => {
     if (supabase) {
       let query = supabase
         .from("posts")
-        .select(includeDrafts ? "*" : "id, title, slug, excerpt, cover_image, published, created_at")
-        .order("created_at", { ascending: false });
+        .select(includeDrafts ? "*" : "id, title, slug, excerpt, cover_image, published, created_at, sort_order")
+        .order("sort_order", { ascending: true });
 
       if (!includeDrafts) {
         query = query.eq("published", true);
@@ -34,8 +61,8 @@ router.get("/", async (req, res) => {
       ? posts
       : posts.filter((p) => p.published);
 
-    const postsPreview = list
-      .map(({ id, title, slug, excerpt, cover_image, published, created_at }) => ({
+    const postsPreview = sortByOrder(list).map(
+      ({ id, title, slug, excerpt, cover_image, published, created_at, sort_order }) => ({
         id,
         title,
         slug,
@@ -43,13 +70,31 @@ router.get("/", async (req, res) => {
         cover_image,
         published,
         created_at,
-      }))
-      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        sort_order,
+      })
+    );
 
     res.json(postsPreview);
   } catch (error) {
     console.error("Error fetching posts:", error);
     res.status(500).json({ error: "Failed to fetch posts" });
+  }
+});
+
+// Reorder posts
+router.put("/reorder", async (req, res) => {
+  const { ids } = req.body;
+
+  if (!Array.isArray(ids) || ids.length === 0) {
+    return res.status(400).json({ error: "ids array is required" });
+  }
+
+  try {
+    await applyOrder(ids);
+    res.json({ success: true, items: sortByOrder(posts) });
+  } catch (error) {
+    console.error("Error reordering posts:", error);
+    res.status(500).json({ error: "Failed to reorder posts" });
   }
 });
 
@@ -91,10 +136,21 @@ router.post("/", async (req, res) => {
   }
 
   try {
+    const now = new Date().toISOString();
+    const topSort = nextTopSortOrder(posts);
+
     if (supabase) {
       const { data, error } = await supabase
         .from("posts")
-        .insert([{ title, slug, excerpt, content, cover_image, published: published || false }])
+        .insert([{
+          title,
+          slug,
+          excerpt,
+          content,
+          cover_image,
+          published: published || false,
+          sort_order: topSort,
+        }])
         .select()
         .single();
 
@@ -104,7 +160,6 @@ router.post("/", async (req, res) => {
       console.warn("Supabase create post failed, using memory:", error?.message);
     }
 
-    const now = new Date().toISOString();
     const newPost = {
       id: nextId++,
       title,
@@ -113,6 +168,7 @@ router.post("/", async (req, res) => {
       content,
       cover_image: cover_image || null,
       published: published || false,
+      sort_order: topSort,
       created_at: now,
       updated_at: now,
     };
@@ -127,13 +183,22 @@ router.post("/", async (req, res) => {
 // PUT update post
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
-  const { title, slug, excerpt, content, cover_image, published } = req.body;
+  const { title, slug, excerpt, content, cover_image, published, sort_order } = req.body;
 
   try {
     if (supabase) {
       const { data, error } = await supabase
         .from("posts")
-        .update({ title, slug, excerpt, content, cover_image, published, updated_at: new Date() })
+        .update({
+          title,
+          slug,
+          excerpt,
+          content,
+          cover_image,
+          published,
+          sort_order,
+          updated_at: new Date(),
+        })
         .eq("id", id)
         .select()
         .single();
@@ -157,6 +222,7 @@ router.put("/:id", async (req, res) => {
       content: content ?? posts[index].content,
       cover_image: cover_image ?? posts[index].cover_image,
       published: published ?? posts[index].published,
+      sort_order: sort_order ?? posts[index].sort_order,
       updated_at: new Date().toISOString(),
     };
 

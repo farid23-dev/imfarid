@@ -10,19 +10,28 @@ let experiences = defaultExperiences.map((e) => ({
 }));
 let nextId = Math.max(0, ...experiences.map((e) => e.id)) + 1;
 
-const sortNewestFirst = (list) =>
-  [...list].sort((a, b) => {
-    const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
-    const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
-    if (dateA || dateB) {
-      if (dateA !== dateB) return dateB - dateA;
-    }
-    return (a.sort_order ?? 9999) - (b.sort_order ?? 9999);
-  });
+const sortByOrder = (list) =>
+  [...list].sort((a, b) => (a.sort_order ?? 9999) - (b.sort_order ?? 9999));
 
 const nextTopSortOrder = (list) => {
   if (!list.length) return 0;
   return Math.min(...list.map((item) => item.sort_order ?? 0)) - 1;
+};
+
+const applyOrder = async (ids) => {
+  ids.forEach((id, index) => {
+    const item = experiences.find((e) => String(e.id) === String(id));
+    if (item) item.sort_order = index;
+  });
+  experiences = sortByOrder(experiences);
+
+  if (supabase) {
+    await Promise.all(
+      ids.map((id, index) =>
+        supabase.from("experiences").update({ sort_order: index }).eq("id", id)
+      )
+    );
+  }
 };
 
 // Get all experiences
@@ -32,17 +41,34 @@ router.get("/", async (req, res) => {
       const { data, error } = await supabase
         .from("experiences")
         .select("*")
-        .order("created_at", { ascending: false });
+        .order("sort_order", { ascending: true });
 
       if (!error && data && data.length > 0) {
-        return res.json(sortNewestFirst(data));
+        return res.json(data);
       }
     }
 
-    res.json(sortNewestFirst(experiences));
+    res.json(sortByOrder(experiences));
   } catch (error) {
     console.error("Error fetching experiences:", error);
-    res.json(sortNewestFirst(experiences));
+    res.json(sortByOrder(experiences));
+  }
+});
+
+// Reorder experiences
+router.put("/reorder", async (req, res) => {
+  const { ids } = req.body;
+
+  if (!Array.isArray(ids) || ids.length === 0) {
+    return res.status(400).json({ error: "ids array is required" });
+  }
+
+  try {
+    await applyOrder(ids);
+    res.json({ success: true, items: sortByOrder(experiences) });
+  } catch (error) {
+    console.error("Error reordering experiences:", error);
+    res.status(500).json({ error: "Failed to reorder experiences" });
   }
 });
 

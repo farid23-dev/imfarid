@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { fetchAllPosts, createPost, updatePost, deletePost } from "../../api/admin";
+import { fetchAllPosts, createPost, updatePost, deletePost, reorderPosts } from "../../api/admin";
 import ImageUpload from "../../components/admin/ImageUpload";
+import useDragReorder, { DragHandle } from "../../hooks/useDragReorder";
 
 export default function AdminPosts() {
   const [posts, setPosts] = useState([]);
@@ -15,6 +16,8 @@ export default function AdminPosts() {
     cover_image: "",
     published: false,
   });
+
+  const { getRowProps } = useDragReorder(posts, setPosts, reorderPosts);
 
   const loadPosts = async () => {
     try {
@@ -96,7 +99,7 @@ export default function AdminPosts() {
       <div className="admin-page__header">
         <div>
           <h1>Blog Posts</h1>
-          <p>Manage your blog posts</p>
+          <p>Manage your blog posts · Drag rows to reorder</p>
         </div>
         <button className="admin-btn admin-btn--primary" onClick={() => setShowForm(true)}>
           + New Post
@@ -186,6 +189,7 @@ export default function AdminPosts() {
         <table className="admin-table">
           <thead>
             <tr>
+              <th className="admin-table__drag-col"></th>
               <th>Title</th>
               <th>Slug</th>
               <th>Status</th>
@@ -196,11 +200,12 @@ export default function AdminPosts() {
           <tbody>
             {posts.length === 0 ? (
               <tr>
-                <td colSpan="5" className="admin-table__empty">No posts yet</td>
+                <td colSpan="6" className="admin-table__empty">No posts yet</td>
               </tr>
             ) : (
-              posts.map((post) => (
-                <tr key={post.id}>
+              posts.map((post, index) => (
+                <tr key={post.id} {...getRowProps(index)}>
+                  <td className="admin-table__drag-col"><DragHandle /></td>
                   <td><strong>{post.title}</strong></td>
                   <td><code>{post.slug}</code></td>
                   <td>

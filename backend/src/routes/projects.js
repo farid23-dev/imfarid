@@ -4,20 +4,11 @@ import { defaultProjects } from "../data/defaultProjects.js";
 
 const router = Router();
 
-// Mutable in-memory store (starts with dummy data)
 let projects = defaultProjects.map((p) => ({ ...p }));
 let nextId = Math.max(0, ...projects.map((p) => p.id)) + 1;
 
-const sortNewestFirst = (list) =>
-  [...list].sort((a, b) => {
-    const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
-    const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
-    if (dateA || dateB) {
-      if (dateA !== dateB) return dateB - dateA;
-    }
-    // Lower sort_order = higher priority / newer
-    return (a.sort_order ?? 9999) - (b.sort_order ?? 9999);
-  });
+const sortByOrder = (list) =>
+  [...list].sort((a, b) => (a.sort_order ?? 9999) - (b.sort_order ?? 9999));
 
 const nextTopSortOrder = (list) => {
   if (!list.length) return 0;
@@ -38,6 +29,22 @@ const normalizeProject = (body, existing = {}) => ({
   created_at: existing.created_at,
 });
 
+const applyOrder = async (ids) => {
+  ids.forEach((id, index) => {
+    const item = projects.find((p) => String(p.id) === String(id));
+    if (item) item.sort_order = index;
+  });
+  projects = sortByOrder(projects);
+
+  if (supabase) {
+    await Promise.all(
+      ids.map((id, index) =>
+        supabase.from("projects").update({ sort_order: index }).eq("id", id)
+      )
+    );
+  }
+};
+
 // Get all projects
 router.get("/", async (req, res) => {
   try {
@@ -45,17 +52,17 @@ router.get("/", async (req, res) => {
       const { data, error } = await supabase
         .from("projects")
         .select("*")
-        .order("created_at", { ascending: false });
+        .order("sort_order", { ascending: true });
 
       if (!error && data && data.length > 0) {
         return res.json(data);
       }
     }
 
-    res.json(sortNewestFirst(projects));
+    res.json(sortByOrder(projects));
   } catch (error) {
     console.error("Error fetching projects:", error);
-    res.json(sortNewestFirst(projects));
+    res.json(sortByOrder(projects));
   }
 });
 
@@ -67,17 +74,34 @@ router.get("/featured", async (req, res) => {
         .from("projects")
         .select("*")
         .eq("featured", true)
-        .order("created_at", { ascending: false });
+        .order("sort_order", { ascending: true });
 
       if (!error && data && data.length > 0) {
         return res.json(data);
       }
     }
 
-    res.json(sortNewestFirst(projects.filter((p) => p.featured)));
+    res.json(sortByOrder(projects.filter((p) => p.featured)));
   } catch (error) {
     console.error("Error fetching featured projects:", error);
-    res.json(sortNewestFirst(projects.filter((p) => p.featured)));
+    res.json(sortByOrder(projects.filter((p) => p.featured)));
+  }
+});
+
+// Reorder projects (must be before /:slug and /:id)
+router.put("/reorder", async (req, res) => {
+  const { ids } = req.body;
+
+  if (!Array.isArray(ids) || ids.length === 0) {
+    return res.status(400).json({ error: "ids array is required" });
+  }
+
+  try {
+    await applyOrder(ids);
+    res.json({ success: true, items: sortByOrder(projects) });
+  } catch (error) {
+    console.error("Error reordering projects:", error);
+    res.status(500).json({ error: "Failed to reorder projects" });
   }
 });
 

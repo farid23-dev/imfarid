@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { fetchAllPosts, createPost, updatePost, deletePost, reorderPosts } from "../../api/admin";
 import ImageUpload from "../../components/admin/ImageUpload";
-import useDragReorder, { DragHandle } from "../../hooks/useDragReorder";
+import useDragReorder, { DragHandle, ReorderActions } from "../../hooks/useDragReorder";
 
 export default function AdminPosts() {
   const [posts, setPosts] = useState([]);
@@ -17,7 +17,7 @@ export default function AdminPosts() {
     published: false,
   });
 
-  const { getRowProps } = useDragReorder(posts, setPosts, reorderPosts);
+  const { getRowProps, isDirty, isSaving, save, cancel } = useDragReorder(posts, setPosts, reorderPosts);
 
   const loadPosts = async () => {
     try {
@@ -184,6 +184,8 @@ export default function AdminPosts() {
           </div>
         </div>
       )}
+
+      <ReorderActions isDirty={isDirty} isSaving={isSaving} onSave={save} onCancel={cancel} />
 
       <div className="admin-table-wrapper">
         <table className="admin-table">

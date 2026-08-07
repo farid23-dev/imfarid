@@ -1,17 +1,24 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 
 /**
- * Shared drag-and-drop reorder helpers for admin tables.
- * Returns row props to spread onto <tr>.
+ * Drag-and-drop reorder with deferred Save / Cancel.
  */
 export default function useDragReorder(items, setItems, saveOrder) {
   const dragIndex = useRef(null);
   const overIndex = useRef(null);
   const itemsRef = useRef(items);
-  const saveOrderRef = useRef(saveOrder);
+  const originalRef = useRef(null);
+  const [isDirty, setIsDirty] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   itemsRef.current = items;
-  saveOrderRef.current = saveOrder;
+
+  // Keep a clean snapshot when not dirty (after load / save / cancel)
+  useEffect(() => {
+    if (!isDirty) {
+      originalRef.current = items.map((item) => ({ ...item }));
+    }
+  }, [items, isDirty]);
 
   const getRowProps = (index) => ({
     draggable: true,
@@ -26,7 +33,7 @@ export default function useDragReorder(items, setItems, saveOrder) {
     onDragOver: (e) => {
       e.preventDefault();
     },
-    onDragEnd: async () => {
+    onDragEnd: () => {
       const from = dragIndex.current;
       const to = overIndex.current;
 
@@ -39,16 +46,32 @@ export default function useDragReorder(items, setItems, saveOrder) {
       const [moved] = updated.splice(from, 1);
       updated.splice(to, 0, moved);
       setItems(updated);
-
-      try {
-        await saveOrderRef.current(updated.map((item) => item.id));
-      } catch (error) {
-        console.error("Failed to save order:", error);
-      }
+      setIsDirty(true);
     },
   });
 
-  return { getRowProps };
+  const save = async () => {
+    if (!isDirty) return;
+    setIsSaving(true);
+    try {
+      await saveOrder(itemsRef.current.map((item) => item.id));
+      setIsDirty(false);
+    } catch (error) {
+      console.error("Failed to save order:", error);
+      alert(error.message || "Failed to save order");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const cancel = () => {
+    if (originalRef.current) {
+      setItems(originalRef.current.map((item) => ({ ...item })));
+    }
+    setIsDirty(false);
+  };
+
+  return { getRowProps, isDirty, isSaving, save, cancel };
 }
 
 export function DragHandle() {
@@ -63,5 +86,23 @@ export function DragHandle() {
         <circle cx="15" cy="18" r="1.5" />
       </svg>
     </span>
+  );
+}
+
+export function ReorderActions({ isDirty, isSaving, onSave, onCancel }) {
+  if (!isDirty) return null;
+
+  return (
+    <div className="admin-reorder-bar">
+      <span className="admin-reorder-bar__text">Order changed — save to apply on the website</span>
+      <div className="admin-reorder-bar__actions">
+        <button type="button" className="admin-btn" onClick={onCancel} disabled={isSaving}>
+          Cancel
+        </button>
+        <button type="button" className="admin-btn admin-btn--primary" onClick={onSave} disabled={isSaving}>
+          {isSaving ? "Saving..." : "Save Order"}
+        </button>
+      </div>
+    </div>
   );
 }

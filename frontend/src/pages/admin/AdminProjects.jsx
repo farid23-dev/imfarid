@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { fetchAllProjects, createProject, updateProject, deleteProject, reorderProjects } from "../../api/admin";
 import ImageUpload from "../../components/admin/ImageUpload";
-import useDragReorder, { DragHandle } from "../../hooks/useDragReorder";
+import useDragReorder, { DragHandle, ReorderActions } from "../../hooks/useDragReorder";
 
 export default function AdminProjects() {
   const [projects, setProjects] = useState([]);
@@ -19,7 +19,7 @@ export default function AdminProjects() {
     featured: false,
   });
 
-  const { getRowProps } = useDragReorder(projects, setProjects, reorderProjects);
+  const { getRowProps, isDirty, isSaving, save, cancel } = useDragReorder(projects, setProjects, reorderProjects);
 
   const loadProjects = async () => {
     try {
@@ -214,6 +214,8 @@ export default function AdminProjects() {
           </div>
         </div>
       )}
+
+      <ReorderActions isDirty={isDirty} isSaving={isSaving} onSave={save} onCancel={cancel} />
 
       <div className="admin-table-wrapper">
         <table className="admin-table">

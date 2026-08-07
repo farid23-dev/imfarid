@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchAllExperiences, createExperience, updateExperience, deleteExperience, reorderExperiences } from "../../api/admin";
-import useDragReorder, { DragHandle } from "../../hooks/useDragReorder";
+import useDragReorder, { DragHandle, ReorderActions } from "../../hooks/useDragReorder";
 
 export default function AdminExperiences() {
   const [experiences, setExperiences] = useState([]);
@@ -16,7 +16,7 @@ export default function AdminExperiences() {
     description: "",
   });
 
-  const { getRowProps } = useDragReorder(experiences, setExperiences, reorderExperiences);
+  const { getRowProps, isDirty, isSaving, save, cancel } = useDragReorder(experiences, setExperiences, reorderExperiences);
 
   const loadExperiences = async () => {
     try {
@@ -184,6 +184,8 @@ export default function AdminExperiences() {
           </div>
         </div>
       )}
+
+      <ReorderActions isDirty={isDirty} isSaving={isSaving} onSave={save} onCancel={cancel} />
 
       <div className="admin-table-wrapper">
         <table className="admin-table">

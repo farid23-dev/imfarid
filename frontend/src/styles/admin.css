@@ -793,3 +793,26 @@
 .admin-table__row--sortable:hover .admin-drag-handle {
   color: var(--cyan);
 }
+
+.admin-reorder-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding: 0.85rem 1rem;
+  background: rgba(46, 242, 200, 0.08);
+  border: 1px solid rgba(46, 242, 200, 0.25);
+  border-radius: 10px;
+}
+
+.admin-reorder-bar__text {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.admin-reorder-bar__actions {
+  display: flex;
+  gap: 0.5rem;
+}

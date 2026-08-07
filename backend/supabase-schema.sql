@@ -54,17 +54,32 @@ CREATE TABLE IF NOT EXISTS skills (
   sort_order INTEGER DEFAULT 0
 );
 
+-- Contact messages table
+CREATE TABLE IF NOT EXISTS contact_messages (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  subject TEXT,
+  message TEXT NOT NULL,
+  read BOOLEAN DEFAULT false,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 -- Enable Row Level Security
 ALTER TABLE experiences ENABLE ROW LEVEL SECURITY;
 ALTER TABLE posts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
 ALTER TABLE skills ENABLE ROW LEVEL SECURITY;
+ALTER TABLE contact_messages ENABLE ROW LEVEL SECURITY;
 
 -- Public read access policies
 CREATE POLICY "Public read experiences" ON experiences FOR SELECT USING (true);
 CREATE POLICY "Public read published posts" ON posts FOR SELECT USING (published = true);
 CREATE POLICY "Public read projects" ON projects FOR SELECT USING (true);
 CREATE POLICY "Public read skills" ON skills FOR SELECT USING (true);
+
+-- Allow public to insert contact messages (anyone can submit the form)
+CREATE POLICY "Public insert contact messages" ON contact_messages FOR INSERT WITH CHECK (true);
 
 -- Insert default projects (dummy data - delete later)
 INSERT INTO projects (title, slug, description, image, live_url, featured, sort_order) VALUES

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { submitContactForm } from "../api";
 import Footer from "../components/Footer";
 import "../styles/contact-page.css";
 
@@ -11,6 +12,8 @@ export default function ContactPage() {
     message: "",
   });
   const [status, setStatus] = useState(null);
+  const [statusMessage, setStatusMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -19,18 +22,25 @@ export default function ContactPage() {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (status) setStatus(null);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const mailtoLink = `mailto:ismayilovf@outlook.com?subject=${encodeURIComponent(
-      formData.subject || "Contact from Website"
-    )}&body=${encodeURIComponent(
-      `Name: ${formData.name}\nEmail: ${formData.email}\n\n${formData.message}`
-    )}`;
-    window.location.href = mailtoLink;
-    setStatus("success");
-    setFormData({ name: "", email: "", subject: "", message: "" });
+    setIsSubmitting(true);
+    setStatus(null);
+
+    try {
+      const result = await submitContactForm(formData);
+      setStatus("success");
+      setStatusMessage(result.message);
+      setFormData({ name: "", email: "", subject: "", message: "" });
+    } catch (error) {
+      setStatus("error");
+      setStatusMessage(error.message || "Failed to send message. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -130,7 +140,13 @@ export default function ContactPage() {
 
               {status === "success" && (
                 <div className="contact-page__form-status contact-page__form-status--success">
-                  Your email client should open with the message. If not, please email me directly.
+                  {statusMessage}
+                </div>
+              )}
+
+              {status === "error" && (
+                <div className="contact-page__form-status contact-page__form-status--error">
+                  {statusMessage}
                 </div>
               )}
 
@@ -186,12 +202,18 @@ export default function ContactPage() {
                 ></textarea>
               </div>
 
-              <button type="submit" className="contact-page__form-btn">
-                Send Message
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="22" y1="2" x2="11" y2="13"/>
-                  <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-                </svg>
+              <button 
+                type="submit" 
+                className="contact-page__form-btn"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Sending..." : "Send Message"}
+                {!isSubmitting && (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"/>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                  </svg>
+                )}
               </button>
             </form>
           </div>

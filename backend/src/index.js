@@ -4,6 +4,7 @@ import cors from "cors";
 import experiencesRouter from "./routes/experiences.js";
 import projectsRouter from "./routes/projects.js";
 import postsRouter from "./routes/posts.js";
+import contactRouter from "./routes/contact.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use("/api/experiences", experiencesRouter);
 app.use("/api/projects", projectsRouter);
 app.use("/api/posts", postsRouter);
+app.use("/api/contact", contactRouter);
 
 // Health check
 app.get("/api/health", (req, res) => {

@@ -232,6 +232,23 @@ a.contact-page__card:hover {
   color: var(--cyan);
 }
 
+.contact-page__form-status--error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+}
+
+.contact-page__form-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.contact-page__form-btn:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
 .contact-page__form-row {
   display: grid;
   gap: 1rem;

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { login, isAuthenticated } from "../../api/admin";
+import CustomCursor from "../../components/CustomCursor";
 import "../../styles/admin.css";
 
 export default function AdminLogin() {
@@ -32,6 +33,7 @@ export default function AdminLogin() {
 
   return (
     <div className="admin-login">
+      <CustomCursor />
       <div className="admin-login__card">
         <div className="admin-login__header">
           <h1>Admin Panel</h1>

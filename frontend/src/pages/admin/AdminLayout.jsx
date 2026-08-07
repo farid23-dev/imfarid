@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import { logout, verifyToken } from "../../api/admin";
+import CustomCursor from "../../components/CustomCursor";
 import "../../styles/admin.css";
 
 export default function AdminLayout() {
@@ -34,6 +35,7 @@ export default function AdminLayout() {
 
   return (
     <div className="admin">
+      <CustomCursor />
       <aside className={`admin__sidebar ${sidebarOpen ? "is-open" : ""}`}>
         <div className="admin__sidebar-header">
           <h2>imfarid.com</h2>

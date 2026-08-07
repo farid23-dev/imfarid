@@ -78,7 +78,7 @@ export async function verifyToken() {
 
 // === POSTS ===
 export async function fetchAllPosts() {
-  const response = await fetch(`${API_URL}/posts`, { headers: authHeaders() });
+  const response = await fetch(`${API_URL}/posts?all=true`, { headers: authHeaders() });
   if (!response.ok) throw new Error("Failed to fetch posts");
   return response.json();
 }

@@ -8,10 +8,20 @@ import ContactPage from "./pages/ContactPage";
 import BlogPage from "./pages/BlogPage";
 import BlogPostPage from "./pages/BlogPostPage";
 
+// Admin pages
+import AdminLogin from "./pages/admin/AdminLogin";
+import AdminLayout from "./pages/admin/AdminLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminPosts from "./pages/admin/AdminPosts";
+import AdminProjects from "./pages/admin/AdminProjects";
+import AdminMessages from "./pages/admin/AdminMessages";
+import AdminExperiences from "./pages/admin/AdminExperiences";
+
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Public routes */}
         <Route element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="about" element={<AboutPage />} />
@@ -20,6 +30,16 @@ export default function App() {
           <Route path="blog" element={<BlogPage />} />
           <Route path="blog/:slug" element={<BlogPostPage />} />
           <Route path="services" element={<ServicesPage />} />
+        </Route>
+
+        {/* Admin routes */}
+        <Route path="admin/login" element={<AdminLogin />} />
+        <Route path="admin" element={<AdminLayout />}>
+          <Route index element={<AdminDashboard />} />
+          <Route path="posts" element={<AdminPosts />} />
+          <Route path="projects" element={<AdminProjects />} />
+          <Route path="messages" element={<AdminMessages />} />
+          <Route path="experiences" element={<AdminExperiences />} />
         </Route>
       </Routes>
     </BrowserRouter>

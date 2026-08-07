@@ -1,6 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
+import authRouter from "./routes/auth.js";
 import experiencesRouter from "./routes/experiences.js";
 import projectsRouter from "./routes/projects.js";
 import postsRouter from "./routes/posts.js";
@@ -14,6 +15,7 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
+app.use("/api/auth", authRouter);
 app.use("/api/experiences", experiencesRouter);
 app.use("/api/projects", projectsRouter);
 app.use("/api/posts", postsRouter);

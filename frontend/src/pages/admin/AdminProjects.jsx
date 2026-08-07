@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchAllProjects, createProject, updateProject, deleteProject } from "../../api/admin";
+import ImageUpload from "../../components/admin/ImageUpload";
 
 export default function AdminProjects() {
   const [projects, setProjects] = useState([]);
@@ -155,14 +156,11 @@ export default function AdminProjects() {
                 />
               </div>
               <div className="admin-form__row">
-                <div className="admin-form__field">
-                  <label>Cover Image URL</label>
-                  <input
-                    type="text"
-                    value={formData.cover_image}
-                    onChange={(e) => setFormData({ ...formData, cover_image: e.target.value })}
-                  />
-                </div>
+                <ImageUpload
+                  label="Cover Image"
+                  value={formData.cover_image}
+                  onChange={(url) => setFormData({ ...formData, cover_image: url })}
+                />
                 <div className="admin-form__field">
                   <label>Technologies (comma separated)</label>
                   <input

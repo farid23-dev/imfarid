@@ -184,21 +184,29 @@ router.put("/:id/read", async (req, res) => {
         .select()
         .single();
 
-      if (error) throw error;
-      return res.json(data);
+      if (!error && data) {
+        return res.json(data);
+      }
+      console.warn("Supabase mark read failed, trying memory:", error?.message);
     }
 
     // Update in-memory
-    const msg = messages.find(m => m.id === parseInt(id));
+    const msg = messages.find((m) => String(m.id) === String(id));
     if (msg) {
       msg.read = true;
       return res.json(msg);
     }
-    
-    res.status(404).json({ error: "Message not found" });
 
+    res.status(404).json({ error: "Message not found" });
   } catch (error) {
     console.error("Error updating message:", error);
+
+    const msg = messages.find((m) => String(m.id) === String(id));
+    if (msg) {
+      msg.read = true;
+      return res.json(msg);
+    }
+
     res.status(500).json({ error: "Failed to update message" });
   }
 });
@@ -214,17 +222,19 @@ router.delete("/:id", async (req, res) => {
         .delete()
         .eq("id", id);
 
-      if (error) throw error;
-      return res.json({ message: "Message deleted successfully" });
+      if (!error) {
+        return res.json({ message: "Message deleted successfully" });
+      }
+      console.warn("Supabase delete failed, trying memory:", error?.message);
     }
 
     // Delete from memory
-    messages = messages.filter(m => m.id !== parseInt(id));
+    messages = messages.filter((m) => String(m.id) !== String(id));
     res.json({ message: "Message deleted successfully" });
-
   } catch (error) {
     console.error("Error deleting message:", error);
-    res.status(500).json({ error: "Failed to delete message" });
+    messages = messages.filter((m) => String(m.id) !== String(id));
+    res.json({ message: "Message deleted successfully" });
   }
 });
 

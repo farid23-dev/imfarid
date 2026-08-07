@@ -1,4 +1,5 @@
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const SERVER_URL = API_URL.replace(/\/api\/?$/, "");
 
 // Get token from localStorage
 const getToken = () => localStorage.getItem("admin_token");
@@ -8,6 +9,33 @@ const authHeaders = () => ({
   "Content-Type": "application/json",
   Authorization: `Bearer ${getToken()}`,
 });
+
+// Resolve image URL for display
+export function getImageUrl(url) {
+  if (!url) return "";
+  if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("data:")) {
+    return url;
+  }
+  return `${SERVER_URL}${url.startsWith("/") ? url : `/${url}`}`;
+}
+
+// Upload image (optimized to WebP on server)
+export async function uploadImage(file) {
+  const formData = new FormData();
+  formData.append("image", file);
+
+  const response = await fetch(`${API_URL}/upload`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${getToken()}`,
+    },
+    body: formData,
+  });
+
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || "Failed to upload image");
+  return data;
+}
 
 // Login
 export async function login(password) {

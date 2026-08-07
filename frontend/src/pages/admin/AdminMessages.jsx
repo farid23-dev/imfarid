@@ -22,11 +22,15 @@ export default function AdminMessages() {
   }, []);
 
   const handleView = async (message) => {
-    setSelectedMessage(message);
+    const updated = { ...message, read: true };
+    setSelectedMessage(updated);
+    setMessages((prev) =>
+      prev.map((m) => (String(m.id) === String(message.id) ? updated : m))
+    );
+
     if (!message.read) {
       try {
         await markMessageRead(message.id);
-        setMessages(messages.map((m) => (m.id === message.id ? { ...m, read: true } : m)));
       } catch (error) {
         console.error("Failed to mark as read:", error);
       }
@@ -37,8 +41,8 @@ export default function AdminMessages() {
     if (!confirm("Are you sure you want to delete this message?")) return;
     try {
       await deleteMessage(id);
-      setMessages(messages.filter((m) => m.id !== id));
-      if (selectedMessage?.id === id) {
+      setMessages((prev) => prev.filter((m) => String(m.id) !== String(id)));
+      if (selectedMessage && String(selectedMessage.id) === String(id)) {
         setSelectedMessage(null);
       }
     } catch (error) {
@@ -57,7 +61,11 @@ export default function AdminMessages() {
           <h1>Contact Messages</h1>
           <p>
             {messages.length} total messages
-            {unreadCount > 0 && <span className="admin-badge admin-badge--unread" style={{ marginLeft: "8px" }}>{unreadCount} unread</span>}
+            {unreadCount > 0 && (
+              <span className="admin-badge admin-badge--unread" style={{ marginLeft: "8px" }}>
+                {unreadCount} unread
+              </span>
+            )}
           </p>
         </div>
       </div>
@@ -79,7 +87,10 @@ export default function AdminMessages() {
                 <p>{selectedMessage.message}</p>
               </div>
               <div className="admin-message-view__actions">
-                <a href={`mailto:${selectedMessage.email}?subject=Re: ${selectedMessage.subject || "Your message"}`} className="admin-btn admin-btn--primary">
+                <a
+                  href={`mailto:${selectedMessage.email}?subject=Re: ${selectedMessage.subject || "Your message"}`}
+                  className="admin-btn admin-btn--primary"
+                >
                   Reply via Email
                 </a>
                 <button onClick={() => handleDelete(selectedMessage.id)} className="admin-btn admin-btn--danger">

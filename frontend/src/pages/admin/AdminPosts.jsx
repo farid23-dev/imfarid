@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchAllPosts, createPost, updatePost, deletePost } from "../../api/admin";
+import ImageUpload from "../../components/admin/ImageUpload";
 
 export default function AdminPosts() {
   const [posts, setPosts] = useState([]);
@@ -153,14 +154,11 @@ export default function AdminPosts() {
                   required
                 />
               </div>
-              <div className="admin-form__field">
-                <label>Cover Image URL</label>
-                <input
-                  type="text"
-                  value={formData.cover_image}
-                  onChange={(e) => setFormData({ ...formData, cover_image: e.target.value })}
-                />
-              </div>
+              <ImageUpload
+                label="Cover Image"
+                value={formData.cover_image}
+                onChange={(url) => setFormData({ ...formData, cover_image: url })}
+              />
               <div className="admin-form__field admin-form__field--checkbox">
                 <label>
                   <input

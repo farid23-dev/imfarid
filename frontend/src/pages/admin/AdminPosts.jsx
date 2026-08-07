@@ -17,7 +17,7 @@ export default function AdminPosts() {
     published: false,
   });
 
-  const { getRowProps, isDirty, isSaving, save, cancel } = useDragReorder(posts, setPosts, reorderPosts);
+  const { getRowProps, getHandleProps, isDirty, isSaving, save, cancel } = useDragReorder(posts, setPosts, reorderPosts);
 
   const loadPosts = async () => {
     try {
@@ -207,7 +207,7 @@ export default function AdminPosts() {
             ) : (
               posts.map((post, index) => (
                 <tr key={post.id} {...getRowProps(index)}>
-                  <td className="admin-table__drag-col"><DragHandle /></td>
+                  <td className="admin-table__drag-col"><DragHandle {...getHandleProps(index)} /></td>
                   <td><strong>{post.title}</strong></td>
                   <td><code>{post.slug}</code></td>
                   <td>

@@ -130,6 +130,9 @@
 .admin {
   display: flex;
   min-height: 100vh;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
   background: var(--bg);
 }
 
@@ -222,8 +225,12 @@
 
 .admin__main {
   flex: 1;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
   margin-left: 0;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 @media (min-width: 1024px) {
@@ -255,7 +262,10 @@
 
 .admin__content {
   padding: 1.5rem;
+  width: 100%;
   max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   overflow-x: hidden;
 }
 
@@ -280,7 +290,9 @@
 
 /* Admin Page */
 .admin-page {
+  width: 100%;
   max-width: 100%;
+  min-width: 0;
 }
 
 .admin-page__header {
@@ -416,8 +428,10 @@
 
 /* Table */
 .admin-table-wrapper {
+  display: block;
   width: 100%;
   max-width: 100%;
+  min-width: 0;
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
@@ -433,8 +447,9 @@
 }
 
 .admin-table {
-  width: 100%;
-  min-width: 640px;
+  display: table;
+  width: max-content;
+  min-width: 100%;
   border-collapse: collapse;
 }
 
@@ -486,13 +501,13 @@
   margin-left: 0.5rem;
 }
 
-@media (max-width: 640px) {
-  .admin-table-wrapper {
-    margin-inline: 0;
+@media (max-width: 768px) {
+  .admin__content {
+    padding: 1rem;
   }
 
-  .admin-table {
-    min-width: 700px;
+  .admin-table-wrapper {
+    border-radius: 10px;
   }
 
   .admin-table th,
@@ -804,20 +819,19 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  padding: 0.35rem;
   color: rgba(255, 255, 255, 0.35);
   cursor: grab;
+  touch-action: none;
 }
 
 .admin-drag-handle:active {
   cursor: grabbing;
 }
 
-.admin-table__row--sortable {
-  cursor: grab;
-}
-
-.admin-table__row--sortable:active {
-  cursor: grabbing;
+.admin-table__row--sortable.is-dragging {
+  opacity: 0.55;
+  background: rgba(46, 242, 200, 0.06);
 }
 
 .admin-table__row--sortable:hover .admin-drag-handle {

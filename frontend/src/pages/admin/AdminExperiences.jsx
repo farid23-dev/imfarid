@@ -16,7 +16,7 @@ export default function AdminExperiences() {
     description: "",
   });
 
-  const { getRowProps, isDirty, isSaving, save, cancel } = useDragReorder(experiences, setExperiences, reorderExperiences);
+  const { getRowProps, getHandleProps, isDirty, isSaving, save, cancel } = useDragReorder(experiences, setExperiences, reorderExperiences);
 
   const loadExperiences = async () => {
     try {
@@ -207,7 +207,7 @@ export default function AdminExperiences() {
             ) : (
               experiences.map((exp, index) => (
                 <tr key={exp.id} {...getRowProps(index)}>
-                  <td className="admin-table__drag-col"><DragHandle /></td>
+                  <td className="admin-table__drag-col"><DragHandle {...getHandleProps(index)} /></td>
                   <td><strong>{exp.company}</strong></td>
                   <td>{exp.position}</td>
                   <td>{exp.location || "-"}</td>

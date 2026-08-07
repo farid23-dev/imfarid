@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from "react";
 
 /**
  * Drag-and-drop reorder with deferred Save / Cancel.
+ * Only the handle is draggable so table scroll works on mobile.
  */
 export default function useDragReorder(items, setItems, saveOrder) {
   const dragIndex = useRef(null);
@@ -10,10 +11,10 @@ export default function useDragReorder(items, setItems, saveOrder) {
   const originalRef = useRef(null);
   const [isDirty, setIsDirty] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [dragging, setDragging] = useState(false);
 
   itemsRef.current = items;
 
-  // Keep a clean snapshot when not dirty (after load / save / cancel)
   useEffect(() => {
     if (!isDirty) {
       originalRef.current = items.map((item) => ({ ...item }));
@@ -21,17 +22,34 @@ export default function useDragReorder(items, setItems, saveOrder) {
   }, [items, isDirty]);
 
   const getRowProps = (index) => ({
-    draggable: true,
-    className: "admin-table__row--sortable",
-    onDragStart: () => {
-      dragIndex.current = index;
+    className: `admin-table__row--sortable${dragging && dragIndex.current === index ? " is-dragging" : ""}`,
+    onDragOver: (e) => {
+      e.preventDefault();
     },
     onDragEnter: (e) => {
       e.preventDefault();
       overIndex.current = index;
     },
-    onDragOver: (e) => {
+    onDrop: (e) => {
       e.preventDefault();
+      overIndex.current = index;
+    },
+  });
+
+  const getHandleProps = (index) => ({
+    draggable: true,
+    className: "admin-drag-handle",
+    title: "Drag to reorder",
+    "aria-label": "Drag to reorder",
+    onDragStart: (e) => {
+      dragIndex.current = index;
+      setDragging(true);
+      e.dataTransfer.effectAllowed = "move";
+      try {
+        e.dataTransfer.setData("text/plain", String(index));
+      } catch {
+        // ignore
+      }
     },
     onDragEnd: () => {
       const from = dragIndex.current;
@@ -39,6 +57,7 @@ export default function useDragReorder(items, setItems, saveOrder) {
 
       dragIndex.current = null;
       overIndex.current = null;
+      setDragging(false);
 
       if (from === null || to === null || from === to) return;
 
@@ -71,12 +90,12 @@ export default function useDragReorder(items, setItems, saveOrder) {
     setIsDirty(false);
   };
 
-  return { getRowProps, isDirty, isSaving, save, cancel };
+  return { getRowProps, getHandleProps, isDirty, isSaving, save, cancel };
 }
 
-export function DragHandle() {
+export function DragHandle(props) {
   return (
-    <span className="admin-drag-handle" title="Drag to reorder" aria-label="Drag to reorder">
+    <span {...props}>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
         <circle cx="9" cy="6" r="1.5" />
         <circle cx="15" cy="6" r="1.5" />

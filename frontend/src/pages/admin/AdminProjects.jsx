@@ -19,7 +19,7 @@ export default function AdminProjects() {
     featured: false,
   });
 
-  const { getRowProps, isDirty, isSaving, save, cancel } = useDragReorder(projects, setProjects, reorderProjects);
+  const { getRowProps, getHandleProps, isDirty, isSaving, save, cancel } = useDragReorder(projects, setProjects, reorderProjects);
 
   const loadProjects = async () => {
     try {
@@ -236,7 +236,7 @@ export default function AdminProjects() {
             ) : (
               projects.map((project, index) => (
                 <tr key={project.id} {...getRowProps(index)}>
-                  <td className="admin-table__drag-col"><DragHandle /></td>
+                  <td className="admin-table__drag-col"><DragHandle {...getHandleProps(index)} /></td>
                   <td>
                     <strong>{project.title}</strong>
                     {project.live_url && (

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { fetchPost } from "../api";
+import Footer from "../components/Footer";
 import "../styles/blog-post-page.css";
 
 export default function BlogPostPage() {
@@ -93,6 +94,7 @@ export default function BlogPostPage() {
           </Link>
         </footer>
       </article>
+      <Footer />
     </main>
   );
 }

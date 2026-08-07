@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { fetchProjects } from "../api";
+import Footer from "../components/Footer";
 import "../styles/projects-page.css";
 
 export default function ProjectsPage() {
@@ -151,6 +152,7 @@ export default function ProjectsPage() {
           )}
         </div>
       </section>
+      <Footer />
     </main>
   );
 }

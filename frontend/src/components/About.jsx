@@ -1,4 +1,7 @@
 import { useEffect, useRef, useState } from "react";
+import { SOCIAL_LINKS } from "../constants/social";
+import TelegramIcon from "./TelegramIcon";
+import WhatsAppIcon from "./WhatsAppIcon";
 import { useLanguage } from "../i18n/LanguageContext";
 import "../styles/about.css";
 
@@ -78,7 +81,7 @@ export default function About() {
 
             <div className="about__links">
               <a
-                href="https://www.linkedin.com/in/ismayilov24"
+                href={SOCIAL_LINKS.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="about__link"
@@ -89,7 +92,7 @@ export default function About() {
                 LinkedIn
               </a>
               <a
-                href="https://github.com/farid23-dev"
+                href={SOCIAL_LINKS.github}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="about__link"
@@ -100,7 +103,25 @@ export default function About() {
                 GitHub
               </a>
               <a
-                href="mailto:ismayilovf@outlook.com"
+                href={SOCIAL_LINKS.telegram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="about__link"
+              >
+                <TelegramIcon size={20} />
+                Telegram
+              </a>
+              <a
+                href={SOCIAL_LINKS.whatsapp}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="about__link"
+              >
+                <WhatsAppIcon size={20} />
+                WhatsApp
+              </a>
+              <a
+                href={SOCIAL_LINKS.email}
                 className="about__link"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

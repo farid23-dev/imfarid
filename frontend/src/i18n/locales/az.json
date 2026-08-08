@@ -80,6 +80,8 @@
     "subtitle": "Layihəniz var və ya əməkdaşlıq etmək istəyirsiniz? İstənilən vaxt yazın.",
     "email": "E-poçt",
     "phone": "Telefon",
+    "telegram": "Telegram",
+    "whatsapp": "WhatsApp",
     "location": "Yerləşmə",
     "locationValue": "Bakı, Azərbaycan",
     "findMe": "Məni tapın"
@@ -211,6 +213,8 @@
     "connectText": "Yeni layihələr, əməkdaşlıqlar və bacarıqlarımı tətbiq edə biləcəyim imkanlar mənə həmişə maraqlıdır. İstər sualınız olsun, istərsə sadəcə salam yazın — mümkün qədər tez cavab verəcəyəm!",
     "email": "E-poçt",
     "phone": "Telefon",
+    "telegram": "Telegram",
+    "whatsapp": "WhatsApp",
     "location": "Yerləşmə",
     "locationValue": "Bakı, Azərbaycan",
     "findMe": "Məni tapın",

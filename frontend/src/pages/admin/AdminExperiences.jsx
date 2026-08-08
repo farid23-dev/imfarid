@@ -1,20 +1,29 @@
 import { useEffect, useState } from "react";
 import { fetchAllExperiences, createExperience, updateExperience, deleteExperience, reorderExperiences } from "../../api/admin";
+import AdminLangTabs from "../../components/admin/AdminLangTabs";
 import useDragReorder, { DragHandle, ReorderActions } from "../../hooks/useDragReorder";
+
+const emptyForm = {
+  company: "",
+  position: "",
+  position_az: "",
+  location: "",
+  location_az: "",
+  start_date: "",
+  start_date_az: "",
+  end_date: "",
+  end_date_az: "",
+  description: "",
+  description_az: "",
+};
 
 export default function AdminExperiences() {
   const [experiences, setExperiences] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingExperience, setEditingExperience] = useState(null);
-  const [formData, setFormData] = useState({
-    company: "",
-    position: "",
-    location: "",
-    start_date: "",
-    end_date: "",
-    description: "",
-  });
+  const [formLang, setFormLang] = useState("en");
+  const [formData, setFormData] = useState(emptyForm);
 
   const { getRowProps, getHandleProps, isDirty, isSaving, save, cancel } = useDragReorder(experiences, setExperiences, reorderExperiences);
 
@@ -34,14 +43,8 @@ export default function AdminExperiences() {
   }, []);
 
   const resetForm = () => {
-    setFormData({
-      company: "",
-      position: "",
-      location: "",
-      start_date: "",
-      end_date: "",
-      description: "",
-    });
+    setFormData(emptyForm);
+    setFormLang("en");
     setEditingExperience(null);
     setShowForm(false);
   };
@@ -50,11 +53,17 @@ export default function AdminExperiences() {
     setFormData({
       company: exp.company,
       position: exp.position,
+      position_az: exp.position_az || "",
       location: exp.location || "",
+      location_az: exp.location_az || "",
       start_date: exp.start_date,
+      start_date_az: exp.start_date_az || "",
       end_date: exp.end_date,
+      end_date_az: exp.end_date_az || "",
       description: (exp.description || []).join("\n"),
+      description_az: (exp.description_az || []).join("\n"),
     });
+    setFormLang("en");
     setEditingExperience(exp);
     setShowForm(true);
   };
@@ -64,6 +73,7 @@ export default function AdminExperiences() {
     const submitData = {
       ...formData,
       description: formData.description.split("\n").filter(Boolean),
+      description_az: formData.description_az.split("\n").filter(Boolean),
     };
     try {
       if (editingExperience) {
@@ -97,7 +107,7 @@ export default function AdminExperiences() {
           <h1>Work Experiences</h1>
           <p>Manage your resume experiences · Drag rows to reorder</p>
         </div>
-        <button className="admin-btn admin-btn--primary" onClick={() => setShowForm(true)}>
+        <button className="admin-btn admin-btn--primary" onClick={() => { setFormLang("en"); setShowForm(true); }}>
           + New Experience
         </button>
       </div>
@@ -110,68 +120,124 @@ export default function AdminExperiences() {
               <button onClick={resetForm} className="admin-modal__close">×</button>
             </div>
             <form onSubmit={handleSubmit} className="admin-form">
-              <div className="admin-form__row">
-                <div className="admin-form__field">
-                  <label>Company</label>
-                  <input
-                    type="text"
-                    value={formData.company}
-                    onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                    required
-                  />
-                </div>
-                <div className="admin-form__field">
-                  <label>Position</label>
-                  <input
-                    type="text"
-                    value={formData.position}
-                    onChange={(e) => setFormData({ ...formData, position: e.target.value })}
-                    required
-                  />
-                </div>
-              </div>
-              <div className="admin-form__row">
-                <div className="admin-form__field">
-                  <label>Location</label>
-                  <input
-                    type="text"
-                    value={formData.location}
-                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                    placeholder="Remote, On-site, Hybrid"
-                  />
-                </div>
-              </div>
-              <div className="admin-form__row">
-                <div className="admin-form__field">
-                  <label>Start Date</label>
-                  <input
-                    type="text"
-                    value={formData.start_date}
-                    onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
-                    placeholder="January 2024"
-                    required
-                  />
-                </div>
-                <div className="admin-form__field">
-                  <label>End Date</label>
-                  <input
-                    type="text"
-                    value={formData.end_date}
-                    onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
-                    placeholder="Present or December 2024"
-                    required
-                  />
-                </div>
-              </div>
               <div className="admin-form__field">
-                <label>Description (one bullet point per line)</label>
-                <textarea
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  rows="5"
-                  placeholder="Developed web applications using React&#10;Managed team of 5 developers&#10;Improved performance by 40%"
+                <label>Company</label>
+                <input
+                  type="text"
+                  value={formData.company}
+                  onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                  required
                 />
               </div>
+
+              <AdminLangTabs lang={formLang} onChange={setFormLang} />
+              <p className="admin-form__hint">
+                Fill both English and Azerbaijani versions. Empty AZ falls back to English on the site.
+              </p>
+
+              {formLang === "en" ? (
+                <>
+                  <div className="admin-form__field">
+                    <label>Position</label>
+                    <input
+                      type="text"
+                      value={formData.position}
+                      onChange={(e) => setFormData({ ...formData, position: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <div className="admin-form__field">
+                    <label>Location</label>
+                    <input
+                      type="text"
+                      value={formData.location}
+                      onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                      placeholder="Remote, On-site, Hybrid"
+                    />
+                  </div>
+                  <div className="admin-form__row">
+                    <div className="admin-form__field">
+                      <label>Start Date</label>
+                      <input
+                        type="text"
+                        value={formData.start_date}
+                        onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
+                        placeholder="January 2024"
+                        required
+                      />
+                    </div>
+                    <div className="admin-form__field">
+                      <label>End Date</label>
+                      <input
+                        type="text"
+                        value={formData.end_date}
+                        onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
+                        placeholder="Present or December 2024"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="admin-form__field">
+                    <label>Description (one bullet point per line)</label>
+                    <textarea
+                      value={formData.description}
+                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                      rows="5"
+                      placeholder="Developed web applications using React&#10;Managed team of 5 developers&#10;Improved performance by 40%"
+                    />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="admin-form__field">
+                    <label>Position (AZ)</label>
+                    <input
+                      type="text"
+                      value={formData.position_az}
+                      onChange={(e) => setFormData({ ...formData, position_az: e.target.value })}
+                    />
+                  </div>
+                  <div className="admin-form__field">
+                    <label>Location (AZ)</label>
+                    <input
+                      type="text"
+                      value={formData.location_az}
+                      onChange={(e) => setFormData({ ...formData, location_az: e.target.value })}
+                      placeholder="Uzaqdan, Ofisdə, Hibrid"
+                    />
+                  </div>
+                  <div className="admin-form__row">
+                    <div className="admin-form__field">
+                      <label>Start Date (AZ)</label>
+                      <input
+                        type="text"
+                        value={formData.start_date_az}
+                        onChange={(e) => setFormData({ ...formData, start_date_az: e.target.value })}
+                        placeholder="Yanvar 2024"
+                      />
+                    </div>
+                    <div className="admin-form__field">
+                      <label>End Date (AZ)</label>
+                      <input
+                        type="text"
+                        value={formData.end_date_az}
+                        onChange={(e) => setFormData({ ...formData, end_date_az: e.target.value })}
+                        placeholder="İndiyədək və ya Dekabr 2024"
+                      />
+                    </div>
+                  </div>
+                  <div className="admin-form__field">
+                    <label>Description (AZ, one bullet point per line)</label>
+                    <textarea
+                      value={formData.description_az}
+                      onChange={(e) => setFormData({ ...formData, description_az: e.target.value })}
+                      rows="5"
+                      placeholder="React ilə veb tətbiqlər inkişaf etdirdim&#10;5 nəfərlik komanda idarə etdim"
+                    />
+                  </div>
+                </>
+              )}
+
               <div className="admin-form__actions">
                 <button type="button" onClick={resetForm} className="admin-btn">
                   Cancel

@@ -867,3 +867,36 @@
   display: flex;
   gap: 0.5rem;
 }
+
+/* Bilingual admin tabs */
+.admin-lang-tabs {
+  display: inline-flex;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+  padding: 0.25rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+}
+
+.admin-lang-tabs__btn {
+  padding: 0.45rem 0.85rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.55);
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.admin-lang-tabs__btn.is-active {
+  color: var(--bg);
+  background: var(--cyan);
+}
+
+.admin-form__hint {
+  margin: -0.35rem 0 1rem;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.45);
+}

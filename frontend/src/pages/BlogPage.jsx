@@ -3,9 +3,11 @@ import { Link } from "react-router-dom";
 import { fetchPosts } from "../api";
 import Footer from "../components/Footer";
 import LikeButton from "../components/LikeButton";
+import { useLanguage } from "../i18n/LanguageContext";
 import "../styles/blog-page.css";
 
 export default function BlogPage() {
+  const { t, localize, dateLocale } = useLanguage();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState(false);
@@ -25,7 +27,7 @@ export default function BlogPage() {
   }, []);
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
+    return new Date(dateString).toLocaleDateString(dateLocale, {
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -36,10 +38,10 @@ export default function BlogPage() {
     <main className={`blog-page ${visible ? "is-visible" : ""}`}>
       <section className="blog-page__hero">
         <div className="blog-page__hero-inner">
-          <span className="blog-page__label">Blog</span>
-          <h1 className="blog-page__title">Thoughts & Insights</h1>
+          <span className="blog-page__label">{t("blogPage.label")}</span>
+          <h1 className="blog-page__title">{t("blogPage.title")}</h1>
           <p className="blog-page__subtitle">
-            Articles about web development, tech, marketing, and my journey as a developer.
+            {t("blogPage.subtitle")}
           </p>
         </div>
       </section>
@@ -49,7 +51,7 @@ export default function BlogPage() {
           {loading ? (
             <div className="blog-page__loading">
               <div className="blog-page__loading-spinner"></div>
-              <p>Loading posts...</p>
+              <p>{t("blogPage.loading")}</p>
             </div>
           ) : posts.length === 0 ? (
             <div className="blog-page__empty">
@@ -61,57 +63,58 @@ export default function BlogPage() {
                   <circle cx="11" cy="11" r="2"/>
                 </svg>
               </div>
-              <h2>Coming Soon</h2>
-              <p>
-                I'm working on some great content! Check back soon for articles 
-                about web development, marketing, and more.
-              </p>
+              <h2>{t("blogPage.comingSoon")}</h2>
+              <p>{t("blogPage.empty")}</p>
               <Link to="/" className="blog-page__back-btn">
-                Back to Home
+                {t("blogPage.backHome")}
               </Link>
             </div>
           ) : (
             <div className="blog-page__grid">
-              {posts.map((post, index) => (
-                <article
-                  key={post.id}
-                  className="blog-page__card"
-                  style={{ animationDelay: `${0.1 + index * 0.05}s` }}
-                >
-                  <Link to={`/blog/${post.slug}`} className="blog-page__card-link">
-                    <div className="blog-page__card-image">
-                      {post.cover_image ? (
-                        <img src={post.cover_image} alt={post.title} />
-                      ) : (
-                        <div className="blog-page__card-placeholder">
-                          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                            <path d="M12 19l7-7 3 3-7 7-3-3z"/>
-                            <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
+              {posts.map((post, index) => {
+                const title = localize(post, "title");
+                const excerpt = localize(post, "excerpt");
+                return (
+                  <article
+                    key={post.id}
+                    className="blog-page__card"
+                    style={{ animationDelay: `${0.1 + index * 0.05}s` }}
+                  >
+                    <Link to={`/blog/${post.slug}`} className="blog-page__card-link">
+                      <div className="blog-page__card-image">
+                        {post.cover_image ? (
+                          <img src={post.cover_image} alt={title} />
+                        ) : (
+                          <div className="blog-page__card-placeholder">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                              <path d="M12 19l7-7 3 3-7 7-3-3z"/>
+                              <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
+                            </svg>
+                          </div>
+                        )}
+                      </div>
+                      <div className="blog-page__card-content">
+                        <time className="blog-page__card-date">
+                          {formatDate(post.created_at)}
+                        </time>
+                        <h2 className="blog-page__card-title">{title}</h2>
+                        {excerpt && (
+                          <p className="blog-page__card-excerpt">{excerpt}</p>
+                        )}
+                        <span className="blog-page__card-read">
+                          {t("blogPage.readMore")}
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M5 12h14M12 5l7 7-7 7" />
                           </svg>
-                        </div>
-                      )}
+                        </span>
+                      </div>
+                    </Link>
+                    <div className="blog-page__card-actions">
+                      <LikeButton type="posts" id={post.id} initialCount={post.like_count || 0} size="compact" />
                     </div>
-                    <div className="blog-page__card-content">
-                      <time className="blog-page__card-date">
-                        {formatDate(post.created_at)}
-                      </time>
-                      <h2 className="blog-page__card-title">{post.title}</h2>
-                      {post.excerpt && (
-                        <p className="blog-page__card-excerpt">{post.excerpt}</p>
-                      )}
-                      <span className="blog-page__card-read">
-                        Read More
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M5 12h14M12 5l7 7-7 7" />
-                        </svg>
-                      </span>
-                    </div>
-                  </Link>
-                  <div className="blog-page__card-actions">
-                    <LikeButton type="posts" id={post.id} initialCount={post.like_count || 0} size="compact" />
-                  </div>
-                </article>
-              ))}
+                  </article>
+                );
+              })}
             </div>
           )}
         </div>

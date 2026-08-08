@@ -1,16 +1,18 @@
 import { Link } from "react-router-dom";
+import { useLanguage } from "../i18n/LanguageContext";
 import "../styles/footer.css";
 
 const links = [
-  { to: "/", label: "Home" },
-  { to: "/about", label: "About" },
-  { to: "/services", label: "Services" },
-  { to: "/projects", label: "Projects" },
-  { to: "/contact", label: "Contact" },
-  { to: "/blog", label: "Blog" },
+  { to: "/", key: "home" },
+  { to: "/about", key: "about" },
+  { to: "/services", key: "services" },
+  { to: "/projects", key: "projects" },
+  { to: "/contact", key: "contact" },
+  { to: "/blog", key: "blog" },
 ];
 
 export default function Footer() {
+  const { t } = useLanguage();
   const currentYear = new Date().getFullYear();
 
   return (
@@ -22,17 +24,17 @@ export default function Footer() {
               Farid<span>.</span>
             </Link>
             <p className="footer__tagline">
-              Full-stack Developer & Media Buyer based in Baku, Azerbaijan.
+              {t("footer.tagline")}
             </p>
           </div>
 
           <nav className="footer__nav">
-            <span className="footer__nav-title">Quick Links</span>
+            <span className="footer__nav-title">{t("footer.quickLinks")}</span>
             <ul className="footer__nav-list">
               {links.map((link) => (
                 <li key={link.to}>
                   <Link to={link.to} className="footer__nav-link">
-                    {link.label}
+                    {t(`nav.${link.key}`)}
                   </Link>
                 </li>
               ))}
@@ -40,7 +42,7 @@ export default function Footer() {
           </nav>
 
           <div className="footer__contact">
-            <span className="footer__nav-title">Contact</span>
+            <span className="footer__nav-title">{t("footer.contact")}</span>
             <ul className="footer__contact-list">
               <li>
                 <a href="mailto:ismayilovf@outlook.com">ismayilovf@outlook.com</a>
@@ -48,14 +50,14 @@ export default function Footer() {
               <li>
                 <a href="tel:+994513019971">+994 51 301 99 71</a>
               </li>
-              <li>Baku, Azerbaijan</li>
+              <li>{t("contact.locationValue")}</li>
             </ul>
           </div>
         </div>
 
         <div className="footer__bottom">
           <p className="footer__copy">
-            © {currentYear} Farid Ismayilov. All rights reserved.
+            © {currentYear} Farid Ismayilov. {t("footer.rights")}
           </p>
           <div className="footer__social">
             <a

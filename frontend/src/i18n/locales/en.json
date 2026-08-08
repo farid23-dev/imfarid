@@ -1,0 +1,252 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "services": "Services",
+    "projects": "Projects",
+    "contact": "Contact",
+    "blog": "Blog",
+    "toggleMenu": "Toggle menu"
+  },
+  "hero": {
+    "eyebrow": "Full-stack Developer & Media Buyer",
+    "tagline": "I build modern web products, run Google Ads campaigns that convert, and shape the future as an Android developer.",
+    "viewProjects": "View Projects",
+    "downloadResume": "Download Resume",
+    "scroll": "Scroll"
+  },
+  "about": {
+    "label": "About Me",
+    "title": "Who I Am",
+    "subtitle": "A builder, marketer, and problem-solver.",
+    "p1": "I'm Farid Ismayilov — a full-stack web developer and Google Ads media buyer based in Baku, Azerbaijan. I design and ship modern websites, manage performance campaigns, and continuously expand into Android development.",
+    "p2": "Across agencies and startups, I've owned IT operations, hosting, tracking systems, and high-budget ad campaigns. I care about clean architecture, measurable results, and products that feel fast and intentional.",
+    "p3": "When I'm not coding or optimizing campaigns, I'm exploring new tools, refining workflows, and building the next version of my craft.",
+    "location": "Location",
+    "locationValue": "Baku, Azerbaijan",
+    "education": "Education",
+    "educationValue": "Information Technology",
+    "languages": "Languages",
+    "languagesValue": "Azerbaijani, English, Turkish, Russian",
+    "coreSkills": "Core Skills",
+    "statYears": "Years Experience",
+    "statProjects": "Projects Delivered",
+    "statCampaigns": "Campaigns Managed"
+  },
+  "resume": {
+    "label": "My Journey",
+    "title": "Work Experience",
+    "loading": "Loading experiences...",
+    "showLess": "Show Less",
+    "loadMore": "Load More ({{count}})"
+  },
+  "skills": {
+    "label": "What I Work With",
+    "title": "Skills & Technologies",
+    "showLess": "Show Less",
+    "loadMore": "Load More",
+    "categories": {
+      "frontend": "Frontend",
+      "backend": "Backend",
+      "mobile": "Mobile",
+      "databases": "Databases",
+      "devops": "DevOps & Hosting",
+      "marketing": "Marketing & Ads",
+      "tracking": "Tracking & Analytics",
+      "tools": "Tools & Other",
+      "programming": "Programming Languages",
+      "principles": "Development Principles",
+      "web": "Web Development",
+      "hosting": "Hosting & Deployment",
+      "digitalMarketing": "Digital Marketing",
+      "ai": "AI Tools",
+      "platforms": "Tools & Platforms"
+    }
+  },
+  "projects": {
+    "label": "My Work",
+    "title": "Featured Projects",
+    "loading": "Loading projects...",
+    "comingSoon": "Coming Soon",
+    "empty": "I'm currently working on some exciting projects. Check back soon!",
+    "visitSite": "Visit Site",
+    "seeMore": "See More Projects"
+  },
+  "contact": {
+    "label": "Get In Touch",
+    "title": "Let's Work Together",
+    "subtitle": "Have a project in mind or want to collaborate? Reach out anytime.",
+    "email": "Email",
+    "phone": "Phone",
+    "location": "Location",
+    "locationValue": "Baku, Azerbaijan",
+    "findMe": "Find me on"
+  },
+  "footer": {
+    "tagline": "Full-stack developer, media buyer, and future Android engineer building products that perform.",
+    "quickLinks": "Quick Links",
+    "contact": "Contact",
+    "rights": "All rights reserved."
+  },
+  "aboutPage": {
+    "label": "About",
+    "role": "Full-stack Developer & Media Buyer",
+    "location": "Baku, Azerbaijan",
+    "storyTitle": "My Story",
+    "story1": "I started my journey in technology with curiosity and a drive to build useful things. Over the years, that curiosity grew into a career spanning web development, IT operations, and performance marketing.",
+    "story2": "I've worked with agencies, startups, and product teams — shipping websites, managing infrastructure, and scaling Google Ads campaigns that deliver measurable ROI.",
+    "story3": "Today I combine engineering and media buying skills to help brands grow online. I'm also expanding into Android development to build mobile experiences with the same attention to craft.",
+    "story4": "My approach is simple: understand the problem deeply, ship clean solutions, measure outcomes, and keep improving.",
+    "statExperience": "Years Experience",
+    "statCompanies": "Companies",
+    "statFocus": "Core Focus Areas",
+    "careerTitle": "Career Journey",
+    "career1Title": "Developer Foundations",
+    "career1Desc": "Started with full-stack web development using modern frameworks and practical product work.",
+    "career2Title": "IT & Operations",
+    "career2Desc": "Took ownership of hosting, deployments, tracking systems, and technical operations for growth teams.",
+    "career3Title": "Performance Marketing",
+    "career3Desc": "Scaled paid acquisition through Google Ads and related channels with strong tracking discipline.",
+    "career4Title": "Building Forward",
+    "career4Desc": "Combining product engineering and media buying while growing into Android development.",
+    "viewExperience": "View Full Experience",
+    "skillsTitle": "Skills Overview",
+    "ctaTitle": "Let's Work Together",
+    "ctaText": "Looking for a developer, media buyer, or technical partner? Let's talk.",
+    "getInTouch": "Get in Touch",
+    "downloadResume": "Download Resume"
+  },
+  "servicesPage": {
+    "label": "What I Do",
+    "title": "Services",
+    "subtitle": "Practical engineering and growth services designed to ship faster and perform better.",
+    "processTitle": "How I Work",
+    "ctaTitle": "Ready to Start a Project?",
+    "ctaText": "Tell me what you're building — I'll help you turn it into a clear plan and shipped result.",
+    "getInTouch": "Get in Touch",
+    "viewWork": "View My Work",
+    "items": {
+      "web": {
+        "title": "Web Development",
+        "description": "Modern, responsive websites and web apps with clean architecture and strong UX.",
+        "f1": "React / Next.js applications",
+        "f2": "Custom landing pages",
+        "f3": "API integrations",
+        "f4": "Performance optimization"
+      },
+      "ads": {
+        "title": "Google Ads & Media Buying",
+        "description": "Performance campaigns focused on conversions, ROI, and reliable measurement.",
+        "f1": "Campaign strategy & setup",
+        "f2": "Audience & bid optimization",
+        "f3": "Conversion tracking",
+        "f4": "Funnel testing"
+      },
+      "android": {
+        "title": "Android Development",
+        "description": "Native Android experiences and app store optimization support.",
+        "f1": "Kotlin foundations",
+        "f2": "App UI development",
+        "f3": "ASO improvements",
+        "f4": "Product iteration"
+      },
+      "ops": {
+        "title": "IT Operations",
+        "description": "Stable infrastructure and technical operations for growing teams.",
+        "f1": "Server configuration",
+        "f2": "Deployment workflows",
+        "f3": "Monitoring & support",
+        "f4": "System reliability"
+      },
+      "hosting": {
+        "title": "Hosting & Domains",
+        "description": "End-to-end hosting setup, DNS, SSL, and maintenance.",
+        "f1": "Domain management",
+        "f2": "SSL & security",
+        "f3": "Environment setup",
+        "f4": "Ongoing maintenance"
+      },
+      "tracking": {
+        "title": "Tracking & Analytics",
+        "description": "Accurate pixels, events, and analytics so performance decisions stay trustworthy.",
+        "f1": "Pixel implementation",
+        "f2": "Event tracking",
+        "f3": "Analytics setup",
+        "f4": "Data quality checks"
+      }
+    },
+    "steps": {
+      "s1Title": "Discover",
+      "s1Desc": "Understand goals, constraints, and the real problem to solve.",
+      "s2Title": "Plan",
+      "s2Desc": "Define scope, timeline, and technical approach with clear priorities.",
+      "s3Title": "Build",
+      "s3Desc": "Ship in focused iterations with quality, speed, and communication.",
+      "s4Title": "Optimize",
+      "s4Desc": "Measure results, improve performance, and refine what works."
+    }
+  },
+  "projectsPage": {
+    "label": "Portfolio",
+    "title": "My Projects",
+    "subtitle": "Selected work across web products, landing pages, and digital experiences.",
+    "all": "All Projects",
+    "loading": "Loading projects...",
+    "comingSoon": "Coming Soon",
+    "empty": "I'm currently working on some exciting projects. Check back soon!",
+    "backHome": "Back to Home",
+    "viewLive": "View live site",
+    "viewGithub": "View on GitHub"
+  },
+  "contactPage": {
+    "label": "Get in Touch",
+    "title": "Contact Me",
+    "subtitle": "Have a question or want to work together? Feel free to reach out!",
+    "connectTitle": "Let's Connect",
+    "connectText": "I'm always interested in hearing about new projects, collaborations, or opportunities to contribute my skills. Whether you have a question or just want to say hi, I'll get back to you as soon as possible!",
+    "email": "Email",
+    "phone": "Phone",
+    "location": "Location",
+    "locationValue": "Baku, Azerbaijan",
+    "findMe": "Find me on",
+    "formTitle": "Send a Message",
+    "name": "Name",
+    "namePlaceholder": "Your name",
+    "emailLabel": "Email",
+    "emailPlaceholder": "your@email.com",
+    "subject": "Subject",
+    "subjectPlaceholder": "What's this about?",
+    "message": "Message",
+    "messagePlaceholder": "Your message...",
+    "sending": "Sending...",
+    "send": "Send Message",
+    "errorFallback": "Failed to send message. Please try again."
+  },
+  "blogPage": {
+    "label": "Blog",
+    "title": "Thoughts & Insights",
+    "subtitle": "Notes on development, media buying, and building better digital products.",
+    "loading": "Loading posts...",
+    "comingSoon": "Coming Soon",
+    "empty": "New articles are on the way. Check back soon!",
+    "backHome": "Back to Home",
+    "readMore": "Read More"
+  },
+  "blogPost": {
+    "loading": "Loading post...",
+    "notFoundTitle": "Post Not Found",
+    "notFoundText": "The post you're looking for doesn't exist or has been removed.",
+    "backToBlog": "Back to Blog",
+    "backToAll": "Back to all posts"
+  },
+  "common": {
+    "loading": "Loading...",
+    "like": "Like",
+    "unlike": "Unlike",
+    "backToTop": "Back to top"
+  },
+  "lang": {
+    "en": "EN",
+    "az": "AZ"
+  }
+}

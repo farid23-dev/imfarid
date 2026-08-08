@@ -18,8 +18,10 @@ const nextTopSortOrder = (list) => {
 
 const normalizeProject = (body, existing = {}) => ({
   title: body.title ?? existing.title ?? "",
+  title_az: body.title_az ?? existing.title_az ?? "",
   slug: body.slug ?? existing.slug ?? "",
   description: body.description ?? existing.description ?? "",
+  description_az: body.description_az ?? existing.description_az ?? "",
   image: body.cover_image || body.image || existing.image || "",
   cover_image: body.cover_image || body.image || existing.cover_image || existing.image || "",
   live_url: body.live_url ?? existing.live_url ?? "",
@@ -152,10 +154,14 @@ router.post("/", async (req, res) => {
         .from("projects")
         .insert([{
           title: payload.title,
+          title_az: payload.title_az,
           slug: payload.slug,
           description: payload.description,
+          description_az: payload.description_az,
           image: payload.image,
           live_url: payload.live_url,
+          github_url: payload.github_url,
+          technologies: payload.technologies,
           featured: payload.featured,
           sort_order: payload.sort_order,
           created_at: now,
@@ -192,10 +198,14 @@ router.put("/:id", async (req, res) => {
         .from("projects")
         .update({
           title: payload.title,
+          title_az: payload.title_az,
           slug: payload.slug,
           description: payload.description,
+          description_az: payload.description_az,
           image: payload.image,
           live_url: payload.live_url,
+          github_url: payload.github_url,
+          technologies: payload.technologies,
           featured: payload.featured,
           sort_order: payload.sort_order,
         })

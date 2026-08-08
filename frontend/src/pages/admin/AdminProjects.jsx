@@ -1,23 +1,29 @@
 import { useEffect, useState } from "react";
 import { fetchAllProjects, createProject, updateProject, deleteProject, reorderProjects } from "../../api/admin";
+import AdminLangTabs from "../../components/admin/AdminLangTabs";
 import ImageUpload from "../../components/admin/ImageUpload";
 import useDragReorder, { DragHandle, ReorderActions } from "../../hooks/useDragReorder";
+
+const emptyForm = {
+  title: "",
+  title_az: "",
+  slug: "",
+  description: "",
+  description_az: "",
+  cover_image: "",
+  live_url: "",
+  github_url: "",
+  technologies: "",
+  featured: false,
+};
 
 export default function AdminProjects() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingProject, setEditingProject] = useState(null);
-  const [formData, setFormData] = useState({
-    title: "",
-    slug: "",
-    description: "",
-    cover_image: "",
-    live_url: "",
-    github_url: "",
-    technologies: "",
-    featured: false,
-  });
+  const [formLang, setFormLang] = useState("en");
+  const [formData, setFormData] = useState(emptyForm);
 
   const { getRowProps, getHandleProps, isDirty, isSaving, save, cancel } = useDragReorder(projects, setProjects, reorderProjects);
 
@@ -37,16 +43,8 @@ export default function AdminProjects() {
   }, []);
 
   const resetForm = () => {
-    setFormData({
-      title: "",
-      slug: "",
-      description: "",
-      cover_image: "",
-      live_url: "",
-      github_url: "",
-      technologies: "",
-      featured: false,
-    });
+    setFormData(emptyForm);
+    setFormLang("en");
     setEditingProject(null);
     setShowForm(false);
   };
@@ -54,14 +52,17 @@ export default function AdminProjects() {
   const handleEdit = (project) => {
     setFormData({
       title: project.title,
+      title_az: project.title_az || "",
       slug: project.slug,
       description: project.description || "",
+      description_az: project.description_az || "",
       cover_image: project.cover_image || project.image || "",
       live_url: project.live_url || "",
       github_url: project.github_url || "",
       technologies: (project.technologies || []).join(", "),
       featured: project.featured,
     });
+    setFormLang("en");
     setEditingProject(project);
     setShowForm(true);
   };
@@ -111,7 +112,7 @@ export default function AdminProjects() {
           <h1>Projects</h1>
           <p>Manage your portfolio projects · Drag rows to reorder</p>
         </div>
-        <button className="admin-btn admin-btn--primary" onClick={() => setShowForm(true)}>
+        <button className="admin-btn admin-btn--primary" onClick={() => { setFormLang("en"); setShowForm(true); }}>
           + New Project
         </button>
       </div>
@@ -124,38 +125,65 @@ export default function AdminProjects() {
               <button onClick={resetForm} className="admin-modal__close">×</button>
             </div>
             <form onSubmit={handleSubmit} className="admin-form">
-              <div className="admin-form__row">
-                <div className="admin-form__field">
-                  <label>Title</label>
-                  <input
-                    type="text"
-                    value={formData.title}
-                    onChange={(e) => {
-                      setFormData({
-                        ...formData,
-                        title: e.target.value,
-                        slug: editingProject ? formData.slug : generateSlug(e.target.value),
-                      });
-                    }}
-                    required
-                  />
-                </div>
-                <div className="admin-form__field">
-                  <label>Slug</label>
-                  <input
-                    type="text"
-                    value={formData.slug}
-                    onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                    required
-                  />
-                </div>
-              </div>
+              <AdminLangTabs lang={formLang} onChange={setFormLang} />
+              <p className="admin-form__hint">
+                Fill both English and Azerbaijani versions. Empty AZ falls back to English on the site.
+              </p>
+
+              {formLang === "en" ? (
+                <>
+                  <div className="admin-form__field">
+                    <label>Title</label>
+                    <input
+                      type="text"
+                      value={formData.title}
+                      onChange={(e) => {
+                        setFormData({
+                          ...formData,
+                          title: e.target.value,
+                          slug: editingProject ? formData.slug : generateSlug(e.target.value),
+                        });
+                      }}
+                      required
+                    />
+                  </div>
+                  <div className="admin-form__field">
+                    <label>Description</label>
+                    <textarea
+                      value={formData.description}
+                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                      rows="3"
+                    />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="admin-form__field">
+                    <label>Title (AZ)</label>
+                    <input
+                      type="text"
+                      value={formData.title_az}
+                      onChange={(e) => setFormData({ ...formData, title_az: e.target.value })}
+                    />
+                  </div>
+                  <div className="admin-form__field">
+                    <label>Description (AZ)</label>
+                    <textarea
+                      value={formData.description_az}
+                      onChange={(e) => setFormData({ ...formData, description_az: e.target.value })}
+                      rows="3"
+                    />
+                  </div>
+                </>
+              )}
+
               <div className="admin-form__field">
-                <label>Description</label>
-                <textarea
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  rows="3"
+                <label>Slug</label>
+                <input
+                  type="text"
+                  value={formData.slug}
+                  onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                  required
                 />
               </div>
               <div className="admin-form__row">

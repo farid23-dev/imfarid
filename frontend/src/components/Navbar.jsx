@@ -1,18 +1,20 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
+import { useLanguage } from "../i18n/LanguageContext";
 import "../styles/navbar.css";
 
 const links = [
-  { to: "/", label: "Home" },
-  { to: "/about", label: "About" },
-  { to: "/services", label: "Services" },
-  { to: "/projects", label: "Projects" },
-  { to: "/contact", label: "Contact" },
-  { to: "/blog", label: "Blog" },
+  { to: "/", key: "home" },
+  { to: "/about", key: "about" },
+  { to: "/services", key: "services" },
+  { to: "/projects", key: "projects" },
+  { to: "/contact", key: "contact" },
+  { to: "/blog", key: "blog" },
 ];
 
 export default function Navbar() {
+  const { t, lang, setLang } = useLanguage();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -27,6 +29,25 @@ export default function Navbar() {
     document.body.style.overflow = open ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [open]);
+
+  const langSwitcher = (
+    <div className="navbar__lang">
+      <button
+        type="button"
+        className={`navbar__lang-btn${lang === "en" ? " is-active" : ""}`}
+        onClick={() => setLang("en")}
+      >
+        {t("lang.en")}
+      </button>
+      <button
+        type="button"
+        className={`navbar__lang-btn${lang === "az" ? " is-active" : ""}`}
+        onClick={() => setLang("az")}
+      >
+        {t("lang.az")}
+      </button>
+    </div>
+  );
 
   return (
     <header className={`navbar${scrolled ? " is-scrolled" : ""}${open ? " menu-open" : ""}`}>
@@ -46,22 +67,25 @@ export default function Navbar() {
                     `navbar__link${isActive ? " is-active" : ""}`
                   }
                 >
-                  {link.label}
+                  {t(`nav.${link.key}`)}
                 </NavLink>
               </li>
             ))}
           </ul>
         </nav>
 
-        <button
-          type="button"
-          className={`navbar__toggle${open ? " is-open" : ""}`}
-          onClick={() => setOpen(!open)}
-          aria-label="Toggle menu"
-        >
-          <span className="navbar__toggle-line" />
-          <span className="navbar__toggle-line" />
-        </button>
+        <div className="navbar__actions">
+          {langSwitcher}
+          <button
+            type="button"
+            className={`navbar__toggle${open ? " is-open" : ""}`}
+            onClick={() => setOpen(!open)}
+            aria-label={t("nav.toggleMenu")}
+          >
+            <span className="navbar__toggle-line" />
+            <span className="navbar__toggle-line" />
+          </button>
+        </div>
       </div>
 
       <AnimatePresence>
@@ -89,11 +113,12 @@ export default function Navbar() {
                     }
                     onClick={() => setOpen(false)}
                   >
-                    {link.label}
+                    {t(`nav.${link.key}`)}
                   </NavLink>
                 </motion.li>
               ))}
             </ul>
+            <div className="navbar__mobile-lang">{langSwitcher}</div>
           </motion.div>
         )}
       </AnimatePresence>

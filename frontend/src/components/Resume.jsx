@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { fetchExperiences } from "../api";
+import { useLanguage } from "../i18n/LanguageContext";
 import "../styles/resume.css";
 
 const fallbackExperiences = [
@@ -17,6 +18,7 @@ const fallbackExperiences = [
 const INITIAL_COUNT = 2;
 
 export default function Resume() {
+  const { t, localize } = useLanguage();
   const sectionRef = useRef(null);
   const [visible, setVisible] = useState(false);
   const [experiences, setExperiences] = useState([]);
@@ -60,43 +62,46 @@ export default function Resume() {
     <section ref={sectionRef} className={`resume ${visible ? "is-visible" : ""}`}>
       <div className="resume__inner">
         <div className="resume__header">
-          <span className="resume__label">My Journey</span>
-          <h2 className="resume__title">Work Experience</h2>
+          <span className="resume__label">{t("resume.label")}</span>
+          <h2 className="resume__title">{t("resume.title")}</h2>
         </div>
 
         {loading ? (
-          <div className="resume__loading">Loading experiences...</div>
+          <div className="resume__loading">{t("resume.loading")}</div>
         ) : (
           <>
             <div className="resume__timeline">
-              {displayedExperiences.map((exp, index) => (
-                <div
-                  key={exp.id}
-                  className="resume__item"
-                  style={{ animationDelay: `${0.1 + index * 0.08}s` }}
-                >
-                  <div className="resume__dot" />
-                  <div className="resume__content">
-                    <div className="resume__top">
-                      <div>
-                        <h3 className="resume__company">{exp.company}</h3>
-                        <p className="resume__position">{exp.position}</p>
+              {displayedExperiences.map((exp, index) => {
+                const bullets = localize(exp, "description");
+                return (
+                  <div
+                    key={exp.id}
+                    className="resume__item"
+                    style={{ animationDelay: `${0.1 + index * 0.08}s` }}
+                  >
+                    <div className="resume__dot" />
+                    <div className="resume__content">
+                      <div className="resume__top">
+                        <div>
+                          <h3 className="resume__company">{localize(exp, "company") || exp.company}</h3>
+                          <p className="resume__position">{localize(exp, "position") || exp.position}</p>
+                        </div>
+                        <div className="resume__meta">
+                          <span className="resume__date">
+                            {exp.start_date} — {exp.end_date}
+                          </span>
+                          <span className="resume__location">{localize(exp, "location") || exp.location}</span>
+                        </div>
                       </div>
-                      <div className="resume__meta">
-                        <span className="resume__date">
-                          {exp.start_date} — {exp.end_date}
-                        </span>
-                        <span className="resume__location">{exp.location}</span>
-                      </div>
+                      <ul className="resume__list">
+                        {(Array.isArray(bullets) ? bullets : []).map((item, i) => (
+                          <li key={i}>{item}</li>
+                        ))}
+                      </ul>
                     </div>
-                    <ul className="resume__list">
-                      {exp.description.map((item, i) => (
-                        <li key={i}>{item}</li>
-                      ))}
-                    </ul>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {hasMore && (
@@ -105,7 +110,9 @@ export default function Resume() {
                   className="resume__more-btn"
                   onClick={() => setShowAll(!showAll)}
                 >
-                  {showAll ? "Show Less" : `Load More (${experiences.length - INITIAL_COUNT})`}
+                  {showAll
+                    ? t("resume.showLess")
+                    : t("resume.loadMore", { count: experiences.length - INITIAL_COUNT })}
                   <svg
                     width="16"
                     height="16"

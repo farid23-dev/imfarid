@@ -98,7 +98,20 @@ router.get("/:id", async (req, res) => {
 // Create experience
 router.post("/", async (req, res) => {
   try {
-    const { company, position, location, start_date, end_date, description, sort_order } = req.body;
+    const {
+      company,
+      position,
+      position_az,
+      location,
+      location_az,
+      start_date,
+      start_date_az,
+      end_date,
+      end_date_az,
+      description,
+      description_az,
+      sort_order,
+    } = req.body;
     const now = new Date().toISOString();
     const topSort = sort_order ?? nextTopSortOrder(experiences);
 
@@ -112,10 +125,15 @@ router.post("/", async (req, res) => {
         .insert([{
           company,
           position,
+          position_az: position_az || null,
           location,
+          location_az: location_az || null,
           start_date,
+          start_date_az: start_date_az || null,
           end_date,
+          end_date_az: end_date_az || null,
           description,
+          description_az: description_az || null,
           sort_order: topSort,
           created_at: now,
         }])
@@ -132,10 +150,15 @@ router.post("/", async (req, res) => {
       id: nextId++,
       company,
       position,
+      position_az: position_az || "",
       location: location || "",
+      location_az: location_az || "",
       start_date: start_date || "",
+      start_date_az: start_date_az || "",
       end_date: end_date || "",
+      end_date_az: end_date_az || "",
       description: description || [],
+      description_az: description_az || [],
       sort_order: topSort,
       created_at: now,
     };
@@ -150,13 +173,39 @@ router.post("/", async (req, res) => {
 // Update experience
 router.put("/:id", async (req, res) => {
   try {
-    const { company, position, location, start_date, end_date, description, sort_order } = req.body;
+    const {
+      company,
+      position,
+      position_az,
+      location,
+      location_az,
+      start_date,
+      start_date_az,
+      end_date,
+      end_date_az,
+      description,
+      description_az,
+      sort_order,
+    } = req.body;
     const id = req.params.id;
 
     if (supabase) {
       const { data, error } = await supabase
         .from("experiences")
-        .update({ company, position, location, start_date, end_date, description, sort_order })
+        .update({
+          company,
+          position,
+          position_az,
+          location,
+          location_az,
+          start_date,
+          start_date_az,
+          end_date,
+          end_date_az,
+          description,
+          description_az,
+          sort_order,
+        })
         .eq("id", id)
         .select()
         .single();
@@ -176,10 +225,15 @@ router.put("/:id", async (req, res) => {
       ...experiences[index],
       company: company ?? experiences[index].company,
       position: position ?? experiences[index].position,
+      position_az: position_az ?? experiences[index].position_az,
       location: location ?? experiences[index].location,
+      location_az: location_az ?? experiences[index].location_az,
       start_date: start_date ?? experiences[index].start_date,
+      start_date_az: start_date_az ?? experiences[index].start_date_az,
       end_date: end_date ?? experiences[index].end_date,
+      end_date_az: end_date_az ?? experiences[index].end_date_az,
       description: description ?? experiences[index].description,
+      description_az: description_az ?? experiences[index].description_az,
       sort_order: sort_order ?? experiences[index].sort_order,
     };
 

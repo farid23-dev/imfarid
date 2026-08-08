@@ -1,37 +1,38 @@
 import { useEffect, useRef, useState } from "react";
+import { useLanguage } from "../i18n/LanguageContext";
 import "../styles/skills.css";
 
 const skillCategories = [
   {
-    title: "Programming Languages",
+    key: "programming",
     skills: ["PHP", "JavaScript", "React.js", "Next.js", "Node.js", "Kotlin", "C#", "Dart", "Flutter"],
   },
   {
-    title: "Development Principles",
+    key: "principles",
     skills: ["Clean Code", "SOLID Principles", "OOP", "Version Control (Git)", "REST API Integration"],
   },
   {
-    title: "Web Development",
+    key: "web",
     skills: ["HTML5", "CSS3", "Responsive Design", "SQL", "Supabase", "REST APIs"],
   },
   {
-    title: "Hosting & Deployment",
+    key: "hosting",
     skills: ["Web Hosting", "Domain & DNS", "Production Deployment", "Server Monitoring", "CI/CD", "GitHub Actions", "GitLab CI/CD", "Vercel", "Netlify"],
   },
   {
-    title: "Mobile Development",
+    key: "mobile",
     skills: ["Android (Kotlin)", "MVVM", "Room Database", "Retrofit", "Coroutines", "Hilt/Dagger", "Flow/StateFlow", "Firebase", "Material Design", "LiveData", "Data Binding", "Google Play Console"],
   },
   {
-    title: "Digital Marketing",
+    key: "digitalMarketing",
     skills: ["Google Ads (UAC)", "Meta Ads", "Microsoft Ads", "App Store Optimization", "In-App Advertising", "Conversion Tracking", "Performance Monitoring", "CPA/ROI/LTV"],
   },
   {
-    title: "AI Tools",
+    key: "ai",
     skills: ["ChatGPT", "Claude", "Gemini", "Perplexity", "Cursor", "Grok"],
   },
   {
-    title: "Tools & Platforms",
+    key: "platforms",
     skills: ["Git", "GitHub", "Microsoft Office", "Google Workspace", "Figma", "Jira", "Trello", "Notion", "Monday", "Slack", "Microsoft Teams", "Google Cloud", "Android Studio", "Gradle"],
   },
 ];
@@ -39,6 +40,7 @@ const skillCategories = [
 const INITIAL_COUNT = 3;
 
 export default function Skills() {
+  const { t } = useLanguage();
   const sectionRef = useRef(null);
   const [visible, setVisible] = useState(false);
   const [showAll, setShowAll] = useState(false);
@@ -71,18 +73,20 @@ export default function Skills() {
     <section ref={sectionRef} className={`skills ${visible ? "is-visible" : ""}`}>
       <div className="skills__inner">
         <div className="skills__header">
-          <span className="skills__label">What I Work With</span>
-          <h2 className="skills__title">Skills & Technologies</h2>
+          <span className="skills__label">{t("skills.label")}</span>
+          <h2 className="skills__title">{t("skills.title")}</h2>
         </div>
 
         <div className="skills__grid">
           {displayedCategories.map((category, catIndex) => (
             <div
-              key={category.title}
+              key={category.key}
               className="skills__category"
               style={{ animationDelay: `${0.1 + catIndex * 0.1}s` }}
             >
-              <h3 className="skills__category-title">{category.title}</h3>
+              <h3 className="skills__category-title">
+                {t(`skills.categories.${category.key}`)}
+              </h3>
               <div className="skills__list">
                 {category.skills.map((skill, skillIndex) => (
                   <span
@@ -104,7 +108,7 @@ export default function Skills() {
               className="skills__more-btn"
               onClick={() => setShowAll(!showAll)}
             >
-              {showAll ? "Show Less" : `Load More (${skillCategories.length - INITIAL_COUNT})`}
+              {showAll ? t("skills.showLess") : t("skills.loadMore")}
               <svg
                 width="16"
                 height="16"

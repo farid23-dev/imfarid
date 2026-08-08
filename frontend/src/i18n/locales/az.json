@@ -1,0 +1,252 @@
+{
+  "nav": {
+    "home": "Ana səhifə",
+    "about": "Haqqımda",
+    "services": "Xidmətlər",
+    "projects": "Layihələr",
+    "contact": "Əlaqə",
+    "blog": "Bloq",
+    "toggleMenu": "Menyunu aç/bağla"
+  },
+  "hero": {
+    "eyebrow": "Full-stack Developer və Media Buyer",
+    "tagline": "Müasir veb məhsullar qururam, nəticə verən Google Ads kampaniyaları idarə edirəm və Android developer kimi gələcəyə hazırlaşıram.",
+    "viewProjects": "Layihələrə bax",
+    "downloadResume": "CV yüklə",
+    "scroll": "Aşağı sürüşdür"
+  },
+  "about": {
+    "label": "Haqqımda",
+    "title": "Mən kiməm",
+    "subtitle": "Qurucu, marketoloq və problem həll edən.",
+    "p1": "Mən Farid İsmayılovam — Bakıda yaşayan full-stack veb developer və Google Ads media buyeram. Müasir saytlar hazırlayır, performans kampaniyaları idarə edir və Android inkişafına doğru irəliləyirəm.",
+    "p2": "Agentlik və startaplarda IT əməliyyatları, hostinq, izləmə sistemləri və yüksək büdcəli reklam kampaniyalarına cavabdeh olmuşam. Təmiz arxitektura, ölçülə bilən nəticə və sürətli, məqsədyönlü məhsullar mənim üçün önəmlidir.",
+    "p3": "Kod yazmadığım və kampaniya optimallaşdırmadığım vaxtlarda yeni alətlər öyrənir, iş axınlarını təkmilləşdirir və peşəkarlığımı növbəti səviyyəyə aparıram.",
+    "location": "Yerləşmə",
+    "locationValue": "Bakı, Azərbaycan",
+    "education": "Təhsil",
+    "educationValue": "İnformasiya Texnologiyaları",
+    "languages": "Dillər",
+    "languagesValue": "Azərbaycan, İngilis, Türk, Rus",
+    "coreSkills": "Əsas bacarıqlar",
+    "statYears": "İllik təcrübə",
+    "statProjects": "Çatdırılan layihə",
+    "statCampaigns": "İdarə olunan kampaniya"
+  },
+  "resume": {
+    "label": "Yolum",
+    "title": "İş təcrübəsi",
+    "loading": "Təcrübələr yüklənir...",
+    "showLess": "Daha az göstər",
+    "loadMore": "Daha çox yüklə ({{count}})"
+  },
+  "skills": {
+    "label": "İşlədiyim sahələr",
+    "title": "Bacarıqlar və texnologiyalar",
+    "showLess": "Daha az göstər",
+    "loadMore": "Daha çox yüklə",
+    "categories": {
+      "frontend": "Frontend",
+      "backend": "Backend",
+      "mobile": "Mobil",
+      "databases": "Verilənlər bazası",
+      "devops": "DevOps və Hostinq",
+      "marketing": "Marketinq və Reklam",
+      "tracking": "İzləmə və Analitika",
+      "tools": "Alətlər və digər",
+      "programming": "Proqramlaşdırma dilləri",
+      "principles": "Development prinsipləri",
+      "web": "Veb development",
+      "hosting": "Hostinq və deploy",
+      "digitalMarketing": "Rəqəmsal marketinq",
+      "ai": "AI alətləri",
+      "platforms": "Alətlər və platformalar"
+    }
+  },
+  "projects": {
+    "label": "İşlərim",
+    "title": "Seçilmiş layihələr",
+    "loading": "Layihələr yüklənir...",
+    "comingSoon": "Tezliklə",
+    "empty": "Hazırda maraqlı layihələr üzərində çalışıram. Tezliklə yenidən yoxlayın!",
+    "visitSite": "Sayta keç",
+    "seeMore": "Daha çox layihə"
+  },
+  "contact": {
+    "label": "Əlaqə",
+    "title": "Gəlin birlikdə işləyək",
+    "subtitle": "Layihəniz var və ya əməkdaşlıq etmək istəyirsiniz? İstənilən vaxt yazın.",
+    "email": "E-poçt",
+    "phone": "Telefon",
+    "location": "Yerləşmə",
+    "locationValue": "Bakı, Azərbaycan",
+    "findMe": "Məni tapın"
+  },
+  "footer": {
+    "tagline": "Nəticə verən məhsullar quran full-stack developer, media buyer və gələcək Android mühəndisi.",
+    "quickLinks": "Sürətli keçidlər",
+    "contact": "Əlaqə",
+    "rights": "Bütün hüquqlar qorunur."
+  },
+  "aboutPage": {
+    "label": "Haqqımda",
+    "role": "Full-stack Developer və Media Buyer",
+    "location": "Bakı, Azərbaycan",
+    "storyTitle": "Hekayəm",
+    "story1": "Texnologiyaya marağım və faydalı şeylər qurmaq istəyimlə başladım. Bu maraq illər ərzində veb development, IT əməliyyatları və performans marketinqini əhatə edən karyeraya çevrildi.",
+    "story2": "Agentliklər, startaplar və məhsul komandaları ilə işləmişəm — saytlar hazırlamış, infrastruktur idarə etmiş və ölçülə bilən ROI verən Google Ads kampaniyalarını böyütmüşəm.",
+    "story3": "Bu gün brendlərin onlayn böyüməsinə kömək etmək üçün mühəndislik və media buying bacarıqlarını birləşdirirəm. Eyni keyfiyyətlə mobil təcrübələr üçün Android developmentə də keçirəm.",
+    "story4": "Yanaşmam sadədir: problemi dərindən anla, təmiz həll göndər, nəticəni ölç və daim təkmilləşdir.",
+    "statExperience": "İllik təcrübə",
+    "statCompanies": "Şirkət",
+    "statFocus": "Əsas fokus sahəsi",
+    "careerTitle": "Karyera yolu",
+    "career1Title": "Developer təməlləri",
+    "career1Desc": "Müasir frameworklər və praktik məhsul işi ilə full-stack veb developmentə başladım.",
+    "career2Title": "IT və əməliyyatlar",
+    "career2Desc": "Hostinq, deploy, izləmə sistemləri və growth komandaları üçün texniki əməliyyatlara cavabdehlik götürdüm.",
+    "career3Title": "Performans marketinqi",
+    "career3Desc": "Güclü izləmə intizamı ilə Google Ads və digər kanallar üzrə pullu trafikimi böyütdüm.",
+    "career4Title": "İrəliyə doğru",
+    "career4Desc": "Məhsul mühəndisliyi və media buyingi birləşdirərək Android developmentə doğru inkişaf edirəm.",
+    "viewExperience": "Tam təcrübəyə bax",
+    "skillsTitle": "Bacarıqlara ümumi baxış",
+    "ctaTitle": "Gəlin birlikdə işləyək",
+    "ctaText": "Developer, media buyer və ya texniki tərəfdaş axtarırsınız? Gəlin danışaq.",
+    "getInTouch": "Əlaqə saxla",
+    "downloadResume": "CV yüklə"
+  },
+  "servicesPage": {
+    "label": "Nə edirəm",
+    "title": "Xidmətlər",
+    "subtitle": "Daha tez göndərmək və daha yaxşı nəticə almaq üçün praktiki mühəndislik və growth xidmətləri.",
+    "processTitle": "Necə işləyirəm",
+    "ctaTitle": "Layihəyə başlamağa hazırsınız?",
+    "ctaText": "Nə qurduğunuzu deyin — onu aydın plana və hazır nəticəyə çevirməyə kömək edəcəyəm.",
+    "getInTouch": "Əlaqə saxla",
+    "viewWork": "İşlərimə bax",
+    "items": {
+      "web": {
+        "title": "Veb Development",
+        "description": "Təmiz arxitektura və güclü UX ilə müasir, responsive saytlar və veb tətbiqlər.",
+        "f1": "React / Next.js tətbiqləri",
+        "f2": "Fərdi landing page-lər",
+        "f3": "API inteqrasiyaları",
+        "f4": "Performans optimallaşdırması"
+      },
+      "ads": {
+        "title": "Google Ads və Media Buying",
+        "description": "Konversiya, ROI və etibarlı ölçməyə fokuslanan performans kampaniyaları.",
+        "f1": "Kampaniya strategiyası və quraşdırma",
+        "f2": "Auditoriya və bid optimallaşdırması",
+        "f3": "Konversiya izləməsi",
+        "f4": "Funnel testləri"
+      },
+      "android": {
+        "title": "Android Development",
+        "description": "Native Android təcrübələri və App Store optimallaşdırması dəstəyi.",
+        "f1": "Kotlin əsasları",
+        "f2": "Tətbiq UI hazırlanması",
+        "f3": "ASO təkmilləşdirmələri",
+        "f4": "Məhsul iterasiyası"
+      },
+      "ops": {
+        "title": "IT Əməliyyatları",
+        "description": "Böyüyən komandalar üçün sabit infrastruktur və texniki əməliyyatlar.",
+        "f1": "Server konfiqurasiyası",
+        "f2": "Deploy iş axınları",
+        "f3": "Monitorinq və dəstək",
+        "f4": "Sistem etibarlılığı"
+      },
+      "hosting": {
+        "title": "Hostinq və Domenlər",
+        "description": "Ucdan-uca hostinq, DNS, SSL və texniki xidmət.",
+        "f1": "Domen idarəetməsi",
+        "f2": "SSL və təhlükəsizlik",
+        "f3": "Mühit quraşdırması",
+        "f4": "Davamlı texniki xidmət"
+      },
+      "tracking": {
+        "title": "İzləmə və Analitika",
+        "description": "Performans qərarlarının etibarlı qalması üçün dəqiq pixel, hadisə və analitika.",
+        "f1": "Pixel tətbiqi",
+        "f2": "Hadisə izləməsi",
+        "f3": "Analitika quraşdırması",
+        "f4": "Data keyfiyyəti yoxlanışı"
+      }
+    },
+    "steps": {
+      "s1Title": "Kəşf",
+      "s1Desc": "Məqsədləri, məhdudiyyətləri və həqiqi problemi anlayın.",
+      "s2Title": "Plan",
+      "s2Desc": "Aydın prioritetlərlə əhatə, vaxt və texniki yanaşmanı müəyyənləşdirin.",
+      "s3Title": "Qur",
+      "s3Desc": "Keyfiyyət, sürət və kommunikasiya ilə fokuslanmış iterasiyalar göndərin.",
+      "s4Title": "Optimallaşdır",
+      "s4Desc": "Nəticələri ölçün, performansı artırın və işləyəni təkmilləşdirin."
+    }
+  },
+  "projectsPage": {
+    "label": "Portfolio",
+    "title": "Layihələrim",
+    "subtitle": "Veb məhsullar, landing page-lər və rəqəmsal təcrübələrdən seçilmiş işlər.",
+    "all": "Bütün layihələr",
+    "loading": "Layihələr yüklənir...",
+    "comingSoon": "Tezliklə",
+    "empty": "Hazırda maraqlı layihələr üzərində çalışıram. Tezliklə yenidən yoxlayın!",
+    "backHome": "Ana səhifəyə qayıt",
+    "viewLive": "Canlı sayta bax",
+    "viewGithub": "GitHub-da bax"
+  },
+  "contactPage": {
+    "label": "Əlaqə",
+    "title": "Mənimlə əlaqə",
+    "subtitle": "Sualınız var və ya birlikdə işləmək istəyirsiniz? Yazmaqdan çəkinməyin!",
+    "connectTitle": "Gəlin əlaqə saxlayaq",
+    "connectText": "Yeni layihələr, əməkdaşlıqlar və bacarıqlarımı tətbiq edə biləcəyim imkanlar mənə həmişə maraqlıdır. İstər sualınız olsun, istərsə sadəcə salam yazın — mümkün qədər tez cavab verəcəyəm!",
+    "email": "E-poçt",
+    "phone": "Telefon",
+    "location": "Yerləşmə",
+    "locationValue": "Bakı, Azərbaycan",
+    "findMe": "Məni tapın",
+    "formTitle": "Mesaj göndərin",
+    "name": "Ad",
+    "namePlaceholder": "Adınız",
+    "emailLabel": "E-poçt",
+    "emailPlaceholder": "sizin@email.com",
+    "subject": "Mövzu",
+    "subjectPlaceholder": "Nə haqqındadır?",
+    "message": "Mesaj",
+    "messagePlaceholder": "Mesajınız...",
+    "sending": "Göndərilir...",
+    "send": "Mesaj göndər",
+    "errorFallback": "Mesaj göndərilmədi. Zəhmət olmasa yenidən cəhd edin."
+  },
+  "blogPage": {
+    "label": "Bloq",
+    "title": "Fikirlər və qeydlər",
+    "subtitle": "Development, media buying və daha yaxşı rəqəmsal məhsullar haqqında qeydlər.",
+    "loading": "Yazılar yüklənir...",
+    "comingSoon": "Tezliklə",
+    "empty": "Yeni məqalələr yoldadır. Tezliklə yenidən yoxlayın!",
+    "backHome": "Ana səhifəyə qayıt",
+    "readMore": "Daha çox oxu"
+  },
+  "blogPost": {
+    "loading": "Yazı yüklənir...",
+    "notFoundTitle": "Yazı tapılmadı",
+    "notFoundText": "Axtardığınız yazı mövcud deyil və ya silinib.",
+    "backToBlog": "Bloqa qayıt",
+    "backToAll": "Bütün yazılara qayıt"
+  },
+  "common": {
+    "loading": "Yüklənir...",
+    "like": "Bəyən",
+    "unlike": "Bəyənməni geri al",
+    "backToTop": "Yuxarı qayıt"
+  },
+  "lang": {
+    "en": "EN",
+    "az": "AZ"
+  }
+}

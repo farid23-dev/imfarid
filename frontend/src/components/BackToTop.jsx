@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import { useLanguage } from "../i18n/LanguageContext";
 import "../styles/back-to-top.css";
 
 export default function BackToTop() {
+  const { t } = useLanguage();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -21,7 +23,7 @@ export default function BackToTop() {
     <button
       className={`back-to-top ${visible ? "is-visible" : ""}`}
       onClick={scrollToTop}
-      aria-label="Back to top"
+      aria-label={t("common.backToTop")}
     >
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M18 15l-6-6-6 6" />

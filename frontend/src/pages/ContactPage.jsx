@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { submitContactForm } from "../api";
 import Footer from "../components/Footer";
+import { useLanguage } from "../i18n/LanguageContext";
 import "../styles/contact-page.css";
 
 export default function ContactPage() {
+  const { t } = useLanguage();
   const [visible, setVisible] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -37,7 +39,7 @@ export default function ContactPage() {
       setFormData({ name: "", email: "", subject: "", message: "" });
     } catch (error) {
       setStatus("error");
-      setStatusMessage(error.message || "Failed to send message. Please try again.");
+      setStatusMessage(error.message || t("contactPage.errorFallback"));
     } finally {
       setIsSubmitting(false);
     }
@@ -47,10 +49,10 @@ export default function ContactPage() {
     <main className={`contact-page ${visible ? "is-visible" : ""}`}>
       <section className="contact-page__hero">
         <div className="contact-page__hero-inner">
-          <span className="contact-page__label">Get in Touch</span>
-          <h1 className="contact-page__title">Contact Me</h1>
+          <span className="contact-page__label">{t("contactPage.label")}</span>
+          <h1 className="contact-page__title">{t("contactPage.title")}</h1>
           <p className="contact-page__subtitle">
-            Have a question or want to work together? Feel free to reach out!
+            {t("contactPage.subtitle")}
           </p>
         </div>
       </section>
@@ -58,12 +60,8 @@ export default function ContactPage() {
       <section className="contact-page__content">
         <div className="contact-page__content-inner">
           <div className="contact-page__info">
-            <h2>Let's Connect</h2>
-            <p>
-              I'm always interested in hearing about new projects, collaborations,
-              or opportunities to contribute my skills. Whether you have a question
-              or just want to say hi, I'll get back to you as soon as possible!
-            </p>
+            <h2>{t("contactPage.connectTitle")}</h2>
+            <p>{t("contactPage.connectText")}</p>
 
             <div className="contact-page__cards">
               <a href="mailto:ismayilovf@outlook.com" className="contact-page__card">
@@ -74,7 +72,7 @@ export default function ContactPage() {
                   </svg>
                 </div>
                 <div className="contact-page__card-text">
-                  <span className="contact-page__card-label">Email</span>
+                  <span className="contact-page__card-label">{t("contactPage.email")}</span>
                   <span className="contact-page__card-value">ismayilovf@outlook.com</span>
                 </div>
               </a>
@@ -86,7 +84,7 @@ export default function ContactPage() {
                   </svg>
                 </div>
                 <div className="contact-page__card-text">
-                  <span className="contact-page__card-label">Phone</span>
+                  <span className="contact-page__card-label">{t("contactPage.phone")}</span>
                   <span className="contact-page__card-value">+994 51 301 99 71</span>
                 </div>
               </a>
@@ -99,14 +97,14 @@ export default function ContactPage() {
                   </svg>
                 </div>
                 <div className="contact-page__card-text">
-                  <span className="contact-page__card-label">Location</span>
-                  <span className="contact-page__card-value">Baku, Azerbaijan</span>
+                  <span className="contact-page__card-label">{t("contactPage.location")}</span>
+                  <span className="contact-page__card-value">{t("contactPage.locationValue")}</span>
                 </div>
               </div>
             </div>
 
             <div className="contact-page__social">
-              <span className="contact-page__social-label">Find me on</span>
+              <span className="contact-page__social-label">{t("contactPage.findMe")}</span>
               <div className="contact-page__social-links">
                 <a
                   href="https://www.linkedin.com/in/ismayilov24"
@@ -136,7 +134,7 @@ export default function ContactPage() {
 
           <div className="contact-page__form-wrapper">
             <form className="contact-page__form" onSubmit={handleSubmit}>
-              <h2>Send a Message</h2>
+              <h2>{t("contactPage.formTitle")}</h2>
 
               {status === "success" && (
                 <div className="contact-page__form-status contact-page__form-status--success">
@@ -152,7 +150,7 @@ export default function ContactPage() {
 
               <div className="contact-page__form-row">
                 <div className="contact-page__form-group">
-                  <label htmlFor="name">Name</label>
+                  <label htmlFor="name">{t("contactPage.name")}</label>
                   <input
                     type="text"
                     id="name"
@@ -160,11 +158,11 @@ export default function ContactPage() {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    placeholder="Your name"
+                    placeholder={t("contactPage.namePlaceholder")}
                   />
                 </div>
                 <div className="contact-page__form-group">
-                  <label htmlFor="email">Email</label>
+                  <label htmlFor="email">{t("contactPage.emailLabel")}</label>
                   <input
                     type="email"
                     id="email"
@@ -172,25 +170,25 @@ export default function ContactPage() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    placeholder="your@email.com"
+                    placeholder={t("contactPage.emailPlaceholder")}
                   />
                 </div>
               </div>
 
               <div className="contact-page__form-group">
-                <label htmlFor="subject">Subject</label>
+                <label htmlFor="subject">{t("contactPage.subject")}</label>
                 <input
                   type="text"
                   id="subject"
                   name="subject"
                   value={formData.subject}
                   onChange={handleChange}
-                  placeholder="What's this about?"
+                  placeholder={t("contactPage.subjectPlaceholder")}
                 />
               </div>
 
               <div className="contact-page__form-group">
-                <label htmlFor="message">Message</label>
+                <label htmlFor="message">{t("contactPage.message")}</label>
                 <textarea
                   id="message"
                   name="message"
@@ -198,7 +196,7 @@ export default function ContactPage() {
                   onChange={handleChange}
                   required
                   rows="5"
-                  placeholder="Your message..."
+                  placeholder={t("contactPage.messagePlaceholder")}
                 ></textarea>
               </div>
 
@@ -207,7 +205,7 @@ export default function ContactPage() {
                 className="contact-page__form-btn"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Sending..." : "Send Message"}
+                {isSubmitting ? t("contactPage.sending") : t("contactPage.send")}
                 {!isSubmitting && (
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="22" y1="2" x2="11" y2="13"/>

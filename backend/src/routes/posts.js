@@ -44,7 +44,7 @@ router.get("/", async (req, res) => {
     if (supabase) {
       let query = supabase
         .from("posts")
-        .select(includeDrafts ? "*" : "id, title, slug, excerpt, cover_image, published, created_at, sort_order")
+        .select(includeDrafts ? "*" : "id, title, title_az, slug, excerpt, excerpt_az, cover_image, published, created_at, sort_order")
         .order("sort_order", { ascending: true });
 
       if (!includeDrafts) {
@@ -58,16 +58,20 @@ router.get("/", async (req, res) => {
       }
     }
 
-    const list = includeDrafts
-      ? posts
-      : posts.filter((p) => p.published);
+    const list = sortByOrder(includeDrafts ? posts : posts.filter((p) => p.published));
 
-    const postsPreview = sortByOrder(list).map(
-      ({ id, title, slug, excerpt, cover_image, published, created_at, sort_order }) => ({
+    if (includeDrafts) {
+      return res.json(attachLikeCounts("posts", list));
+    }
+
+    const postsPreview = list.map(
+      ({ id, title, title_az, slug, excerpt, excerpt_az, cover_image, published, created_at, sort_order }) => ({
         id,
         title,
+        title_az,
         slug,
         excerpt,
+        excerpt_az,
         cover_image,
         published,
         created_at,
@@ -130,7 +134,17 @@ router.get("/:slug", async (req, res) => {
 
 // POST create new post
 router.post("/", async (req, res) => {
-  const { title, slug, excerpt, content, cover_image, published } = req.body;
+  const {
+    title,
+    title_az,
+    slug,
+    excerpt,
+    excerpt_az,
+    content,
+    content_az,
+    cover_image,
+    published,
+  } = req.body;
 
   if (!title || !slug || !content) {
     return res.status(400).json({ error: "Title, slug, and content are required" });
@@ -145,9 +159,12 @@ router.post("/", async (req, res) => {
         .from("posts")
         .insert([{
           title,
+          title_az: title_az || null,
           slug,
           excerpt,
+          excerpt_az: excerpt_az || null,
           content,
+          content_az: content_az || null,
           cover_image,
           published: published || false,
           sort_order: topSort,
@@ -164,9 +181,12 @@ router.post("/", async (req, res) => {
     const newPost = {
       id: nextId++,
       title,
+      title_az: title_az || "",
       slug,
       excerpt: excerpt || "",
+      excerpt_az: excerpt_az || "",
       content,
+      content_az: content_az || "",
       cover_image: cover_image || null,
       published: published || false,
       sort_order: topSort,
@@ -184,7 +204,18 @@ router.post("/", async (req, res) => {
 // PUT update post
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
-  const { title, slug, excerpt, content, cover_image, published, sort_order } = req.body;
+  const {
+    title,
+    title_az,
+    slug,
+    excerpt,
+    excerpt_az,
+    content,
+    content_az,
+    cover_image,
+    published,
+    sort_order,
+  } = req.body;
 
   try {
     if (supabase) {
@@ -192,9 +223,12 @@ router.put("/:id", async (req, res) => {
         .from("posts")
         .update({
           title,
+          title_az,
           slug,
           excerpt,
+          excerpt_az,
           content,
+          content_az,
           cover_image,
           published,
           sort_order,
@@ -218,9 +252,12 @@ router.put("/:id", async (req, res) => {
     posts[index] = {
       ...posts[index],
       title: title ?? posts[index].title,
+      title_az: title_az ?? posts[index].title_az,
       slug: slug ?? posts[index].slug,
       excerpt: excerpt ?? posts[index].excerpt,
+      excerpt_az: excerpt_az ?? posts[index].excerpt_az,
       content: content ?? posts[index].content,
+      content_az: content_az ?? posts[index].content_az,
       cover_image: cover_image ?? posts[index].cover_image,
       published: published ?? posts[index].published,
       sort_order: sort_order ?? posts[index].sort_order,

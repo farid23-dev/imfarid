@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
+import { useLanguage } from "../i18n/LanguageContext";
 import "../styles/contact.css";
 
 export default function Contact() {
+  const { t } = useLanguage();
   const sectionRef = useRef(null);
   const [visible, setVisible] = useState(false);
 
@@ -27,10 +29,10 @@ export default function Contact() {
     <section ref={sectionRef} className={`contact ${visible ? "is-visible" : ""}`} id="contact">
       <div className="contact__inner">
         <div className="contact__header">
-          <span className="contact__label">Get In Touch</span>
-          <h2 className="contact__title">Let's Work Together</h2>
+          <span className="contact__label">{t("contact.label")}</span>
+          <h2 className="contact__title">{t("contact.title")}</h2>
           <p className="contact__subtitle">
-            Have a project in mind or want to collaborate? Feel free to reach out!
+            {t("contact.subtitle")}
           </p>
         </div>
 
@@ -44,7 +46,7 @@ export default function Contact() {
                 </svg>
               </div>
               <div className="contact__card-text">
-                <span className="contact__card-label">Email</span>
+                <span className="contact__card-label">{t("contact.email")}</span>
                 <span className="contact__card-value">ismayilovf@outlook.com</span>
               </div>
             </a>
@@ -56,7 +58,7 @@ export default function Contact() {
                 </svg>
               </div>
               <div className="contact__card-text">
-                <span className="contact__card-label">Phone</span>
+                <span className="contact__card-label">{t("contact.phone")}</span>
                 <span className="contact__card-value">+994 51 301 99 71</span>
               </div>
             </a>
@@ -69,14 +71,14 @@ export default function Contact() {
                 </svg>
               </div>
               <div className="contact__card-text">
-                <span className="contact__card-label">Location</span>
-                <span className="contact__card-value">Baku, Azerbaijan</span>
+                <span className="contact__card-label">{t("contact.location")}</span>
+                <span className="contact__card-value">{t("contact.locationValue")}</span>
               </div>
             </div>
           </div>
 
           <div className="contact__social">
-            <span className="contact__social-label">Find me on</span>
+            <span className="contact__social-label">{t("contact.findMe")}</span>
             <div className="contact__social-links">
               <a
                 href="https://www.linkedin.com/in/ismayilov24"

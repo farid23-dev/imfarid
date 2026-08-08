@@ -103,3 +103,15 @@ INSERT INTO experiences (company, position, location, start_date, end_date, desc
 ('SM Consulting', 'Full Stack Web Developer Intern', 'On-site', 'September 2020', 'January 2021', ARRAY['Developed web applications using C# and .NET technologies', 'Built and maintained responsive front-end interfaces using HTML, CSS, and JavaScript', 'Collaborated with team members to implement new functionalities and improve code quality'], 11),
 ('Zipatto Smart Home Systems', 'Full Stack Web Developer Intern', 'On-site', 'December 2019', 'February 2020', ARRAY['Developed web applications using C# and .NET technologies', 'Built and maintained responsive front-end interfaces using HTML, CSS, and JavaScript'], 12),
 ('Millisoft', 'Information Technology Mentor', 'On-site', 'June 2019', 'November 2019', ARRAY['Mentored students in web development fundamentals and practical coding exercises', 'Provided code reviews, technical feedback, and problem-solving support'], 13);
+
+-- Optional bilingual columns (run if tables already exist)
+ALTER TABLE posts ADD COLUMN IF NOT EXISTS title_az TEXT;
+ALTER TABLE posts ADD COLUMN IF NOT EXISTS excerpt_az TEXT;
+ALTER TABLE posts ADD COLUMN IF NOT EXISTS content_az TEXT;
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS title_az TEXT;
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS description_az TEXT;
+ALTER TABLE experiences ADD COLUMN IF NOT EXISTS position_az TEXT;
+ALTER TABLE experiences ADD COLUMN IF NOT EXISTS location_az TEXT;
+ALTER TABLE experiences ADD COLUMN IF NOT EXISTS start_date_az TEXT;
+ALTER TABLE experiences ADD COLUMN IF NOT EXISTS end_date_az TEXT;
+ALTER TABLE experiences ADD COLUMN IF NOT EXISTS description_az TEXT[];

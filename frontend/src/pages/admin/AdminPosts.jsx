@@ -1,21 +1,28 @@
 import { useEffect, useState } from "react";
 import { fetchAllPosts, createPost, updatePost, deletePost, reorderPosts } from "../../api/admin";
+import AdminLangTabs from "../../components/admin/AdminLangTabs";
 import ImageUpload from "../../components/admin/ImageUpload";
 import useDragReorder, { DragHandle, ReorderActions } from "../../hooks/useDragReorder";
+
+const emptyForm = {
+  title: "",
+  title_az: "",
+  slug: "",
+  excerpt: "",
+  excerpt_az: "",
+  content: "",
+  content_az: "",
+  cover_image: "",
+  published: false,
+};
 
 export default function AdminPosts() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingPost, setEditingPost] = useState(null);
-  const [formData, setFormData] = useState({
-    title: "",
-    slug: "",
-    excerpt: "",
-    content: "",
-    cover_image: "",
-    published: false,
-  });
+  const [formLang, setFormLang] = useState("en");
+  const [formData, setFormData] = useState(emptyForm);
 
   const { getRowProps, getHandleProps, isDirty, isSaving, save, cancel } = useDragReorder(posts, setPosts, reorderPosts);
 
@@ -35,14 +42,8 @@ export default function AdminPosts() {
   }, []);
 
   const resetForm = () => {
-    setFormData({
-      title: "",
-      slug: "",
-      excerpt: "",
-      content: "",
-      cover_image: "",
-      published: false,
-    });
+    setFormData(emptyForm);
+    setFormLang("en");
     setEditingPost(null);
     setShowForm(false);
   };
@@ -50,12 +51,16 @@ export default function AdminPosts() {
   const handleEdit = (post) => {
     setFormData({
       title: post.title,
+      title_az: post.title_az || "",
       slug: post.slug,
       excerpt: post.excerpt || "",
+      excerpt_az: post.excerpt_az || "",
       content: post.content || "",
+      content_az: post.content_az || "",
       cover_image: post.cover_image || "",
       published: post.published,
     });
+    setFormLang("en");
     setEditingPost(post);
     setShowForm(true);
   };
@@ -101,7 +106,7 @@ export default function AdminPosts() {
           <h1>Blog Posts</h1>
           <p>Manage your blog posts · Drag rows to reorder</p>
         </div>
-        <button className="admin-btn admin-btn--primary" onClick={() => setShowForm(true)}>
+        <button className="admin-btn admin-btn--primary" onClick={() => { setFormLang("en"); setShowForm(true); }}>
           + New Post
         </button>
       </div>
@@ -114,46 +119,81 @@ export default function AdminPosts() {
               <button onClick={resetForm} className="admin-modal__close">×</button>
             </div>
             <form onSubmit={handleSubmit} className="admin-form">
-              <div className="admin-form__row">
-                <div className="admin-form__field">
-                  <label>Title</label>
-                  <input
-                    type="text"
-                    value={formData.title}
-                    onChange={(e) => {
-                      setFormData({
-                        ...formData,
-                        title: e.target.value,
-                        slug: editingPost ? formData.slug : generateSlug(e.target.value),
-                      });
-                    }}
-                    required
-                  />
-                </div>
-                <div className="admin-form__field">
-                  <label>Slug</label>
-                  <input
-                    type="text"
-                    value={formData.slug}
-                    onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                    required
-                  />
-                </div>
-              </div>
+              <AdminLangTabs lang={formLang} onChange={setFormLang} />
+              <p className="admin-form__hint">
+                Fill both English and Azerbaijani versions. Empty AZ falls back to English on the site.
+              </p>
+
+              {formLang === "en" ? (
+                <>
+                  <div className="admin-form__field">
+                    <label>Title</label>
+                    <input
+                      type="text"
+                      value={formData.title}
+                      onChange={(e) => {
+                        setFormData({
+                          ...formData,
+                          title: e.target.value,
+                          slug: editingPost ? formData.slug : generateSlug(e.target.value),
+                        });
+                      }}
+                      required
+                    />
+                  </div>
+                  <div className="admin-form__field">
+                    <label>Excerpt</label>
+                    <textarea
+                      value={formData.excerpt}
+                      onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+                      rows="2"
+                    />
+                  </div>
+                  <div className="admin-form__field">
+                    <label>Content (HTML)</label>
+                    <textarea
+                      value={formData.content}
+                      onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                      rows="10"
+                      required
+                    />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="admin-form__field">
+                    <label>Title (AZ)</label>
+                    <input
+                      type="text"
+                      value={formData.title_az}
+                      onChange={(e) => setFormData({ ...formData, title_az: e.target.value })}
+                    />
+                  </div>
+                  <div className="admin-form__field">
+                    <label>Excerpt (AZ)</label>
+                    <textarea
+                      value={formData.excerpt_az}
+                      onChange={(e) => setFormData({ ...formData, excerpt_az: e.target.value })}
+                      rows="2"
+                    />
+                  </div>
+                  <div className="admin-form__field">
+                    <label>Content (AZ, HTML)</label>
+                    <textarea
+                      value={formData.content_az}
+                      onChange={(e) => setFormData({ ...formData, content_az: e.target.value })}
+                      rows="10"
+                    />
+                  </div>
+                </>
+              )}
+
               <div className="admin-form__field">
-                <label>Excerpt</label>
-                <textarea
-                  value={formData.excerpt}
-                  onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
-                  rows="2"
-                />
-              </div>
-              <div className="admin-form__field">
-                <label>Content (HTML)</label>
-                <textarea
-                  value={formData.content}
-                  onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                  rows="10"
+                <label>Slug</label>
+                <input
+                  type="text"
+                  value={formData.slug}
+                  onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
                   required
                 />
               </div>

@@ -3,10 +3,12 @@ import { useParams, Link } from "react-router-dom";
 import { fetchPost } from "../api";
 import Footer from "../components/Footer";
 import LikeButton from "../components/LikeButton";
+import { useLanguage } from "../i18n/LanguageContext";
 import "../styles/blog-post-page.css";
 
 export default function BlogPostPage() {
   const { slug } = useParams();
+  const { t, localize, dateLocale } = useLanguage();
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState(false);
@@ -26,7 +28,7 @@ export default function BlogPostPage() {
   }, [slug]);
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
+    return new Date(dateString).toLocaleDateString(dateLocale, {
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -38,7 +40,7 @@ export default function BlogPostPage() {
       <main className="blog-post-page">
         <div className="blog-post-page__loading">
           <div className="blog-post-page__loading-spinner"></div>
-          <p>Loading post...</p>
+          <p>{t("blogPost.loading")}</p>
         </div>
       </main>
     );
@@ -48,15 +50,19 @@ export default function BlogPostPage() {
     return (
       <main className="blog-post-page">
         <div className="blog-post-page__not-found">
-          <h1>Post Not Found</h1>
-          <p>The post you're looking for doesn't exist or has been removed.</p>
+          <h1>{t("blogPost.notFoundTitle")}</h1>
+          <p>{t("blogPost.notFoundText")}</p>
           <Link to="/blog" className="blog-post-page__back-btn">
-            Back to Blog
+            {t("blogPost.backToBlog")}
           </Link>
         </div>
       </main>
     );
   }
+
+  const title = localize(post, "title");
+  const excerpt = localize(post, "excerpt");
+  const content = localize(post, "content");
 
   return (
     <main className={`blog-post-page ${visible ? "is-visible" : ""}`}>
@@ -66,24 +72,24 @@ export default function BlogPostPage() {
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M19 12H5M12 19l-7-7 7-7" />
             </svg>
-            Back to Blog
+            {t("blogPost.backToBlog")}
           </Link>
           <time className="blog-post-page__date">{formatDate(post.created_at)}</time>
-          <h1 className="blog-post-page__title">{post.title}</h1>
-          {post.excerpt && (
-            <p className="blog-post-page__excerpt">{post.excerpt}</p>
+          <h1 className="blog-post-page__title">{title}</h1>
+          {excerpt && (
+            <p className="blog-post-page__excerpt">{excerpt}</p>
           )}
         </header>
 
         {post.cover_image && (
           <div className="blog-post-page__cover">
-            <img src={post.cover_image} alt={post.title} />
+            <img src={post.cover_image} alt={title} />
           </div>
         )}
 
         <div
           className="blog-post-page__content"
-          dangerouslySetInnerHTML={{ __html: post.content }}
+          dangerouslySetInnerHTML={{ __html: content }}
         />
 
         <footer className="blog-post-page__footer">
@@ -92,7 +98,7 @@ export default function BlogPostPage() {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M19 12H5M12 19l-7-7 7-7" />
             </svg>
-            Back to all posts
+            {t("blogPost.backToAll")}
           </Link>
         </footer>
       </article>

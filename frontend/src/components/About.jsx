@@ -1,13 +1,8 @@
 import { useEffect, useRef, useState } from "react";
+import { useLanguage } from "../i18n/LanguageContext";
 import "../styles/about.css";
 
-const stats = [
-  { value: "5+", label: "Years Experience" },
-  { value: "50+", label: "Projects Delivered" },
-  { value: "10+", label: "Companies Worked" },
-];
-
-const skills = [
+const skillTags = [
   "React.js",
   "Next.js",
   "PHP",
@@ -19,8 +14,15 @@ const skills = [
 ];
 
 export default function About() {
+  const { t } = useLanguage();
   const sectionRef = useRef(null);
   const [visible, setVisible] = useState(false);
+
+  const stats = [
+    { value: "5+", label: t("about.statYears") },
+    { value: "50+", label: t("about.statProjects") },
+    { value: "10+", label: t("about.statCampaigns") },
+  ];
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -44,45 +46,33 @@ export default function About() {
     <section ref={sectionRef} className={`about ${visible ? "is-visible" : ""}`} id="about">
       <div className="about__inner">
         <div className="about__header">
-          <span className="about__label">About Me</span>
+          <span className="about__label">{t("about.label")}</span>
           <h2 className="about__title">
-            Farid Ismayilov
+            {t("about.title")}
           </h2>
           <p className="about__subtitle">
-            IT Specialist & Full-Stack Web Developer from Baku, Azerbaijan
+            {t("about.subtitle")}
           </p>
         </div>
 
         <div className="about__content">
           <div className="about__text">
-            <p>
-              I'm an IT Specialist and Full-Stack Web Developer with hands-on expertise 
-              in building and deploying web applications using PHP, Next.js, React, and Node.js. 
-              Currently serving as <strong>Co-Founder & CTO at Kodely</strong> and 
-              <strong> Lead IT Specialist at multiple companies</strong>.
-            </p>
-            <p>
-              Skilled in managing hosting environments, domains and DNS, implementing 
-              RESTful APIs, and integrating tracking systems. Experienced in IT operations, 
-              production monitoring, and delivering technical support in remote and hybrid teams.
-            </p>
-            <p>
-              Additional background in <strong>performance marketing</strong> with Google Ads 
-              and <strong>Android development</strong> with Kotlin (MVVM, Room, Retrofit, Coroutines).
-            </p>
+            <p>{t("about.p1")}</p>
+            <p>{t("about.p2")}</p>
+            <p>{t("about.p3")}</p>
 
             <div className="about__info">
               <div className="about__info-item">
-                <span className="about__info-label">Location</span>
-                <span className="about__info-value">Baku, Azerbaijan</span>
+                <span className="about__info-label">{t("about.location")}</span>
+                <span className="about__info-value">{t("about.locationValue")}</span>
               </div>
               <div className="about__info-item">
-                <span className="about__info-label">Education</span>
-                <span className="about__info-value">Master's in Computer Engineering</span>
+                <span className="about__info-label">{t("about.education")}</span>
+                <span className="about__info-value">{t("about.educationValue")}</span>
               </div>
               <div className="about__info-item">
-                <span className="about__info-label">Languages</span>
-                <span className="about__info-value">Azerbaijani, English, Turkish, Russian</span>
+                <span className="about__info-label">{t("about.languages")}</span>
+                <span className="about__info-value">{t("about.languagesValue")}</span>
               </div>
             </div>
 
@@ -137,9 +127,9 @@ export default function About() {
             </div>
 
             <div className="about__skills">
-              <h3 className="about__skills-title">Core Skills</h3>
+              <h3 className="about__skills-title">{t("about.coreSkills")}</h3>
               <div className="about__skills-list">
-                {skills.map((skill, index) => (
+                {skillTags.map((skill, index) => (
                   <span
                     key={skill}
                     className="about__skill"

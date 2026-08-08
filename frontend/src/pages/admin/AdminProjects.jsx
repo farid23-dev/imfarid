@@ -17,6 +17,7 @@ const emptyForm = {
   technologies: "",
   category: "website",
   featured: false,
+  expired: false,
 };
 
 export default function AdminProjects() {
@@ -64,6 +65,7 @@ export default function AdminProjects() {
       technologies: (project.technologies || []).join(", "),
       category: project.category === "app" ? "app" : "website",
       featured: project.featured,
+      expired: Boolean(project.expired),
     });
     setFormLang("en");
     setEditingProject(project);
@@ -272,6 +274,16 @@ export default function AdminProjects() {
                   Featured (show on homepage)
                 </label>
               </div>
+              <div className="admin-form__field admin-form__field--checkbox">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={formData.expired}
+                    onChange={(e) => setFormData({ ...formData, expired: e.target.checked })}
+                  />
+                  Expired (shows Expired label on the site)
+                </label>
+              </div>
               <div className="admin-form__actions">
                 <button type="button" onClick={resetForm} className="admin-btn">
                   Cancel
@@ -296,6 +308,7 @@ export default function AdminProjects() {
               <th>Category</th>
               <th>Technologies</th>
               <th>Featured</th>
+              <th>Expired</th>
               <th>Likes</th>
               <th>Actions</th>
             </tr>
@@ -303,7 +316,7 @@ export default function AdminProjects() {
           <tbody>
             {projects.length === 0 ? (
               <tr>
-                <td colSpan="7" className="admin-table__empty">No projects yet</td>
+                <td colSpan="8" className="admin-table__empty">No projects yet</td>
               </tr>
             ) : (
               projects.map((project, index) => (
@@ -337,6 +350,11 @@ export default function AdminProjects() {
                   <td>
                     <span className={`admin-badge ${project.featured ? "admin-badge--published" : "admin-badge--draft"}`}>
                       {project.featured ? "Yes" : "No"}
+                    </span>
+                  </td>
+                  <td>
+                    <span className={`admin-badge ${project.expired ? "admin-badge--unread" : "admin-badge--draft"}`}>
+                      {project.expired ? "Yes" : "No"}
                     </span>
                   </td>
                   <td>{project.like_count ?? 0}</td>

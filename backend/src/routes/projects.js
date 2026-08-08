@@ -37,7 +37,8 @@ const normalizeProject = (body, existing = {}) => {
     github_url: body.github_url ?? existing.github_url ?? "",
     technologies: body.technologies ?? existing.technologies ?? [],
     category: resolvedCategory,
-    featured: body.featured ?? existing.featured ?? false,
+    featured: Boolean(body.featured ?? existing.featured ?? false),
+    expired: Boolean(body.expired ?? existing.expired ?? false),
     sort_order: body.sort_order ?? existing.sort_order ?? 0,
     created_at: existing.created_at,
   };
@@ -50,6 +51,8 @@ const coerceProject = (project) => {
     category,
     live_url: category === "app" ? "" : project.live_url || "",
     github_url: project.github_url || "",
+    featured: Boolean(project.featured),
+    expired: Boolean(project.expired),
   };
 };
 
@@ -197,6 +200,7 @@ router.post("/", async (req, res) => {
           technologies: payload.technologies,
           category: payload.category,
           featured: payload.featured,
+          expired: payload.expired,
           sort_order: payload.sort_order,
           created_at: now,
         }])
@@ -256,6 +260,7 @@ router.put("/:id", async (req, res) => {
           technologies: payload.technologies,
           category: payload.category,
           featured: payload.featured,
+          expired: payload.expired,
           sort_order: payload.sort_order,
         })
         .eq("id", id)

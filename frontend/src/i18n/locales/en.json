@@ -71,6 +71,7 @@
     "empty": "I'm currently working on some exciting projects. Check back soon!",
     "visitSite": "Visit Site",
     "visitGit": "Visit Git",
+    "expired": "Expired",
     "seeMore": "See More Projects"
   },
   "contact": {
@@ -199,7 +200,8 @@
     "empty": "I'm currently working on some exciting projects. Check back soon!",
     "backHome": "Back to Home",
     "viewLive": "View live site",
-    "viewGithub": "View on GitHub"
+    "viewGithub": "View on GitHub",
+    "expired": "Expired"
   },
   "contactPage": {
     "label": "Get in Touch",

@@ -71,6 +71,7 @@
     "empty": "Hazırda maraqlı layihələr üzərində çalışıram. Tezliklə yenidən yoxlayın!",
     "visitSite": "Sayta keç",
     "visitGit": "Git-ə keç",
+    "expired": "Vaxtı bitib",
     "seeMore": "Daha çox layihə"
   },
   "contact": {
@@ -199,7 +200,8 @@
     "empty": "Hazırda maraqlı layihələr üzərində çalışıram. Tezliklə yenidən yoxlayın!",
     "backHome": "Ana səhifəyə qayıt",
     "viewLive": "Canlı sayta bax",
-    "viewGithub": "GitHub-da bax"
+    "viewGithub": "GitHub-da bax",
+    "expired": "Vaxtı bitib"
   },
   "contactPage": {
     "label": "Əlaqə",

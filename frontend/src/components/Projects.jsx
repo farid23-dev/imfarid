@@ -80,6 +80,9 @@ export default function Projects() {
                   >
                     <div className="projects__image">
                       <img src={project.image} alt={title} />
+                      {project.expired && (
+                        <span className="projects__badge">{t("projects.expired")}</span>
+                      )}
                     </div>
                     <div className="projects__info">
                       <h3 className="projects__name">{title}</h3>

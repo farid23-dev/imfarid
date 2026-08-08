@@ -97,7 +97,10 @@ export default function ProjectsPage() {
                     className="projects-page__card"
                     style={{ animationDelay: `${0.1 + index * 0.05}s` }}
                   >
-                    <div className="projects-page__card-image">
+                      <div className="projects-page__card-image">
+                      {project.expired && (
+                        <span className="projects-page__badge">{t("projectsPage.expired")}</span>
+                      )}
                       {project.cover_image || project.image ? (
                         <img src={project.cover_image || project.image} alt={title} />
                       ) : (

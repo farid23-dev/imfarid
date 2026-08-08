@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS projects (
   github_url TEXT,
   category TEXT DEFAULT 'website',
   featured BOOLEAN DEFAULT false,
+  expired BOOLEAN DEFAULT false,
   sort_order INTEGER DEFAULT 0,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -112,6 +113,7 @@ ALTER TABLE posts ADD COLUMN IF NOT EXISTS content_az TEXT;
 ALTER TABLE projects ADD COLUMN IF NOT EXISTS title_az TEXT;
 ALTER TABLE projects ADD COLUMN IF NOT EXISTS description_az TEXT;
 ALTER TABLE projects ADD COLUMN IF NOT EXISTS category TEXT DEFAULT 'website';
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS expired BOOLEAN DEFAULT false;
 ALTER TABLE experiences ADD COLUMN IF NOT EXISTS position_az TEXT;
 ALTER TABLE experiences ADD COLUMN IF NOT EXISTS location_az TEXT;
 ALTER TABLE experiences ADD COLUMN IF NOT EXISTS start_date_az TEXT;

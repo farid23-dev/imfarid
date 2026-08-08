@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { fetchPostComments, submitPostComment } from "../api";
 import { useLanguage } from "../i18n/LanguageContext";
+import UserAvatar from "./UserAvatar";
 
 export default function CommentSection({ post }) {
   const { t, dateLocale } = useLanguage();
@@ -66,6 +67,8 @@ export default function CommentSection({ post }) {
     }
   };
 
+  const commentCount = post.comment_count ?? comments.length;
+
   return (
     <section className="blog-comments" id="comments">
       <div className="blog-comments__header">
@@ -73,7 +76,7 @@ export default function CommentSection({ post }) {
         <p className="blog-comments__count">
           {loading
             ? t("comments.loading")
-            : t("comments.count").replace("{count}", String(comments.length))}
+            : t("comments.count").replace("{count}", String(comments.length || commentCount))}
         </p>
       </div>
 
@@ -85,27 +88,38 @@ export default function CommentSection({ post }) {
         <ul className="blog-comments__list">
           {comments.map((comment) => (
             <li key={comment.id} className="blog-comments__item">
-              <div className="blog-comments__meta">
-                <strong className="blog-comments__name">{comment.name}</strong>
-                <time className="blog-comments__date">{formatDate(comment.created_at)}</time>
-              </div>
-              <p className="blog-comments__message">{comment.message}</p>
-              {comment.reply && (
-                <div className="blog-comments__reply">
-                  <div className="blog-comments__reply-label">{t("comments.adminReply")}</div>
-                  <p className="blog-comments__reply-text">{comment.reply}</p>
-                  {comment.replied_at && (
-                    <time className="blog-comments__date">{formatDate(comment.replied_at)}</time>
+              <div className="blog-comments__row">
+                <UserAvatar name={comment.name} size={42} />
+                <div className="blog-comments__body">
+                  <div className="blog-comments__meta">
+                    <strong className="blog-comments__name">{comment.name}</strong>
+                    <time className="blog-comments__date">{formatDate(comment.created_at)}</time>
+                  </div>
+                  <p className="blog-comments__message">{comment.message}</p>
+                  {comment.reply && (
+                    <div className="blog-comments__reply">
+                      <div className="blog-comments__reply-head">
+                        <UserAvatar name="Farid" size={28} className="user-avatar--admin" />
+                        <div className="blog-comments__reply-label">{t("comments.adminReply")}</div>
+                      </div>
+                      <p className="blog-comments__reply-text">{comment.reply}</p>
+                      {comment.replied_at && (
+                        <time className="blog-comments__date">{formatDate(comment.replied_at)}</time>
+                      )}
+                    </div>
                   )}
                 </div>
-              )}
+              </div>
             </li>
           ))}
         </ul>
       )}
 
       <form className="blog-comments__form" onSubmit={handleSubmit}>
-        <h3 className="blog-comments__form-title">{t("comments.leaveComment")}</h3>
+        <div className="blog-comments__form-head">
+          <UserAvatar name={name} size={40} />
+          <h3 className="blog-comments__form-title">{t("comments.leaveComment")}</h3>
+        </div>
         {status && (
           <p
             className={`blog-comments__status blog-comments__status--${status.type}`}

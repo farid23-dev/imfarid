@@ -3,7 +3,18 @@ import { supabase } from "../config/supabase.js";
 import defaultPosts from "../data/defaultPosts.js";
 import { attachLikeCounts, getLikeCount, removeLikesForItem } from "../utils/likesStore.js";
 import { missingAzError } from "../utils/requireAz.js";
-import { removeCommentsForPost } from "../utils/commentsStore.js";
+import {
+  attachCommentCounts,
+  getCommentCount,
+  removeCommentsForPost,
+} from "../utils/commentsStore.js";
+
+const withPostMeta = (items) => attachCommentCounts(attachLikeCounts("posts", items));
+const withSinglePostMeta = (post) => ({
+  ...post,
+  like_count: getLikeCount("posts", post.id),
+  comment_count: getCommentCount(post.id),
+});
 
 const router = express.Router();
 
@@ -56,14 +67,14 @@ router.get("/", async (req, res) => {
       const { data, error } = await query;
 
       if (!error && data && data.length > 0) {
-        return res.json(attachLikeCounts("posts", data));
+        return res.json(withPostMeta(data));
       }
     }
 
     const list = sortByOrder(includeDrafts ? posts : posts.filter((p) => p.published));
 
     if (includeDrafts) {
-      return res.json(attachLikeCounts("posts", list));
+      return res.json(withPostMeta(list));
     }
 
     const postsPreview = list.map(
@@ -81,7 +92,7 @@ router.get("/", async (req, res) => {
       })
     );
 
-    res.json(attachLikeCounts("posts", postsPreview));
+    res.json(withPostMeta(postsPreview));
   } catch (error) {
     console.error("Error fetching posts:", error);
     res.status(500).json({ error: "Failed to fetch posts" });
@@ -118,18 +129,18 @@ router.get("/:slug", async (req, res) => {
         .single();
 
       if (!error && data) {
-        return res.json({ ...data, like_count: getLikeCount("posts", data.id) });
+        return res.json(withSinglePostMeta(data));
       }
     }
 
     const post = posts.find((p) => p.slug === slug);
-    if (post) return res.json({ ...post, like_count: getLikeCount("posts", post.id) });
+    if (post) return res.json(withSinglePostMeta(post));
 
     res.status(404).json({ error: "Post not found" });
   } catch (error) {
     console.error("Error fetching post:", error);
     const post = posts.find((p) => p.slug === slug);
-    if (post) return res.json(post);
+    if (post) return res.json(withSinglePostMeta(post));
     res.status(500).json({ error: "Failed to fetch post" });
   }
 });

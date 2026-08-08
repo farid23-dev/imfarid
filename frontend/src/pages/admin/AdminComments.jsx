@@ -150,8 +150,12 @@ export default function AdminComments() {
                     selected.post_title || `#${selected.post_id}`
                   )}
                 </p>
-                <p>
-                  <strong>From:</strong> {selected.name}
+                <p className="admin-comment-from">
+                  <strong>From:</strong>{" "}
+                  <span className="admin-comment-from__user">
+                    <img src="/avatar-default.svg" alt="" width="28" height="28" />
+                    {selected.name}
+                  </span>
                 </p>
                 <p>
                   <strong>Date:</strong> {new Date(selected.created_at).toLocaleString()}

@@ -98,6 +98,15 @@ export const removeCommentsForPost = (postId) => {
   if (comments.length !== before) persist();
 };
 
+export const getCommentCount = (postId) =>
+  comments.filter((c) => String(c.post_id) === String(postId)).length;
+
+export const attachCommentCounts = (items = []) =>
+  items.map((item) => ({
+    ...item,
+    comment_count: getCommentCount(item.id),
+  }));
+
 export const getCommentsSummary = () => {
   const all = getAllComments();
   return {

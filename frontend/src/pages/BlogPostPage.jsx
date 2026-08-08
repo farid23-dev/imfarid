@@ -94,7 +94,15 @@ export default function BlogPostPage() {
         />
 
         <footer className="blog-post-page__footer">
-          <LikeButton type="posts" id={post.id} initialCount={post.like_count || 0} size="large" />
+          <div className="blog-post-page__footer-meta">
+            <LikeButton type="posts" id={post.id} initialCount={post.like_count || 0} size="large" />
+            <a href="#comments" className="blog-post-page__comment-count">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              </svg>
+              {t("comments.count").replace("{count}", String(post.comment_count || 0))}
+            </a>
+          </div>
           <Link to="/blog" className="blog-post-page__back-link">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M19 12H5M12 19l-7-7 7-7" />

@@ -70,6 +70,7 @@
     "comingSoon": "Coming Soon",
     "empty": "I'm currently working on some exciting projects. Check back soon!",
     "visitSite": "Visit Site",
+    "visitGit": "Visit Git",
     "seeMore": "See More Projects"
   },
   "contact": {
@@ -191,6 +192,8 @@
     "title": "My Projects",
     "subtitle": "Selected work across web products, landing pages, and digital experiences.",
     "all": "All Projects",
+    "websites": "Websites",
+    "apps": "Apps",
     "loading": "Loading projects...",
     "comingSoon": "Coming Soon",
     "empty": "I'm currently working on some exciting projects. Check back soon!",

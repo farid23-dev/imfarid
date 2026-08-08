@@ -16,21 +16,43 @@ const nextTopSortOrder = (list) => {
   return Math.min(...list.map((item) => item.sort_order ?? 0)) - 1;
 };
 
-const normalizeProject = (body, existing = {}) => ({
-  title: body.title ?? existing.title ?? "",
-  title_az: body.title_az ?? existing.title_az ?? "",
-  slug: body.slug ?? existing.slug ?? "",
-  description: body.description ?? existing.description ?? "",
-  description_az: body.description_az ?? existing.description_az ?? "",
-  image: body.cover_image || body.image || existing.image || "",
-  cover_image: body.cover_image || body.image || existing.cover_image || existing.image || "",
-  live_url: body.live_url ?? existing.live_url ?? "",
-  github_url: body.github_url ?? existing.github_url ?? "",
-  technologies: body.technologies ?? existing.technologies ?? [],
-  featured: body.featured ?? existing.featured ?? false,
-  sort_order: body.sort_order ?? existing.sort_order ?? 0,
-  created_at: existing.created_at,
-});
+const normalizeProject = (body, existing = {}) => {
+  const resolvedCategory =
+    body.category === "app" || body.category === "website"
+      ? body.category
+      : existing.category === "app"
+        ? "app"
+        : "website";
+
+  return {
+    title: body.title ?? existing.title ?? "",
+    title_az: body.title_az ?? existing.title_az ?? "",
+    slug: body.slug ?? existing.slug ?? "",
+    description: body.description ?? existing.description ?? "",
+    description_az: body.description_az ?? existing.description_az ?? "",
+    image: body.cover_image || body.image || existing.image || "",
+    cover_image: body.cover_image || body.image || existing.cover_image || existing.image || "",
+    live_url: resolvedCategory === "website" ? (body.live_url ?? existing.live_url ?? "") : "",
+    github_url: body.github_url ?? existing.github_url ?? "",
+    technologies: body.technologies ?? existing.technologies ?? [],
+    category: resolvedCategory,
+    featured: body.featured ?? existing.featured ?? false,
+    sort_order: body.sort_order ?? existing.sort_order ?? 0,
+    created_at: existing.created_at,
+  };
+};
+
+const coerceProject = (project) => {
+  const category = project.category === "app" ? "app" : "website";
+  return {
+    ...project,
+    category,
+    live_url: category === "app" ? "" : project.live_url || "",
+    github_url: project.github_url || "",
+  };
+};
+
+const coerceProjects = (list) => list.map(coerceProject);
 
 const applyOrder = async (ids) => {
   ids.forEach((id, index) => {
@@ -58,14 +80,14 @@ router.get("/", async (req, res) => {
         .order("sort_order", { ascending: true });
 
       if (!error && data && data.length > 0) {
-        return res.json(attachLikeCounts("projects", data));
+        return res.json(attachLikeCounts("projects", coerceProjects(data)));
       }
     }
 
-    res.json(attachLikeCounts("projects", sortByOrder(projects)));
+    res.json(attachLikeCounts("projects", coerceProjects(sortByOrder(projects))));
   } catch (error) {
     console.error("Error fetching projects:", error);
-    res.json(attachLikeCounts("projects", sortByOrder(projects)));
+    res.json(attachLikeCounts("projects", coerceProjects(sortByOrder(projects))));
   }
 });
 
@@ -80,14 +102,14 @@ router.get("/featured", async (req, res) => {
         .order("sort_order", { ascending: true });
 
       if (!error && data && data.length > 0) {
-        return res.json(attachLikeCounts("projects", data));
+        return res.json(attachLikeCounts("projects", coerceProjects(data)));
       }
     }
 
-    res.json(attachLikeCounts("projects", sortByOrder(projects.filter((p) => p.featured))));
+    res.json(attachLikeCounts("projects", coerceProjects(sortByOrder(projects.filter((p) => p.featured)))));
   } catch (error) {
     console.error("Error fetching featured projects:", error);
-    res.json(attachLikeCounts("projects", sortByOrder(projects.filter((p) => p.featured))));
+    res.json(attachLikeCounts("projects", coerceProjects(sortByOrder(projects.filter((p) => p.featured)))));
   }
 });
 
@@ -119,18 +141,18 @@ router.get("/:slug", async (req, res) => {
         .single();
 
       if (!error && data) {
-        return res.json({ ...data, like_count: getLikeCount("projects", data.id) });
+        return res.json({ ...coerceProject(data), like_count: getLikeCount("projects", data.id) });
       }
     }
 
     const project = projects.find((p) => p.slug === req.params.slug);
     return project
-      ? res.json({ ...project, like_count: getLikeCount("projects", project.id) })
+      ? res.json({ ...coerceProject(project), like_count: getLikeCount("projects", project.id) })
       : res.status(404).json({ error: "Not found" });
   } catch (error) {
     const project = projects.find((p) => p.slug === req.params.slug);
     return project
-      ? res.json({ ...project, like_count: getLikeCount("projects", project.id) })
+      ? res.json({ ...coerceProject(project), like_count: getLikeCount("projects", project.id) })
       : res.status(404).json({ error: "Project not found" });
   }
 });
@@ -162,6 +184,7 @@ router.post("/", async (req, res) => {
           live_url: payload.live_url,
           github_url: payload.github_url,
           technologies: payload.technologies,
+          category: payload.category,
           featured: payload.featured,
           sort_order: payload.sort_order,
           created_at: now,
@@ -206,6 +229,7 @@ router.put("/:id", async (req, res) => {
           live_url: payload.live_url,
           github_url: payload.github_url,
           technologies: payload.technologies,
+          category: payload.category,
           featured: payload.featured,
           sort_order: payload.sort_order,
         })

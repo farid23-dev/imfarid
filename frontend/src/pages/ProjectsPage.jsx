@@ -27,15 +27,18 @@ export default function ProjectsPage() {
     loadProjects();
   }, []);
 
-  const technologies = [
-    "all",
-    ...new Set(projects.flatMap((p) => p.technologies || [])),
+  const categoryFilters = [
+    { id: "all", label: t("projectsPage.all") },
+    { id: "website", label: t("projectsPage.websites") },
+    { id: "app", label: t("projectsPage.apps") },
   ];
 
   const filteredProjects =
     filter === "all"
       ? projects
-      : projects.filter((p) => p.technologies?.includes(filter));
+      : projects.filter((p) =>
+          filter === "app" ? p.category === "app" : p.category !== "app"
+        );
 
   return (
     <main className={`projects-page ${visible ? "is-visible" : ""}`}>
@@ -51,19 +54,17 @@ export default function ProjectsPage() {
 
       <section className="projects-page__content">
         <div className="projects-page__content-inner">
-          {technologies.length > 1 && (
-            <div className="projects-page__filters">
-              {technologies.slice(0, 8).map((tech) => (
-                <button
-                  key={tech}
-                  className={`projects-page__filter ${filter === tech ? "is-active" : ""}`}
-                  onClick={() => setFilter(tech)}
-                >
-                  {tech === "all" ? t("projectsPage.all") : tech}
-                </button>
-              ))}
-            </div>
-          )}
+          <div className="projects-page__filters">
+            {categoryFilters.map((item) => (
+              <button
+                key={item.id}
+                className={`projects-page__filter ${filter === item.id ? "is-active" : ""}`}
+                onClick={() => setFilter(item.id)}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
 
           {loading ? (
             <div className="projects-page__loading">
@@ -110,7 +111,7 @@ export default function ProjectsPage() {
                       )}
                       <div className="projects-page__card-overlay">
                         <div className="projects-page__card-links">
-                          {project.live_url && (
+                          {project.category !== "app" && project.live_url && (
                             <a
                               href={project.live_url}
                               target="_blank"
@@ -123,7 +124,7 @@ export default function ProjectsPage() {
                               </svg>
                             </a>
                           )}
-                          {project.github_url && (
+                          {project.category === "app" && project.github_url && (
                             <a
                               href={project.github_url}
                               target="_blank"
@@ -153,6 +154,26 @@ export default function ProjectsPage() {
                       )}
                       <div className="projects-page__card-actions">
                         <LikeButton type="projects" id={project.id} initialCount={project.like_count || 0} size="compact" />
+                        {project.category !== "app" && project.live_url && (
+                          <a
+                            href={project.live_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="projects-page__action-link"
+                          >
+                            {t("projects.visitSite")}
+                          </a>
+                        )}
+                        {project.category === "app" && project.github_url && (
+                          <a
+                            href={project.github_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="projects-page__action-link"
+                          >
+                            {t("projects.visitGit")}
+                          </a>
+                        )}
                       </div>
                     </div>
                   </article>

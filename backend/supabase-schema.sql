@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS projects (
   technologies TEXT[] DEFAULT '{}',
   live_url TEXT,
   github_url TEXT,
+  category TEXT DEFAULT 'website',
   featured BOOLEAN DEFAULT false,
   sort_order INTEGER DEFAULT 0,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -110,6 +111,7 @@ ALTER TABLE posts ADD COLUMN IF NOT EXISTS excerpt_az TEXT;
 ALTER TABLE posts ADD COLUMN IF NOT EXISTS content_az TEXT;
 ALTER TABLE projects ADD COLUMN IF NOT EXISTS title_az TEXT;
 ALTER TABLE projects ADD COLUMN IF NOT EXISTS description_az TEXT;
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS category TEXT DEFAULT 'website';
 ALTER TABLE experiences ADD COLUMN IF NOT EXISTS position_az TEXT;
 ALTER TABLE experiences ADD COLUMN IF NOT EXISTS location_az TEXT;
 ALTER TABLE experiences ADD COLUMN IF NOT EXISTS start_date_az TEXT;

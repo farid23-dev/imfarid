@@ -70,6 +70,7 @@
     "comingSoon": "Tezliklə",
     "empty": "Hazırda maraqlı layihələr üzərində çalışıram. Tezliklə yenidən yoxlayın!",
     "visitSite": "Sayta keç",
+    "visitGit": "Git-ə keç",
     "seeMore": "Daha çox layihə"
   },
   "contact": {
@@ -191,6 +192,8 @@
     "title": "Layihələrim",
     "subtitle": "Veb məhsullar, landing page-lər və rəqəmsal təcrübələrdən seçilmiş işlər.",
     "all": "Bütün layihələr",
+    "websites": "Veb saytlar",
+    "apps": "Tətbiqlər",
     "loading": "Layihələr yüklənir...",
     "comingSoon": "Tezliklə",
     "empty": "Hazırda maraqlı layihələr üzərində çalışıram. Tezliklə yenidən yoxlayın!",

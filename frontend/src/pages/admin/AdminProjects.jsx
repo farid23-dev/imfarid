@@ -14,6 +14,7 @@ const emptyForm = {
   live_url: "",
   github_url: "",
   technologies: "",
+  category: "website",
   featured: false,
 };
 
@@ -60,6 +61,7 @@ export default function AdminProjects() {
       live_url: project.live_url || "",
       github_url: project.github_url || "",
       technologies: (project.technologies || []).join(", "),
+      category: project.category === "app" ? "app" : "website",
       featured: project.featured,
     });
     setFormLang("en");
@@ -71,6 +73,7 @@ export default function AdminProjects() {
     e.preventDefault();
     const submitData = {
       ...formData,
+      live_url: formData.category === "app" ? "" : formData.live_url,
       technologies: formData.technologies.split(",").map((t) => t.trim()).filter(Boolean),
     };
     try {
@@ -202,24 +205,47 @@ export default function AdminProjects() {
                   />
                 </div>
               </div>
+              <div className="admin-form__field">
+                <label>Category</label>
+                <select
+                  value={formData.category}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      category: e.target.value,
+                      live_url: e.target.value === "app" ? "" : formData.live_url,
+                    })
+                  }
+                >
+                  <option value="website">Website</option>
+                  <option value="app">App</option>
+                </select>
+              </div>
               <div className="admin-form__row">
+                {formData.category === "website" && (
+                  <div className="admin-form__field">
+                    <label>Live URL</label>
+                    <input
+                      type="text"
+                      value={formData.live_url}
+                      onChange={(e) => setFormData({ ...formData, live_url: e.target.value })}
+                      placeholder="https://example.com"
+                    />
+                  </div>
+                )}
                 <div className="admin-form__field">
-                  <label>Live URL</label>
-                  <input
-                    type="text"
-                    value={formData.live_url}
-                    onChange={(e) => setFormData({ ...formData, live_url: e.target.value })}
-                  />
-                </div>
-                <div className="admin-form__field">
-                  <label>GitHub URL</label>
+                  <label>GitHub URL {formData.category === "app" ? "(optional)" : ""}</label>
                   <input
                     type="text"
                     value={formData.github_url}
                     onChange={(e) => setFormData({ ...formData, github_url: e.target.value })}
+                    placeholder="https://github.com/..."
                   />
                 </div>
               </div>
+              {formData.category === "app" && (
+                <p className="admin-form__hint">Apps do not show Visit Site. If a GitHub URL is set, Visit Git will appear.</p>
+              )}
               <div className="admin-form__field admin-form__field--checkbox">
                 <label>
                   <input
@@ -251,6 +277,7 @@ export default function AdminProjects() {
             <tr>
               <th className="admin-table__drag-col"></th>
               <th>Title</th>
+              <th>Category</th>
               <th>Technologies</th>
               <th>Featured</th>
               <th>Likes</th>
@@ -260,7 +287,7 @@ export default function AdminProjects() {
           <tbody>
             {projects.length === 0 ? (
               <tr>
-                <td colSpan="6" className="admin-table__empty">No projects yet</td>
+                <td colSpan="7" className="admin-table__empty">No projects yet</td>
               </tr>
             ) : (
               projects.map((project, index) => (
@@ -268,11 +295,21 @@ export default function AdminProjects() {
                   <td className="admin-table__drag-col"><DragHandle {...getHandleProps(index)} /></td>
                   <td>
                     <strong>{project.title}</strong>
-                    {project.live_url && (
+                    {project.category !== "app" && project.live_url && (
                       <a href={project.live_url} target="_blank" rel="noopener noreferrer" className="admin-table__link">
                         ↗
                       </a>
                     )}
+                    {project.category === "app" && project.github_url && (
+                      <a href={project.github_url} target="_blank" rel="noopener noreferrer" className="admin-table__link">
+                        ↗
+                      </a>
+                    )}
+                  </td>
+                  <td>
+                    <span className="admin-badge admin-badge--draft">
+                      {project.category === "app" ? "App" : "Website"}
+                    </span>
                   </td>
                   <td>
                     <div className="admin-tags">

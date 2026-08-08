@@ -85,7 +85,7 @@ export default function Projects() {
                       <h3 className="projects__name">{title}</h3>
                       <div className="projects__meta">
                         <LikeButton type="projects" id={project.id} initialCount={project.like_count || 0} size="compact" />
-                        {project.live_url && (
+                        {project.category !== "app" && project.live_url && (
                           <a
                             href={project.live_url}
                             target="_blank"
@@ -93,6 +93,19 @@ export default function Projects() {
                             className="projects__link"
                           >
                             {t("projects.visitSite")}
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3" />
+                            </svg>
+                          </a>
+                        )}
+                        {project.category === "app" && project.github_url && (
+                          <a
+                            href={project.github_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="projects__link"
+                          >
+                            {t("projects.visitGit")}
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                               <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3" />
                             </svg>

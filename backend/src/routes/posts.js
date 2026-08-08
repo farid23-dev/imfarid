@@ -2,6 +2,7 @@ import express from "express";
 import { supabase } from "../config/supabase.js";
 import defaultPosts from "../data/defaultPosts.js";
 import { attachLikeCounts, getLikeCount, removeLikesForItem } from "../utils/likesStore.js";
+import { missingAzError } from "../utils/requireAz.js";
 
 const router = express.Router();
 
@@ -150,6 +151,15 @@ router.post("/", async (req, res) => {
     return res.status(400).json({ error: "Title, slug, and content are required" });
   }
 
+  const azError = missingAzError({
+    "Title (AZ)": title_az,
+    "Content (AZ)": content_az,
+    ...(String(excerpt || "").trim() ? { "Excerpt (AZ)": excerpt_az } : {}),
+  });
+  if (azError) {
+    return res.status(400).json({ error: azError });
+  }
+
   try {
     const now = new Date().toISOString();
     const topSort = nextTopSortOrder(posts);
@@ -216,6 +226,19 @@ router.put("/:id", async (req, res) => {
     published,
     sort_order,
   } = req.body;
+
+  if (!title || !slug || !content) {
+    return res.status(400).json({ error: "Title, slug, and content are required" });
+  }
+
+  const azError = missingAzError({
+    "Title (AZ)": title_az,
+    "Content (AZ)": content_az,
+    ...(String(excerpt || "").trim() ? { "Excerpt (AZ)": excerpt_az } : {}),
+  });
+  if (azError) {
+    return res.status(400).json({ error: azError });
+  }
 
   try {
     if (supabase) {

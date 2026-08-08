@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { supabase } from "../config/supabase.js";
 import { defaultExperiences } from "../data/defaultExperiences.js";
+import { missingAzError } from "../utils/requireAz.js";
 
 const router = Router();
 
@@ -119,6 +120,23 @@ router.post("/", async (req, res) => {
       return res.status(400).json({ error: "Company and position are required" });
     }
 
+    if (!start_date || !end_date) {
+      return res.status(400).json({ error: "Start date and end date are required" });
+    }
+
+    const azError = missingAzError({
+      "Position (AZ)": position_az,
+      "Start Date (AZ)": start_date_az,
+      "End Date (AZ)": end_date_az,
+      ...(String(location || "").trim() ? { "Location (AZ)": location_az } : {}),
+      ...((Array.isArray(description) ? description.length : String(description || "").trim())
+        ? { "Description (AZ)": description_az }
+        : {}),
+    });
+    if (azError) {
+      return res.status(400).json({ error: azError });
+    }
+
     if (supabase) {
       const { data, error } = await supabase
         .from("experiences")
@@ -188,6 +206,27 @@ router.put("/:id", async (req, res) => {
       sort_order,
     } = req.body;
     const id = req.params.id;
+
+    if (!company || !position) {
+      return res.status(400).json({ error: "Company and position are required" });
+    }
+
+    if (!start_date || !end_date) {
+      return res.status(400).json({ error: "Start date and end date are required" });
+    }
+
+    const azError = missingAzError({
+      "Position (AZ)": position_az,
+      "Start Date (AZ)": start_date_az,
+      "End Date (AZ)": end_date_az,
+      ...(String(location || "").trim() ? { "Location (AZ)": location_az } : {}),
+      ...((Array.isArray(description) ? description.length : String(description || "").trim())
+        ? { "Description (AZ)": description_az }
+        : {}),
+    });
+    if (azError) {
+      return res.status(400).json({ error: azError });
+    }
 
     if (supabase) {
       const { data, error } = await supabase

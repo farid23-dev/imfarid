@@ -2,6 +2,7 @@ import { Router } from "express";
 import { supabase } from "../config/supabase.js";
 import { defaultProjects } from "../data/defaultProjects.js";
 import { attachLikeCounts, getLikeCount, removeLikesForItem } from "../utils/likesStore.js";
+import { missingAzError } from "../utils/requireAz.js";
 
 const router = Router();
 
@@ -167,6 +168,16 @@ router.post("/", async (req, res) => {
       return res.status(400).json({ error: "Title and slug are required" });
     }
 
+    const azError = missingAzError({
+      "Title (AZ)": payload.title_az,
+      ...(String(payload.description || "").trim()
+        ? { "Description (AZ)": payload.description_az }
+        : {}),
+    });
+    if (azError) {
+      return res.status(400).json({ error: azError });
+    }
+
     const topSort = nextTopSortOrder(projects);
     payload.sort_order = req.body.sort_order ?? topSort;
     payload.created_at = now;
@@ -214,9 +225,23 @@ router.post("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
   try {
     const id = req.params.id;
+    const payload = normalizeProject(req.body);
+
+    if (!payload.title || !payload.slug) {
+      return res.status(400).json({ error: "Title and slug are required" });
+    }
+
+    const azError = missingAzError({
+      "Title (AZ)": payload.title_az,
+      ...(String(payload.description || "").trim()
+        ? { "Description (AZ)": payload.description_az }
+        : {}),
+    });
+    if (azError) {
+      return res.status(400).json({ error: azError });
+    }
 
     if (supabase) {
-      const payload = normalizeProject(req.body);
       const { data, error } = await supabase
         .from("projects")
         .update({
@@ -250,7 +275,7 @@ router.put("/:id", async (req, res) => {
 
     projects[index] = {
       ...projects[index],
-      ...normalizeProject(req.body, projects[index]),
+      ...payload,
       id: projects[index].id,
     };
 

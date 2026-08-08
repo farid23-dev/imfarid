@@ -147,12 +147,6 @@
   background: rgba(0, 229, 255, 0.1);
 }
 
-.navbar__mobile-lang {
-  margin-top: 2rem;
-  display: flex;
-  justify-content: center;
-}
-
 .navbar__toggle {
   position: relative;
   z-index: 110;

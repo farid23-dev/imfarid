@@ -118,7 +118,6 @@ export default function Navbar() {
                 </motion.li>
               ))}
             </ul>
-            <div className="navbar__mobile-lang">{langSwitcher}</div>
           </motion.div>
         )}
       </AnimatePresence>

@@ -10,6 +10,7 @@ import postsRouter from "./routes/posts.js";
 import contactRouter from "./routes/contact.js";
 import uploadRouter from "./routes/upload.js";
 import likesRouter from "./routes/likes.js";
+import commentsRouter from "./routes/comments.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -33,6 +34,7 @@ app.use("/api/posts", postsRouter);
 app.use("/api/contact", contactRouter);
 app.use("/api/upload", uploadRouter);
 app.use("/api/likes", likesRouter);
+app.use("/api/comments", commentsRouter);
 
 // Health check
 app.get("/api/health", (req, res) => {

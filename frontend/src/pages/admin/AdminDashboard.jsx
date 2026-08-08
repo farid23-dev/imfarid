@@ -6,6 +6,7 @@ import {
   fetchMessages,
   fetchAllExperiences,
   fetchLikesSummary,
+  fetchComments,
 } from "../../api/admin";
 
 export default function AdminDashboard() {
@@ -14,6 +15,8 @@ export default function AdminDashboard() {
     projects: 0,
     messages: 0,
     unreadMessages: 0,
+    comments: 0,
+    unreadComments: 0,
     experiences: 0,
     postLikes: 0,
     projectLikes: 0,
@@ -25,12 +28,13 @@ export default function AdminDashboard() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [posts, projects, messages, experiences, likes] = await Promise.all([
+        const [posts, projects, messages, experiences, likes, comments] = await Promise.all([
           fetchAllPosts().catch(() => []),
           fetchAllProjects().catch(() => []),
           fetchMessages().catch(() => []),
           fetchAllExperiences().catch(() => []),
           fetchLikesSummary().catch(() => ({ totals: { posts: 0, projects: 0, all: 0 } })),
+          fetchComments().catch(() => []),
         ]);
 
         setStats({
@@ -38,6 +42,8 @@ export default function AdminDashboard() {
           projects: projects.length,
           messages: messages.length,
           unreadMessages: messages.filter((m) => !m.read).length,
+          comments: comments.length,
+          unreadComments: comments.filter((c) => !c.read).length,
           experiences: experiences.length,
           postLikes: likes?.totals?.posts || 0,
           projectLikes: likes?.totals?.projects || 0,
@@ -129,6 +135,24 @@ export default function AdminDashboard() {
             <span className="admin-stat__label">Messages</span>
           </div>
           <Link to="/admin/messages" className="admin-stat__link">View →</Link>
+        </div>
+
+        <div className="admin-stat">
+          <div className="admin-stat__icon admin-stat__icon--messages">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+          </div>
+          <div className="admin-stat__info">
+            <span className="admin-stat__value">
+              {stats.comments}
+              {stats.unreadComments > 0 && (
+                <span className="admin-stat__badge">{stats.unreadComments} new</span>
+              )}
+            </span>
+            <span className="admin-stat__label">Comments</span>
+          </div>
+          <Link to="/admin/comments" className="admin-stat__link">View →</Link>
         </div>
 
         <div className="admin-stat">

@@ -15,6 +15,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminPosts from "./pages/admin/AdminPosts";
 import AdminProjects from "./pages/admin/AdminProjects";
 import AdminMessages from "./pages/admin/AdminMessages";
+import AdminComments from "./pages/admin/AdminComments";
 import AdminExperiences from "./pages/admin/AdminExperiences";
 
 export default function App() {
@@ -39,6 +40,7 @@ export default function App() {
           <Route path="posts" element={<AdminPosts />} />
           <Route path="projects" element={<AdminProjects />} />
           <Route path="messages" element={<AdminMessages />} />
+          <Route path="comments" element={<AdminComments />} />
           <Route path="experiences" element={<AdminExperiences />} />
         </Route>
       </Routes>

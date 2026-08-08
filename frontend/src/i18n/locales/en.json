@@ -242,6 +242,23 @@
     "backToBlog": "Back to Blog",
     "backToAll": "Back to all posts"
   },
+  "comments": {
+    "title": "Comments",
+    "loading": "Loading comments...",
+    "count": "{count} comments",
+    "empty": "No comments yet. Be the first to share your thoughts.",
+    "leaveComment": "Leave a comment",
+    "name": "Name",
+    "namePlaceholder": "Your name",
+    "message": "Comment",
+    "messagePlaceholder": "Write your comment...",
+    "send": "Send comment",
+    "sending": "Sending...",
+    "success": "Thanks! Your comment was posted.",
+    "error": "Could not post your comment. Please try again.",
+    "required": "Please enter your name and comment.",
+    "adminReply": "Reply from Farid"
+  },
   "common": {
     "loading": "Loading...",
     "like": "Like",

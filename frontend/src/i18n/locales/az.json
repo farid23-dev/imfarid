@@ -242,6 +242,23 @@
     "backToBlog": "Bloqa qayıt",
     "backToAll": "Bütün yazılara qayıt"
   },
+  "comments": {
+    "title": "Şərhlər",
+    "loading": "Şərhlər yüklənir...",
+    "count": "{count} şərh",
+    "empty": "Hələ şərh yoxdur. İlk fikri siz yazın.",
+    "leaveComment": "Şərh yazın",
+    "name": "Ad",
+    "namePlaceholder": "Adınız",
+    "message": "Şərh",
+    "messagePlaceholder": "Şərhinizi yazın...",
+    "send": "Şərh göndər",
+    "sending": "Göndərilir...",
+    "success": "Təşəkkürlər! Şərhiniz dərc olundu.",
+    "error": "Şərh göndərilmədi. Yenidən cəhd edin.",
+    "required": "Zəhmət olmasa adınızı və şərhinizi yazın.",
+    "adminReply": "Faridin cavabı"
+  },
   "common": {
     "loading": "Yüklənir...",
     "like": "Bəyən",

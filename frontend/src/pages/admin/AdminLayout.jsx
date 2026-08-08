@@ -81,6 +81,12 @@ export default function AdminLayout() {
             </svg>
             Messages
           </NavLink>
+          <NavLink to="/admin/comments" className="admin__nav-link" onClick={() => setSidebarOpen(false)}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+            Comments
+          </NavLink>
         </nav>
 
         <div className="admin__sidebar-footer">

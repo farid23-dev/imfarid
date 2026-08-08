@@ -248,6 +248,58 @@ export async function deleteMessage(id) {
   return response.json();
 }
 
+// === BLOG COMMENTS ===
+export async function fetchComments() {
+  const response = await fetch(`${API_URL}/comments`, { headers: authHeaders() });
+  if (!response.ok) throw new Error("Failed to fetch comments");
+  return response.json();
+}
+
+export async function fetchCommentsSummary() {
+  const response = await fetch(`${API_URL}/comments/summary`, { headers: authHeaders() });
+  if (!response.ok) throw new Error("Failed to fetch comments summary");
+  return response.json();
+}
+
+export async function markCommentRead(id) {
+  const response = await fetch(`${API_URL}/comments/${id}/read`, {
+    method: "PUT",
+    headers: authHeaders(),
+  });
+  if (!response.ok) throw new Error("Failed to mark comment as read");
+  return response.json();
+}
+
+export async function replyToComment(id, reply) {
+  const response = await fetch(`${API_URL}/comments/${id}/reply`, {
+    method: "PUT",
+    headers: authHeaders(),
+    body: JSON.stringify({ reply }),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || "Failed to reply");
+  return data;
+}
+
+export async function clearCommentReply(id) {
+  const response = await fetch(`${API_URL}/comments/${id}/reply`, {
+    method: "DELETE",
+    headers: authHeaders(),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || "Failed to remove reply");
+  return data;
+}
+
+export async function deleteComment(id) {
+  const response = await fetch(`${API_URL}/comments/${id}`, {
+    method: "DELETE",
+    headers: authHeaders(),
+  });
+  if (!response.ok) throw new Error("Failed to delete comment");
+  return response.json();
+}
+
 // === LIKES ===
 export async function fetchLikesSummary() {
   const response = await fetch(`${API_URL}/likes/summary`, { headers: authHeaders() });

@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { fetchPost } from "../api";
 import Footer from "../components/Footer";
 import LikeButton from "../components/LikeButton";
+import CommentSection from "../components/CommentSection";
 import { useLanguage } from "../i18n/LanguageContext";
 import "../styles/blog-post-page.css";
 
@@ -101,6 +102,8 @@ export default function BlogPostPage() {
             {t("blogPost.backToAll")}
           </Link>
         </footer>
+
+        <CommentSection post={post} />
       </article>
       <Footer />
     </main>

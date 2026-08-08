@@ -3,6 +3,7 @@ import { supabase } from "../config/supabase.js";
 import defaultPosts from "../data/defaultPosts.js";
 import { attachLikeCounts, getLikeCount, removeLikesForItem } from "../utils/likesStore.js";
 import { missingAzError } from "../utils/requireAz.js";
+import { removeCommentsForPost } from "../utils/commentsStore.js";
 
 const router = express.Router();
 
@@ -305,6 +306,7 @@ router.delete("/:id", async (req, res) => {
       if (!error) {
         posts = posts.filter((p) => String(p.id) !== String(id));
         removeLikesForItem("posts", id);
+        removeCommentsForPost(id);
         return res.json({ message: "Post deleted successfully" });
       }
       console.warn("Supabase delete post failed, using memory:", error?.message);
@@ -318,11 +320,13 @@ router.delete("/:id", async (req, res) => {
     }
 
     removeLikesForItem("posts", id);
+    removeCommentsForPost(id);
     res.json({ message: "Post deleted successfully" });
   } catch (error) {
     console.error("Error deleting post:", error);
     posts = posts.filter((p) => String(p.id) !== String(id));
     removeLikesForItem("posts", id);
+    removeCommentsForPost(id);
     res.json({ message: "Post deleted successfully" });
   }
 });

@@ -97,3 +97,33 @@ export async function submitContactForm(formData) {
     throw error;
   }
 }
+
+export async function fetchPostComments(postId) {
+  try {
+    const response = await fetch(`${API_URL}/comments/post/${postId}`, fetchOptions);
+    if (!response.ok) throw new Error("Failed to fetch comments");
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching comments:", error);
+    return [];
+  }
+}
+
+export async function submitPostComment(payload) {
+  const response = await fetch(`${API_URL}/comments`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(payload),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error || "Failed to submit comment");
+  }
+
+  return data;
+}

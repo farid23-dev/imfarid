@@ -190,7 +190,7 @@
   "projectsPage": {
     "label": "Portfolio",
     "title": "Layihələrim",
-    "subtitle": "Veb məhsullar, landing page-lər və rəqəmsal təcrübələrdən seçilmiş işlər.",
+    "subtitle": "Veb məhsullar, landing page-lər və rəqəmsal təcrübələrdən seçilmiş işlər. Burada yalnız freelanser kimi hazırladığım açıq layihələr var — şirkətlər üçün görülən işlər məxfi qalır.",
     "all": "Bütün layihələr",
     "websites": "Veb saytlar",
     "apps": "Tətbiqlər",
@@ -228,7 +228,7 @@
   "blogPage": {
     "label": "Bloq",
     "title": "Fikirlər və qeydlər",
-    "subtitle": "Development, media buying və daha yaxşı rəqəmsal məhsullar haqqında qeydlər.",
+    "subtitle": "Maraqlarım, hobbilərim, gündəlik həyatım və ağlıma gələnlər üçün bir yer.",
     "loading": "Yazılar yüklənir...",
     "comingSoon": "Tezliklə",
     "empty": "Yeni məqalələr yoldadır. Tezliklə yenidən yoxlayın!",

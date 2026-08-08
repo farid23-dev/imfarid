@@ -190,7 +190,7 @@
   "projectsPage": {
     "label": "Portfolio",
     "title": "My Projects",
-    "subtitle": "Selected work across web products, landing pages, and digital experiences.",
+    "subtitle": "Selected work across web products, landing pages, and digital experiences. Only public freelance projects are shown here — work done for companies stays confidential.",
     "all": "All Projects",
     "websites": "Websites",
     "apps": "Apps",
@@ -228,7 +228,7 @@
   "blogPage": {
     "label": "Blog",
     "title": "Thoughts & Insights",
-    "subtitle": "Notes on development, media buying, and building better digital products.",
+    "subtitle": "A space for my interests, hobbies, daily life, and whatever else is on my mind.",
     "loading": "Loading posts...",
     "comingSoon": "Coming Soon",
     "empty": "New articles are on the way. Check back soon!",

@@ -169,12 +169,17 @@ CREATE TABLE IF NOT EXISTS page_views (
   id BIGSERIAL PRIMARY KEY,
   path TEXT NOT NULL,
   visitor_id TEXT NOT NULL,
+  device TEXT DEFAULT 'desktop',
+  browser TEXT DEFAULT 'Other',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 CREATE INDEX IF NOT EXISTS page_views_created_at_idx ON page_views (created_at DESC);
 CREATE INDEX IF NOT EXISTS page_views_path_idx ON page_views (path);
 CREATE INDEX IF NOT EXISTS page_views_visitor_idx ON page_views (visitor_id);
+
+ALTER TABLE page_views ADD COLUMN IF NOT EXISTS device TEXT DEFAULT 'desktop';
+ALTER TABLE page_views ADD COLUMN IF NOT EXISTS browser TEXT DEFAULT 'Other';
 
 ALTER TABLE page_views ENABLE ROW LEVEL SECURITY;
 

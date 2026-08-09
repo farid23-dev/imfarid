@@ -1073,3 +1073,100 @@
   font-size: 0.85rem;
   color: rgba(255, 255, 255, 0.85);
 }
+
+.admin-analytics__live {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(46, 242, 200, 0.25);
+  background: rgba(46, 242, 200, 0.06);
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.admin-analytics__live strong {
+  color: var(--fg);
+  font-size: 1.15rem;
+}
+
+.admin-analytics__live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5);
+  animation: adminLivePulse 1.6s ease-out infinite;
+}
+
+@keyframes adminLivePulse {
+  0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.45); }
+  70% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+}
+
+.admin-analytics__live-hint {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.admin-analytics__change {
+  display: inline-block;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.admin-analytics__change small {
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+.admin-analytics__change.is-up { color: #4ade80; }
+.admin-analytics__change.is-down { color: #fb7185; }
+.admin-analytics__change.is-flat { color: rgba(255, 255, 255, 0.45); }
+
+.admin-analytics__panel {
+  padding: 1rem 1.25rem 1.25rem;
+}
+
+.admin-analytics__empty {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.9rem;
+}
+
+.admin-analytics__bars {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.admin-analytics__bars-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.35rem;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.75);
+  text-transform: capitalize;
+}
+
+.admin-analytics__bars-track {
+  height: 6px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.admin-analytics__bars-track > div {
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--cyan), rgba(46, 242, 200, 0.35));
+}

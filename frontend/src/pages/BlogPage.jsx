@@ -111,6 +111,13 @@ export default function BlogPage() {
                     </Link>
                     <div className="blog-page__card-actions">
                       <LikeButton type="posts" id={post.id} initialCount={post.like_count || 0} size="compact" />
+                      <span className="blog-page__view-count" title={t("blogPage.views").replace("{count}", String(post.view_count || 0))}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                          <circle cx="12" cy="12" r="3" />
+                        </svg>
+                        <span>{post.view_count || 0}</span>
+                      </span>
                       <Link to={`/blog/${post.slug}#comments`} className="blog-page__comment-count">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />

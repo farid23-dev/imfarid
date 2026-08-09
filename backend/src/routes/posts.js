@@ -8,15 +8,19 @@ import {
   getCommentCount,
   removeCommentsForPost,
 } from "../utils/commentsStore.js";
+import { attachViewCounts } from "../utils/analyticsStore.js";
 
 const withPostMeta = async (items) =>
-  await attachCommentCounts(await attachLikeCounts("posts", items));
+  await attachViewCounts(await attachCommentCounts(await attachLikeCounts("posts", items)));
 
-const withSinglePostMeta = async (post) => ({
-  ...post,
-  like_count: await getLikeCount("posts", post.id),
-  comment_count: await getCommentCount(post.id),
-});
+const withSinglePostMeta = async (post) => {
+  const [withViews] = await attachViewCounts([post]);
+  return {
+    ...withViews,
+    like_count: await getLikeCount("posts", post.id),
+    comment_count: await getCommentCount(post.id),
+  };
+};
 
 const router = express.Router();
 

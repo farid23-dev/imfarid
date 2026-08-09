@@ -13,6 +13,50 @@ function formatNumber(n) {
   return Number(n).toLocaleString();
 }
 
+function formatDuration(seconds) {
+  if (seconds == null || Number.isNaN(Number(seconds))) return "—";
+  const s = Math.round(Number(seconds));
+  const m = Math.floor(s / 60);
+  const rem = s % 60;
+  if (m <= 0) return `${rem}s`;
+  return `${m}m ${rem}s`;
+}
+
+function Change({ value }) {
+  if (value == null) return null;
+  const up = value > 0;
+  const flat = value === 0;
+  return (
+    <span className={`admin-analytics__change${flat ? " is-flat" : up ? " is-up" : " is-down"}`}>
+      {flat ? "0%" : `${up ? "+" : ""}${value}%`}
+      <small> vs prev</small>
+    </span>
+  );
+}
+
+function ShareBars({ items, empty }) {
+  if (!items?.length) {
+    return <p className="admin-analytics__empty">{empty}</p>;
+  }
+  return (
+    <ul className="admin-analytics__bars">
+      {items.map((item) => (
+        <li key={item.name}>
+          <div className="admin-analytics__bars-meta">
+            <span>{item.name}</span>
+            <span>
+              {formatNumber(item.count)} · {item.share}%
+            </span>
+          </div>
+          <div className="admin-analytics__bars-track">
+            <div style={{ width: `${Math.max(item.share, 2)}%` }} />
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export default function AdminAnalytics() {
   const [period, setPeriod] = useState("30d");
   const [data, setData] = useState(null);
@@ -21,26 +65,31 @@ export default function AdminAnalytics() {
 
   useEffect(() => {
     let cancelled = false;
+    let timer;
 
-    const load = async () => {
-      setLoading(true);
-      setError("");
+    const load = async (silent = false) => {
+      if (!silent) {
+        setLoading(true);
+        setError("");
+      }
       try {
         const result = await fetchAnalytics(period);
         if (!cancelled) setData(result);
       } catch (err) {
-        if (!cancelled) {
+        if (!cancelled && !silent) {
           setError(err.message || "Failed to load analytics");
           setData(null);
         }
       } finally {
-        if (!cancelled) setLoading(false);
+        if (!cancelled && !silent) setLoading(false);
       }
     };
 
     load();
+    timer = setInterval(() => load(true), 30000);
     return () => {
       cancelled = true;
+      clearInterval(timer);
     };
   }, [period]);
 
@@ -65,13 +114,14 @@ export default function AdminAnalytics() {
   }
 
   const agg = data?.aggregate || {};
+  const cmp = data?.comparison || {};
 
   return (
     <div className="admin-page">
       <div className="admin-page__header admin-analytics__header">
         <div>
           <h1>Analytics</h1>
-          <p>Free first-party traffic stats for your site (no third-party service).</p>
+          <p>First-party traffic insights for your site.</p>
         </div>
         <div className="admin-analytics__periods">
           {PERIODS.map((p) => (
@@ -89,6 +139,13 @@ export default function AdminAnalytics() {
 
       {data?.error && <div className="admin-analytics__error">{data.error}</div>}
 
+      <div className="admin-analytics__live">
+        <span className="admin-analytics__live-dot" />
+        <strong>{formatNumber(data?.realtime?.visitors || 0)}</strong>
+        live visitors
+        <span className="admin-analytics__live-hint">last 5 minutes · auto-refresh</span>
+      </div>
+
       <div className="admin-stats">
         <div className="admin-stat">
           <div className="admin-stat__icon admin-stat__icon--analytics">
@@ -99,6 +156,7 @@ export default function AdminAnalytics() {
           <div className="admin-stat__info">
             <span className="admin-stat__value">{formatNumber(agg.visitors)}</span>
             <span className="admin-stat__label">Unique visitors</span>
+            <Change value={cmp.visitors} />
           </div>
         </div>
         <div className="admin-stat">
@@ -111,31 +169,38 @@ export default function AdminAnalytics() {
           <div className="admin-stat__info">
             <span className="admin-stat__value">{formatNumber(agg.pageviews)}</span>
             <span className="admin-stat__label">Pageviews</span>
+            <Change value={cmp.pageviews} />
           </div>
         </div>
         <div className="admin-stat">
           <div className="admin-stat__icon admin-stat__icon--experiences">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
             </svg>
           </div>
           <div className="admin-stat__info">
-            <span className="admin-stat__value">{formatNumber(data?.blogPosts?.length || 0)}</span>
-            <span className="admin-stat__label">Blog posts viewed</span>
-            <span className="admin-stat__sub">in this period</span>
+            <span className="admin-stat__value">{formatNumber(agg.sessions)}</span>
+            <span className="admin-stat__label">Sessions</span>
+            <Change value={cmp.sessions} />
           </div>
         </div>
         <div className="admin-stat">
           <div className="admin-stat__icon admin-stat__icon--posts">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <rect x="3" y="3" width="18" height="18" rx="2" />
-              <path d="M3 9h18M9 21V9" />
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
             </svg>
           </div>
           <div className="admin-stat__info">
-            <span className="admin-stat__value">{formatNumber(data?.topPages?.length || 0)}</span>
-            <span className="admin-stat__label">Pages with traffic</span>
+            <span className="admin-stat__value">
+              {agg.bounceRate != null ? `${agg.bounceRate}%` : "—"}
+            </span>
+            <span className="admin-stat__label">Bounce rate</span>
+            <span className="admin-stat__sub">
+              {agg.pagesPerVisit != null ? `${agg.pagesPerVisit} pages/visit` : ""}
+              {agg.visitDuration != null ? ` · avg ${formatDuration(agg.visitDuration)}` : ""}
+            </span>
           </div>
         </div>
       </div>
@@ -163,6 +228,25 @@ export default function AdminAnalytics() {
           </div>
         </div>
       )}
+
+      <div className="admin-analytics__grid">
+        <div className="admin-section">
+          <div className="admin-section__header">
+            <h2>Devices</h2>
+          </div>
+          <div className="admin-analytics__panel">
+            <ShareBars items={data?.devices} empty="No device data yet" />
+          </div>
+        </div>
+        <div className="admin-section">
+          <div className="admin-section__header">
+            <h2>Browsers</h2>
+          </div>
+          <div className="admin-analytics__panel">
+            <ShareBars items={data?.browsers} empty="No browser data yet" />
+          </div>
+        </div>
+      </div>
 
       <div className="admin-analytics__grid">
         <div className="admin-section">

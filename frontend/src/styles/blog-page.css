@@ -289,6 +289,15 @@
   transition: color 0.2s ease;
 }
 
+.blog-page__view-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.55);
+}
+
 .blog-page__comment-count:hover {
   color: var(--cyan);
 }

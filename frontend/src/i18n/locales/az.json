@@ -243,14 +243,16 @@
     "comingSoon": "Tezliklə",
     "empty": "Yeni məqalələr yoldadır. Tezliklə yenidən yoxlayın!",
     "backHome": "Ana səhifəyə qayıt",
-    "readMore": "Daha çox oxu"
+    "readMore": "Daha çox oxu",
+    "views": "{count} baxış"
   },
   "blogPost": {
     "loading": "Yazı yüklənir...",
     "notFoundTitle": "Yazı tapılmadı",
     "notFoundText": "Axtardığınız yazı mövcud deyil və ya silinib.",
     "backToBlog": "Bloqa qayıt",
-    "backToAll": "Bütün yazılara qayıt"
+    "backToAll": "Bütün yazılara qayıt",
+    "views": "{count} baxış"
   },
   "comments": {
     "title": "Şərhlər",

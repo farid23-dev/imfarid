@@ -21,7 +21,6 @@ function allowHit(visitorId, path) {
   return true;
 }
 
-// Public: record a pageview (privacy-light: path + anonymous visitor id only)
 router.post("/pageview", async (req, res) => {
   try {
     const path = req.body?.path;
@@ -32,7 +31,11 @@ router.post("/pageview", async (req, res) => {
     if (!allowHit(String(visitorId), String(path))) {
       return res.json({ ok: true, deduped: true });
     }
-    const result = await recordPageView({ path, visitorId });
+    const result = await recordPageView({
+      path,
+      visitorId,
+      userAgent: req.get("user-agent") || "",
+    });
     return res.json(result);
   } catch (error) {
     console.error("pageview error:", error.message);
@@ -40,7 +43,6 @@ router.post("/pageview", async (req, res) => {
   }
 });
 
-// Admin: summary for dashboard
 router.get("/", authMiddleware, async (req, res) => {
   const period = ["7d", "30d", "month", "6mo", "12mo"].includes(req.query.period)
     ? req.query.period

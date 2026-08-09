@@ -243,14 +243,16 @@
     "comingSoon": "Coming Soon",
     "empty": "New articles are on the way. Check back soon!",
     "backHome": "Back to Home",
-    "readMore": "Read More"
+    "readMore": "Read More",
+    "views": "{count} views"
   },
   "blogPost": {
     "loading": "Loading post...",
     "notFoundTitle": "Post Not Found",
     "notFoundText": "The post you're looking for doesn't exist or has been removed.",
     "backToBlog": "Back to Blog",
-    "backToAll": "Back to all posts"
+    "backToAll": "Back to all posts",
+    "views": "{count} views"
   },
   "comments": {
     "title": "Comments",

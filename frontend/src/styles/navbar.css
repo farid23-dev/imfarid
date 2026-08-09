@@ -12,10 +12,16 @@
 }
 
 .navbar.is-scrolled {
-  background: rgba(4, 6, 13, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(4, 6, 13, 0.92);
   border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+@media (min-width: 900px) {
+  .navbar.is-scrolled {
+    background: rgba(4, 6, 13, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
 }
 
 .navbar.menu-open {
@@ -187,28 +193,16 @@
   align-items: center;
   justify-content: center;
   padding: 4rem 1.5rem;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.18s ease, visibility 0.18s ease;
 }
 
-.navbar__close {
-  position: absolute;
-  top: 1.25rem;
-  right: 1.25rem;
-  width: 3rem;
-  height: 3rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--fg);
-  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
-}
-
-.navbar__close:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.3);
-  transform: rotate(90deg);
+.navbar__mobile.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
 
 .navbar__mobile-links {
@@ -216,6 +210,11 @@
   margin: 0;
   padding: 0;
   text-align: center;
+}
+
+.navbar__mobile.is-open .navbar__mobile-link {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .navbar__mobile-link {
@@ -226,8 +225,17 @@
   font-weight: 700;
   letter-spacing: -0.03em;
   color: rgba(255, 255, 255, 0.5);
-  transition: color 0.2s ease;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: color 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
 }
+
+.navbar__mobile.is-open .navbar__mobile-links li:nth-child(1) .navbar__mobile-link { transition-delay: 0.02s; }
+.navbar__mobile.is-open .navbar__mobile-links li:nth-child(2) .navbar__mobile-link { transition-delay: 0.04s; }
+.navbar__mobile.is-open .navbar__mobile-links li:nth-child(3) .navbar__mobile-link { transition-delay: 0.06s; }
+.navbar__mobile.is-open .navbar__mobile-links li:nth-child(4) .navbar__mobile-link { transition-delay: 0.08s; }
+.navbar__mobile.is-open .navbar__mobile-links li:nth-child(5) .navbar__mobile-link { transition-delay: 0.1s; }
+.navbar__mobile.is-open .navbar__mobile-links li:nth-child(6) .navbar__mobile-link { transition-delay: 0.12s; }
 
 .navbar__mobile-link:hover,
 .navbar__mobile-link.is-active {

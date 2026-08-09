@@ -1,55 +1,54 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 
-const SCRIPT_SRC = import.meta.env.VITE_PLAUSIBLE_SCRIPT_SRC;
-const DOMAIN = import.meta.env.VITE_PLAUSIBLE_DOMAIN;
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const VISITOR_KEY = "imfarid_vid";
+
+function getVisitorId() {
+  try {
+    let id = localStorage.getItem(VISITOR_KEY);
+    if (id && id.length >= 8) return id;
+    id =
+      typeof crypto !== "undefined" && crypto.randomUUID
+        ? crypto.randomUUID()
+        : `v_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+    localStorage.setItem(VISITOR_KEY, id);
+    return id;
+  } catch {
+    return `v_${Date.now().toString(36)}`;
+  }
+}
 
 /**
- * Loads Plausible when configured.
- * Prefer the new site-specific script (VITE_PLAUSIBLE_SCRIPT_SRC).
- * Falls back to legacy script.js + data-domain if only DOMAIN is set.
- * SPA navigations are auto-tracked by Plausible (History API).
+ * Privacy-light first-party analytics: path + anonymous visitor id only.
+ * No cookies for ads, no third-party scripts, no paid service.
  */
 export default function Analytics() {
+  const location = useLocation();
+  const lastSent = useRef("");
+
   useEffect(() => {
-    if (typeof document === "undefined" || typeof window === "undefined") {
-      return undefined;
-    }
+    if (typeof window === "undefined") return;
 
-    const existing = document.querySelector("script[data-imfarid-plausible]");
-    if (existing) return undefined;
+    const pathOnly = location.pathname || "/";
+    if (pathOnly.startsWith("/admin")) return;
 
-    if (SCRIPT_SRC) {
-      window.plausible =
-        window.plausible ||
-        function () {
-          (window.plausible.q = window.plausible.q || []).push(arguments);
-        };
-      window.plausible.init =
-        window.plausible.init ||
-        function (i) {
-          window.plausible.o = i || {};
-        };
-      window.plausible.init();
+    const key = `${pathOnly}|${location.search || ""}`;
+    if (lastSent.current === key) return;
+    lastSent.current = key;
 
-      const script = document.createElement("script");
-      script.async = true;
-      script.dataset.imfaridPlausible = "true";
-      script.src = SCRIPT_SRC;
-      document.head.appendChild(script);
-      return undefined;
-    }
+    const body = JSON.stringify({
+      path: pathOnly,
+      visitorId: getVisitorId(),
+    });
 
-    if (!DOMAIN) return undefined;
-
-    const script = document.createElement("script");
-    script.defer = true;
-    script.dataset.domain = DOMAIN;
-    script.dataset.imfaridPlausible = "true";
-    script.src = "https://plausible.io/js/script.js";
-    document.head.appendChild(script);
-
-    return undefined;
-  }, []);
+    fetch(`${API_URL}/analytics/pageview`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body,
+      keepalive: true,
+    }).catch(() => {});
+  }, [location.pathname, location.search]);
 
   return null;
 }

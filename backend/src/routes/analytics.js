@@ -1,128 +1,60 @@
 import { Router } from "express";
 import { authMiddleware } from "../middleware/auth.js";
+import { getAnalyticsSummary, recordPageView } from "../utils/analyticsStore.js";
 
 const router = Router();
 
-const PLAUSIBLE_API = "https://plausible.io/api/v1/stats";
+const recentHits = new Map();
+const RATE_WINDOW_MS = 4000;
 
-function getConfig() {
-  const siteId = process.env.PLAUSIBLE_SITE_ID || process.env.PLAUSIBLE_DOMAIN || "";
-  const apiKey = process.env.PLAUSIBLE_API_KEY || "";
-  const sharedLink = process.env.PLAUSIBLE_SHARED_LINK || "";
-  return { siteId, apiKey, sharedLink };
+function allowHit(visitorId, path) {
+  const key = `${visitorId}:${path}`;
+  const now = Date.now();
+  const last = recentHits.get(key) || 0;
+  if (now - last < RATE_WINDOW_MS) return false;
+  recentHits.set(key, now);
+  if (recentHits.size > 5000) {
+    for (const [k, t] of recentHits) {
+      if (now - t > RATE_WINDOW_MS * 5) recentHits.delete(k);
+    }
+  }
+  return true;
 }
 
-async function plausibleFetch(path, apiKey) {
-  const response = await fetch(`${PLAUSIBLE_API}${path}`, {
-    headers: { Authorization: `Bearer ${apiKey}` },
-  });
-
-  const text = await response.text();
-  let data = null;
+// Public: record a pageview (privacy-light: path + anonymous visitor id only)
+router.post("/pageview", async (req, res) => {
   try {
-    data = text ? JSON.parse(text) : null;
-  } catch {
-    data = { error: text || "Invalid response from Plausible" };
+    const path = req.body?.path;
+    const visitorId = req.body?.visitorId;
+    if (!visitorId || !path) {
+      return res.status(400).json({ error: "path and visitorId required" });
+    }
+    if (!allowHit(String(visitorId), String(path))) {
+      return res.json({ ok: true, deduped: true });
+    }
+    const result = await recordPageView({ path, visitorId });
+    return res.json(result);
+  } catch (error) {
+    console.error("pageview error:", error.message);
+    return res.status(500).json({ error: "Failed to record pageview" });
   }
+});
 
-  if (!response.ok) {
-    const message =
-      data?.error ||
-      data?.message ||
-      `Plausible API error (${response.status})`;
-    const err = new Error(message);
-    err.status = response.status;
-    throw err;
-  }
-
-  return data;
-}
-
-function resultsList(payload) {
-  if (Array.isArray(payload?.results)) return payload.results;
-  if (Array.isArray(payload)) return payload;
-  return [];
-}
-
+// Admin: summary for dashboard
 router.get("/", authMiddleware, async (req, res) => {
-  const { siteId, apiKey, sharedLink } = getConfig();
   const period = ["7d", "30d", "month", "6mo", "12mo"].includes(req.query.period)
     ? req.query.period
     : "30d";
 
-  if (!siteId || !apiKey) {
-    return res.json({
-      configured: false,
-      period,
-      siteId: siteId || null,
-      sharedLink: sharedLink || null,
-      message:
-        "Add PLAUSIBLE_SITE_ID and PLAUSIBLE_API_KEY to backend/.env, then restart the API.",
-    });
-  }
-
   try {
-    const metrics = "visitors,pageviews,bounce_rate,visit_duration,visits";
-    const qs = `site_id=${encodeURIComponent(siteId)}&period=${period}`;
-
-    const [aggregate, timeseries, pages, sources] = await Promise.all([
-      plausibleFetch(`/aggregate?${qs}&metrics=${metrics}`, apiKey),
-      plausibleFetch(`/timeseries?${qs}&metrics=visitors,pageviews`, apiKey),
-      plausibleFetch(
-        `/breakdown?${qs}&property=event:page&metrics=visitors,pageviews&limit=15`,
-        apiKey
-      ),
-      plausibleFetch(
-        `/breakdown?${qs}&property=visit:source&metrics=visitors,pageviews&limit=10`,
-        apiKey
-      ),
-    ]);
-
-    const results = aggregate?.results || {};
-    const pageRows = resultsList(pages).map((row) => ({
-      page: row.page || row.name || "/",
-      visitors: row.visitors || 0,
-      pageviews: row.pageviews || 0,
-    }));
-
-    const blogPosts = pageRows
-      .filter((row) => /^\/blog\/.+/.test(row.page) && !row.page.endsWith("/blog"))
-      .slice(0, 10);
-
-    return res.json({
-      configured: true,
-      period,
-      siteId,
-      sharedLink: sharedLink || null,
-      aggregate: {
-        visitors: results.visitors?.value ?? results.visitors ?? 0,
-        pageviews: results.pageviews?.value ?? results.pageviews ?? 0,
-        bounceRate: results.bounce_rate?.value ?? results.bounce_rate ?? null,
-        visitDuration:
-          results.visit_duration?.value ?? results.visit_duration ?? null,
-        visits: results.visits?.value ?? results.visits ?? 0,
-      },
-      timeseries: resultsList(timeseries).map((row) => ({
-        date: row.date,
-        visitors: row.visitors || 0,
-        pageviews: row.pageviews || 0,
-      })),
-      topPages: pageRows,
-      blogPosts,
-      sources: resultsList(sources).map((row) => ({
-        source: row.source || row.name || "Direct / None",
-        visitors: row.visitors || 0,
-        pageviews: row.pageviews || 0,
-      })),
-    });
+    const summary = await getAnalyticsSummary(period);
+    return res.json(summary);
   } catch (error) {
-    console.error("Analytics error:", error.message);
-    return res.status(error.status && error.status < 500 ? error.status : 502).json({
+    console.error("analytics summary error:", error.message);
+    return res.status(500).json({
       configured: true,
       period,
-      siteId,
-      sharedLink: sharedLink || null,
-      error: error.message || "Failed to load Plausible stats",
+      error: error.message || "Failed to load analytics",
     });
   }
 });

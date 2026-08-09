@@ -164,6 +164,20 @@ CREATE POLICY "Public read likes" ON likes FOR SELECT USING (true);
 CREATE POLICY "Public insert likes" ON likes FOR INSERT WITH CHECK (true);
 CREATE POLICY "Public delete own likes" ON likes FOR DELETE USING (true);
 
+-- First-party analytics (admin reads via service role; inserts via service role API)
+CREATE TABLE IF NOT EXISTS page_views (
+  id BIGSERIAL PRIMARY KEY,
+  path TEXT NOT NULL,
+  visitor_id TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS page_views_created_at_idx ON page_views (created_at DESC);
+CREATE INDEX IF NOT EXISTS page_views_path_idx ON page_views (path);
+CREATE INDEX IF NOT EXISTS page_views_visitor_idx ON page_views (visitor_id);
+
+ALTER TABLE page_views ENABLE ROW LEVEL SECURITY;
+
 -- Uploads: create a public Storage bucket named "uploads" in the Supabase dashboard
 -- (Storage → New bucket → name: uploads → Public bucket).
 -- Optional: set SUPABASE_UPLOADS_BUCKET=uploads on the backend.

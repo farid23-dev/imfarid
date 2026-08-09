@@ -80,6 +80,16 @@ router.post("/", async (req, res) => {
   }
 });
 
+// Admin: summary counts (before /:id routes)
+router.get("/summary", authMiddleware, async (req, res) => {
+  try {
+    res.json(await getCommentsSummary());
+  } catch (error) {
+    console.error("Error fetching comments summary:", error);
+    res.status(500).json({ error: "Failed to fetch comments summary" });
+  }
+});
+
 // Admin: list all comments
 router.get("/", authMiddleware, async (req, res) => {
   try {
@@ -87,16 +97,6 @@ router.get("/", authMiddleware, async (req, res) => {
   } catch (error) {
     console.error("Error listing comments:", error);
     res.status(500).json({ error: "Failed to list comments" });
-  }
-});
-
-// Admin: summary counts
-router.get("/summary", authMiddleware, async (req, res) => {
-  try {
-    res.json(await getCommentsSummary());
-  } catch (error) {
-    console.error("Error fetching comments summary:", error);
-    res.status(500).json({ error: "Failed to fetch comments summary" });
   }
 });
 

@@ -4,6 +4,7 @@ import { fetchProjects } from "../api";
 import Footer from "../components/Footer";
 import LikeButton from "../components/LikeButton";
 import { useLanguage } from "../i18n/LanguageContext";
+import { projectShowsLiveUrl } from "../utils/projectCategories";
 import "../styles/projects-page.css";
 
 export default function ProjectsPage() {
@@ -31,14 +32,14 @@ export default function ProjectsPage() {
     { id: "all", label: t("projectsPage.all") },
     { id: "website", label: t("projectsPage.websites") },
     { id: "app", label: t("projectsPage.apps") },
+    { id: "extension", label: t("projectsPage.extensions") },
+    { id: "dashboard", label: t("projectsPage.dashboards") },
   ];
 
   const filteredProjects =
     filter === "all"
       ? projects
-      : projects.filter((p) =>
-          filter === "app" ? p.category === "app" : p.category !== "app"
-        );
+      : projects.filter((p) => (p.category || "website") === filter);
 
   return (
     <main className={`projects-page ${visible ? "is-visible" : ""}`}>
@@ -98,8 +99,17 @@ export default function ProjectsPage() {
                     style={{ animationDelay: `${0.1 + index * 0.05}s` }}
                   >
                       <div className="projects-page__card-image">
-                      {project.expired && (
-                        <span className="projects-page__badge">{t("projectsPage.expired")}</span>
+                      {(project.expired || project.for_sale) && (
+                        <div className="projects-page__badges">
+                          {project.for_sale && (
+                            <span className="projects-page__badge projects-page__badge--sale">
+                              {t("projectsPage.forSale")}
+                            </span>
+                          )}
+                          {project.expired && (
+                            <span className="projects-page__badge">{t("projectsPage.expired")}</span>
+                          )}
+                        </div>
                       )}
                       {project.cover_image || project.image ? (
                         <img src={project.cover_image || project.image} alt={title} />
@@ -114,7 +124,7 @@ export default function ProjectsPage() {
                       )}
                       <div className="projects-page__card-overlay">
                         <div className="projects-page__card-links">
-                          {project.category !== "app" && project.live_url && (
+                          {projectShowsLiveUrl(project.category) && project.live_url && (
                             <a
                               href={project.live_url}
                               target="_blank"
@@ -157,7 +167,7 @@ export default function ProjectsPage() {
                       )}
                       <div className="projects-page__card-actions">
                         <LikeButton type="projects" id={project.id} initialCount={project.like_count || 0} size="compact" />
-                        {project.category !== "app" && project.live_url && (
+                        {projectShowsLiveUrl(project.category) && project.live_url && (
                           <a
                             href={project.live_url}
                             target="_blank"

@@ -4,6 +4,12 @@ import AdminLangTabs from "../../components/admin/AdminLangTabs";
 import ImageUpload from "../../components/admin/ImageUpload";
 import useDragReorder, { DragHandle, ReorderActions } from "../../hooks/useDragReorder";
 import { alertMissingAz, getMissingAzLabels } from "../../utils/requireAzFields";
+import {
+  PROJECT_CATEGORIES,
+  normalizeProjectCategory,
+  projectCategoryLabel,
+  projectShowsLiveUrl,
+} from "../../utils/projectCategories";
 
 const emptyForm = {
   title: "",
@@ -18,6 +24,7 @@ const emptyForm = {
   category: "website",
   featured: false,
   expired: false,
+  for_sale: false,
 };
 
 export default function AdminProjects() {
@@ -63,9 +70,10 @@ export default function AdminProjects() {
       live_url: project.live_url || "",
       github_url: project.github_url || "",
       technologies: (project.technologies || []).join(", "),
-      category: project.category === "app" ? "app" : "website",
+      category: normalizeProjectCategory(project.category),
       featured: project.featured,
       expired: Boolean(project.expired),
+      for_sale: Boolean(project.for_sale),
     });
     setFormLang("en");
     setEditingProject(project);
@@ -92,7 +100,8 @@ export default function AdminProjects() {
 
     const submitData = {
       ...formData,
-      live_url: formData.category === "app" ? "" : formData.live_url,
+      category: normalizeProjectCategory(formData.category),
+      live_url: projectShowsLiveUrl(formData.category) ? formData.live_url : "",
       technologies: formData.technologies.split(",").map((t) => t.trim()).filter(Boolean),
     };
     try {
@@ -231,16 +240,19 @@ export default function AdminProjects() {
                     setFormData({
                       ...formData,
                       category: e.target.value,
-                      live_url: e.target.value === "app" ? "" : formData.live_url,
+                      live_url: projectShowsLiveUrl(e.target.value) ? formData.live_url : "",
                     })
                   }
                 >
-                  <option value="website">Website</option>
-                  <option value="app">App</option>
+                  {PROJECT_CATEGORIES.map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.label}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div className="admin-form__row">
-                {formData.category === "website" && (
+                {projectShowsLiveUrl(formData.category) && (
                   <div className="admin-form__field">
                     <label>Live URL</label>
                     <input
@@ -284,6 +296,16 @@ export default function AdminProjects() {
                   Expired (shows Expired label on the site)
                 </label>
               </div>
+              <div className="admin-form__field admin-form__field--checkbox">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={formData.for_sale}
+                    onChange={(e) => setFormData({ ...formData, for_sale: e.target.checked })}
+                  />
+                  For sale (shows For sale / Satılır label on the site)
+                </label>
+              </div>
               <div className="admin-form__actions">
                 <button type="button" onClick={resetForm} className="admin-btn">
                   Cancel
@@ -309,6 +331,7 @@ export default function AdminProjects() {
               <th>Technologies</th>
               <th>Featured</th>
               <th>Expired</th>
+              <th>For sale</th>
               <th>Likes</th>
               <th>Actions</th>
             </tr>
@@ -316,7 +339,7 @@ export default function AdminProjects() {
           <tbody>
             {projects.length === 0 ? (
               <tr>
-                <td colSpan="8" className="admin-table__empty">No projects yet</td>
+                <td colSpan="9" className="admin-table__empty">No projects yet</td>
               </tr>
             ) : (
               projects.map((project, index) => (
@@ -324,7 +347,7 @@ export default function AdminProjects() {
                   <td className="admin-table__drag-col"><DragHandle {...getHandleProps(index)} /></td>
                   <td>
                     <strong>{project.title}</strong>
-                    {project.category !== "app" && project.live_url && (
+                    {projectShowsLiveUrl(project.category) && project.live_url && (
                       <a href={project.live_url} target="_blank" rel="noopener noreferrer" className="admin-table__link">
                         ↗
                       </a>
@@ -337,7 +360,7 @@ export default function AdminProjects() {
                   </td>
                   <td>
                     <span className="admin-badge admin-badge--draft">
-                      {project.category === "app" ? "App" : "Website"}
+                      {projectCategoryLabel(project.category)}
                     </span>
                   </td>
                   <td>
@@ -355,6 +378,11 @@ export default function AdminProjects() {
                   <td>
                     <span className={`admin-badge ${project.expired ? "admin-badge--unread" : "admin-badge--draft"}`}>
                       {project.expired ? "Yes" : "No"}
+                    </span>
+                  </td>
+                  <td>
+                    <span className={`admin-badge ${project.for_sale ? "admin-badge--published" : "admin-badge--draft"}`}>
+                      {project.for_sale ? "Yes" : "No"}
                     </span>
                   </td>
                   <td>{project.like_count ?? 0}</td>

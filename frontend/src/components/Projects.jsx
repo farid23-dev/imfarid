@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { fetchFeaturedProjects } from "../api";
 import { useLanguage } from "../i18n/LanguageContext";
 import LikeButton from "./LikeButton";
+import { projectShowsLiveUrl } from "../utils/projectCategories";
 import "../styles/projects.css";
 
 const DISPLAY_COUNT = 3;
@@ -79,16 +80,25 @@ export default function Projects() {
                     style={{ animationDelay: `${0.1 + index * 0.1}s` }}
                   >
                     <div className="projects__image">
-                      <img src={project.image} alt={title} />
-                      {project.expired && (
-                        <span className="projects__badge">{t("projects.expired")}</span>
+                      <img src={project.image || project.cover_image} alt={title} />
+                      {(project.expired || project.for_sale) && (
+                        <div className="projects__badges">
+                          {project.for_sale && (
+                            <span className="projects__badge projects__badge--sale">
+                              {t("projects.forSale")}
+                            </span>
+                          )}
+                          {project.expired && (
+                            <span className="projects__badge">{t("projects.expired")}</span>
+                          )}
+                        </div>
                       )}
                     </div>
                     <div className="projects__info">
                       <h3 className="projects__name">{title}</h3>
                       <div className="projects__meta">
                         <LikeButton type="projects" id={project.id} initialCount={project.like_count || 0} size="compact" />
-                        {project.category !== "app" && project.live_url && (
+                        {projectShowsLiveUrl(project.category) && project.live_url && (
                           <a
                             href={project.live_url}
                             target="_blank"

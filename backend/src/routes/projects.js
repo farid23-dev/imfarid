@@ -3,6 +3,7 @@ import { supabase } from "../config/supabase.js";
 import { defaultProjects } from "../data/defaultProjects.js";
 import { attachLikeCounts, getLikeCount, removeLikesForItem } from "../utils/likesStore.js";
 import { missingAzError } from "../utils/requireAz.js";
+import { authMiddleware } from "../middleware/auth.js";
 
 const router = Router();
 
@@ -18,6 +19,13 @@ const nextTopSortOrder = (list) => {
   return Math.min(...list.map((item) => item.sort_order ?? 0)) - 1;
 };
 
+const PROJECT_CATEGORIES = ["website", "app", "extension", "dashboard"];
+
+const normalizeCategory = (category, fallback = "website") =>
+  PROJECT_CATEGORIES.includes(category) ? category : fallback;
+
+const showsLiveUrl = (category) => normalizeCategory(category) !== "app";
+
 const normalizeTechnologies = (value) => {
   if (Array.isArray(value)) {
     return value.map((t) => String(t).trim()).filter(Boolean);
@@ -32,12 +40,12 @@ const normalizeTechnologies = (value) => {
 };
 
 const normalizeProject = (body, existing = {}) => {
-  const resolvedCategory =
-    body.category === "app" || body.category === "website"
-      ? body.category
-      : existing.category === "app"
-        ? "app"
-        : "website";
+  const resolvedCategory = normalizeCategory(
+    body.category ?? existing.category,
+    existing.category && PROJECT_CATEGORIES.includes(existing.category)
+      ? existing.category
+      : "website"
+  );
 
   const cover =
     body.cover_image ||
@@ -54,7 +62,9 @@ const normalizeProject = (body, existing = {}) => {
     description_az: body.description_az ?? existing.description_az ?? "",
     cover_image: cover,
     image: cover,
-    live_url: resolvedCategory === "website" ? (body.live_url ?? existing.live_url ?? "") : "",
+    live_url: showsLiveUrl(resolvedCategory)
+      ? (body.live_url ?? existing.live_url ?? "")
+      : "",
     github_url: body.github_url ?? existing.github_url ?? "",
     technologies: normalizeTechnologies(
       body.technologies ?? existing.technologies ?? []
@@ -62,24 +72,26 @@ const normalizeProject = (body, existing = {}) => {
     category: resolvedCategory,
     featured: Boolean(body.featured ?? existing.featured ?? false),
     expired: Boolean(body.expired ?? existing.expired ?? false),
+    for_sale: Boolean(body.for_sale ?? existing.for_sale ?? false),
     sort_order: body.sort_order ?? existing.sort_order ?? 0,
     created_at: existing.created_at,
   };
 };
 
 const coerceProject = (project) => {
-  const category = project.category === "app" ? "app" : "website";
+  const category = normalizeCategory(project.category);
   const cover = project.cover_image || project.image || "";
   return {
     ...project,
     category,
     cover_image: cover,
     image: cover,
-    live_url: category === "app" ? "" : project.live_url || "",
+    live_url: showsLiveUrl(category) ? project.live_url || "" : "",
     github_url: project.github_url || "",
     technologies: normalizeTechnologies(project.technologies),
     featured: Boolean(project.featured),
     expired: Boolean(project.expired),
+    for_sale: Boolean(project.for_sale),
   };
 };
 
@@ -99,6 +111,7 @@ const toDbRow = (payload, { includeCreatedAt = false } = {}) => {
     category: payload.category || "website",
     featured: Boolean(payload.featured),
     expired: Boolean(payload.expired),
+    for_sale: Boolean(payload.for_sale),
     sort_order: payload.sort_order ?? 0,
   };
   if (includeCreatedAt && payload.created_at) {
@@ -199,7 +212,7 @@ router.get("/featured", async (req, res) => {
 });
 
 // Reorder projects (must be before /:slug and /:id)
-router.put("/reorder", async (req, res) => {
+router.put("/reorder", authMiddleware, async (req, res) => {
   const { ids } = req.body;
 
   if (!Array.isArray(ids) || ids.length === 0) {
@@ -266,7 +279,7 @@ router.get("/:slug", async (req, res) => {
 });
 
 // Create project
-router.post("/", async (req, res) => {
+router.post("/", authMiddleware, async (req, res) => {
   try {
     const payload = normalizeProject(req.body);
     const now = new Date().toISOString();
@@ -318,7 +331,7 @@ router.post("/", async (req, res) => {
 });
 
 // Update project
-router.put("/:id", async (req, res) => {
+router.put("/:id", authMiddleware, async (req, res) => {
   try {
     const id = req.params.id;
     const payload = normalizeProject(req.body);
@@ -374,7 +387,7 @@ router.put("/:id", async (req, res) => {
 });
 
 // Delete project
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", authMiddleware, async (req, res) => {
   const id = req.params.id;
 
   try {

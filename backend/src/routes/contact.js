@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 import { Resend } from "resend";
 import { supabase } from "../config/supabase.js";
 import { verifyRecaptcha } from "../utils/recaptcha.js";
+import { authMiddleware } from "../middleware/auth.js";
 
 const router = express.Router();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -167,7 +168,7 @@ router.post("/", async (req, res) => {
 });
 
 // GET - Get all messages (for admin)
-router.get("/", async (req, res) => {
+router.get("/", authMiddleware, async (req, res) => {
   try {
     if (supabase) {
       const { data, error } = await supabase
@@ -195,7 +196,7 @@ router.get("/", async (req, res) => {
 });
 
 // PUT - Mark message as read
-router.put("/:id/read", async (req, res) => {
+router.put("/:id/read", authMiddleware, async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -232,7 +233,7 @@ router.put("/:id/read", async (req, res) => {
 });
 
 // DELETE - Delete message
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", authMiddleware, async (req, res) => {
   const { id } = req.params;
 
   try {

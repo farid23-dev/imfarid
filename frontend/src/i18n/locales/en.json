@@ -72,6 +72,7 @@
     "visitSite": "Visit Site",
     "visitGit": "Visit Git",
     "expired": "Expired",
+    "forSale": "For sale",
     "seeMore": "See More Projects"
   },
   "contact": {
@@ -197,13 +198,16 @@
     "all": "All Projects",
     "websites": "Websites",
     "apps": "Apps",
+    "extensions": "Extensions",
+    "dashboards": "Dashboards",
     "loading": "Loading projects...",
     "comingSoon": "Coming Soon",
     "empty": "I'm currently working on some exciting projects. Check back soon!",
     "backHome": "Back to Home",
     "viewLive": "View live site",
     "viewGithub": "View on GitHub",
-    "expired": "Expired"
+    "expired": "Expired",
+    "forSale": "For sale"
   },
   "contactPage": {
     "label": "Get in Touch",

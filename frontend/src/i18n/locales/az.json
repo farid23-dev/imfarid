@@ -72,6 +72,7 @@
     "visitSite": "Sayta keç",
     "visitGit": "Git-ə keç",
     "expired": "Vaxtı bitib",
+    "forSale": "Satılır",
     "seeMore": "Daha çox layihə"
   },
   "contact": {
@@ -197,13 +198,16 @@
     "all": "Bütün layihələr",
     "websites": "Veb saytlar",
     "apps": "Tətbiqlər",
+    "extensions": "Genişləndirmələr",
+    "dashboards": "Panellər",
     "loading": "Layihələr yüklənir...",
     "comingSoon": "Tezliklə",
     "empty": "Hazırda maraqlı layihələr üzərində çalışıram. Tezliklə yenidən yoxlayın!",
     "backHome": "Ana səhifəyə qayıt",
     "viewLive": "Canlı sayta bax",
     "viewGithub": "GitHub-da bax",
-    "expired": "Vaxtı bitib"
+    "expired": "Vaxtı bitib",
+    "forSale": "Satılır"
   },
   "contactPage": {
     "label": "Əlaqə",

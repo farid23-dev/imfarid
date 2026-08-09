@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState, startTransition } from "react";
 import en from "./locales/en.json";
 import az from "./locales/az.json";
 
@@ -9,17 +9,28 @@ const STORAGE_KEY = "imfarid_lang";
 
 export function LanguageProvider({ children }) {
   const [lang, setLangState] = useState(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    return saved === "az" || saved === "en" ? saved : "en";
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      return saved === "az" || saved === "en" ? saved : "en";
+    } catch {
+      return "en";
+    }
   });
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, lang);
+    try {
+      localStorage.setItem(STORAGE_KEY, lang);
+    } catch {
+      /* ignore */
+    }
     document.documentElement.lang = lang === "az" ? "az" : "en";
   }, [lang]);
 
   const setLang = (next) => {
-    setLangState(next === "az" ? "az" : "en");
+    const resolved = next === "az" ? "az" : "en";
+    startTransition(() => {
+      setLangState(resolved);
+    });
   };
 
   const value = useMemo(() => {

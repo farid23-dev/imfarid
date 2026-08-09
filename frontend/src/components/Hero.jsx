@@ -41,9 +41,10 @@ export default function Hero() {
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
           </Link>
-          <a 
-            href="/Farid-Ismayilov-resume.pdf" 
+          <a
+            href="/Farid-Ismayilov-resume.pdf"
             download="Farid-Ismayilov-resume.pdf"
+            type="application/pdf"
             className="btn btn--outline"
           >
             {t("hero.downloadResume")}

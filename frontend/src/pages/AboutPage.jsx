@@ -123,7 +123,12 @@ export default function AboutPage() {
             <Link to="/contact" className="about-page__cta-btn about-page__cta-btn--primary">
               {t("aboutPage.getInTouch")}
             </Link>
-            <a href="/Farid-Ismayilov-resume.pdf" download className="about-page__cta-btn about-page__cta-btn--secondary">
+            <a
+              href="/Farid-Ismayilov-resume.pdf"
+              download="Farid-Ismayilov-resume.pdf"
+              type="application/pdf"
+              className="about-page__cta-btn about-page__cta-btn--secondary"
+            >
               {t("aboutPage.downloadResume")}
             </a>
           </div>

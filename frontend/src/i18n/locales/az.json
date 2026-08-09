@@ -265,6 +265,7 @@
     "send": "Şərh göndər",
     "sending": "Göndərilir...",
     "success": "Təşəkkürlər! Şərhiniz dərc olundu.",
+    "successPending": "Təşəkkür edirik — şərhiniz alındı və yoxlanılır. Təsdiqləndikdən sonra burada görünəcək.",
     "error": "Şərh göndərilmədi. Yenidən cəhd edin.",
     "required": "Zəhmət olmasa adınızı və şərhinizi yazın.",
     "adminReply": "Faridin cavabı"

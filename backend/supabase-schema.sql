@@ -139,6 +139,8 @@ CREATE TABLE IF NOT EXISTS blog_comments (
 CREATE INDEX IF NOT EXISTS blog_comments_post_id_idx ON blog_comments (post_id);
 CREATE INDEX IF NOT EXISTS blog_comments_created_at_idx ON blog_comments (created_at DESC);
 
+ALTER TABLE blog_comments ADD COLUMN IF NOT EXISTS approved BOOLEAN DEFAULT true;
+
 -- Likes (posts & projects; one row per visitor)
 CREATE TABLE IF NOT EXISTS likes (
   id BIGSERIAL PRIMARY KEY,

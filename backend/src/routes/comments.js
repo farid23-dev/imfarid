@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { authMiddleware } from "../middleware/auth.js";
 import {
+  approveComment,
   clearCommentReply,
   createComment,
   deleteComment,
@@ -67,12 +68,10 @@ router.post("/", async (req, res) => {
     });
 
     res.status(201).json({
+      success: true,
+      pending: true,
       id: comment.id,
-      name: comment.name,
-      message: comment.message,
-      reply: comment.reply,
-      replied_at: comment.replied_at,
-      created_at: comment.created_at,
+      message: "Your comment was submitted and is awaiting review.",
     });
   } catch (error) {
     console.error("Error creating comment:", error);
@@ -97,6 +96,18 @@ router.get("/", authMiddleware, async (req, res) => {
   } catch (error) {
     console.error("Error listing comments:", error);
     res.status(500).json({ error: "Failed to list comments" });
+  }
+});
+
+// Admin: approve (publish) comment
+router.put("/:id/approve", authMiddleware, async (req, res) => {
+  try {
+    const comment = await approveComment(req.params.id);
+    if (!comment) return res.status(404).json({ error: "Comment not found" });
+    res.json(comment);
+  } catch (error) {
+    console.error("Error approving comment:", error);
+    res.status(500).json({ error: "Failed to approve comment" });
   }
 });
 

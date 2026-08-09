@@ -265,6 +265,7 @@
     "send": "Send comment",
     "sending": "Sending...",
     "success": "Thanks! Your comment was posted.",
+    "successPending": "Thank you — your comment was received and is under review. It will appear here once approved.",
     "error": "Could not post your comment. Please try again.",
     "required": "Please enter your name and comment.",
     "adminReply": "Reply from Farid"

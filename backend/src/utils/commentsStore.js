@@ -42,8 +42,12 @@ const mapRow = (row) => ({
   reply: row.reply ?? null,
   replied_at: row.replied_at ?? null,
   read: Boolean(row.read),
+  // Legacy rows without `approved` are treated as already public
+  approved: row.approved === undefined || row.approved === null ? true : Boolean(row.approved),
   created_at: row.created_at,
 });
+
+const isApproved = (comment) => comment?.approved !== false;
 
 export const getAllComments = async () => {
   if (useSupabase()) {
@@ -58,7 +62,9 @@ export const getAllComments = async () => {
     console.warn("Supabase getAllComments failed, using file store:", error?.message);
   }
 
-  return [...comments].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  return [...comments]
+    .map(mapRow)
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 };
 
 export const getCommentsForPost = async (postId) => {
@@ -67,16 +73,18 @@ export const getCommentsForPost = async (postId) => {
       .from("blog_comments")
       .select("*")
       .eq("post_id", String(postId))
+      .or("approved.eq.true,approved.is.null")
       .order("created_at", { ascending: true });
 
     if (!error && data) {
-      return data.map(mapRow);
+      return data.map(mapRow).filter(isApproved);
     }
     console.warn("Supabase getCommentsForPost failed, using file store:", error?.message);
   }
 
   return comments
-    .filter((c) => String(c.post_id) === String(postId))
+    .map(mapRow)
+    .filter((c) => String(c.post_id) === String(postId) && isApproved(c))
     .sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
 };
 
@@ -90,6 +98,7 @@ export const createComment = async ({ post_id, post_slug, post_title, name, mess
     reply: null,
     replied_at: null,
     read: false,
+    approved: false,
   };
 
   if (useSupabase()) {
@@ -112,7 +121,7 @@ export const createComment = async ({ post_id, post_slug, post_title, name, mess
   };
   comments.push(comment);
   persist();
-  return comment;
+  return mapRow(comment);
 };
 
 export const findComment = async (id) => {
@@ -155,7 +164,32 @@ export const markCommentRead = async (id) => {
   if (!comment) return null;
   comment.read = true;
   persist();
-  return comment;
+  return mapRow(comment);
+};
+
+export const approveComment = async (id) => {
+  if (useSupabase()) {
+    const { data, error } = await supabase
+      .from("blog_comments")
+      .update({ approved: true, read: true })
+      .eq("id", id)
+      .select()
+      .maybeSingle();
+
+    if (!error && data) {
+      return mapRow(data);
+    }
+    if (error) {
+      console.warn("Supabase approveComment failed, using file store:", error.message);
+    }
+  }
+
+  const comment = comments.find((c) => String(c.id) === String(id));
+  if (!comment) return null;
+  comment.approved = true;
+  comment.read = true;
+  persist();
+  return mapRow(comment);
 };
 
 export const replyToComment = async (id, replyText) => {
@@ -251,16 +285,20 @@ export const removeCommentsForPost = async (postId) => {
 
 export const getCommentCount = async (postId) => {
   if (useSupabase()) {
-    const { count, error } = await supabase
+    const { data, error } = await supabase
       .from("blog_comments")
-      .select("*", { count: "exact", head: true })
+      .select("id, approved")
       .eq("post_id", String(postId));
 
-    if (!error) return count || 0;
+    if (!error) {
+      return (data || []).map(mapRow).filter(isApproved).length;
+    }
     console.warn("Supabase getCommentCount failed, using file store:", error.message);
   }
 
-  return comments.filter((c) => String(c.post_id) === String(postId)).length;
+  return comments.map(mapRow).filter(
+    (c) => String(c.post_id) === String(postId) && isApproved(c)
+  ).length;
 };
 
 export const attachCommentCounts = async (items = []) => {
@@ -270,12 +308,12 @@ export const attachCommentCounts = async (items = []) => {
     const ids = items.map((item) => String(item.id));
     const { data, error } = await supabase
       .from("blog_comments")
-      .select("post_id")
+      .select("post_id, approved")
       .in("post_id", ids);
 
     if (!error) {
       const counts = {};
-      for (const row of data || []) {
+      for (const row of (data || []).map(mapRow).filter(isApproved)) {
         const key = String(row.post_id);
         counts[key] = (counts[key] || 0) + 1;
       }
@@ -289,7 +327,9 @@ export const attachCommentCounts = async (items = []) => {
 
   return items.map((item) => ({
     ...item,
-    comment_count: comments.filter((c) => String(c.post_id) === String(item.id)).length,
+    comment_count: comments
+      .map(mapRow)
+      .filter((c) => String(c.post_id) === String(item.id) && isApproved(c)).length,
   }));
 };
 
@@ -299,5 +339,6 @@ export const getCommentsSummary = async () => {
     total: all.length,
     unread: all.filter((c) => !c.read).length,
     unreplied: all.filter((c) => !c.reply).length,
+    pending: all.filter((c) => !isApproved(c)).length,
   };
 };

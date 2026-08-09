@@ -291,6 +291,16 @@ export async function clearCommentReply(id) {
   return data;
 }
 
+export async function approveComment(id) {
+  const response = await fetch(`${API_URL}/comments/${id}/approve`, {
+    method: "PUT",
+    headers: authHeaders(),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || "Failed to approve comment");
+  return data;
+}
+
 export async function deleteComment(id) {
   const response = await fetch(`${API_URL}/comments/${id}`, {
     method: "DELETE",

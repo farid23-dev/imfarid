@@ -62,7 +62,7 @@ export default function CommentSection({ post }) {
 
     setSubmitting(true);
     try {
-      const created = await submitPostComment({
+      await submitPostComment({
         post_id: post.id,
         post_slug: post.slug,
         post_title: post.title,
@@ -70,12 +70,11 @@ export default function CommentSection({ post }) {
         message: message.trim(),
         captchaToken,
       });
-      setComments((prev) => [...prev, created]);
       setName("");
       setMessage("");
       setCaptchaToken("");
       setCaptchaReset((n) => n + 1);
-      setStatus({ type: "success", text: t("comments.success") });
+      setStatus({ type: "success", text: t("comments.successPending") });
     } catch (error) {
       setStatus({ type: "error", text: error.message || t("comments.error") });
       setCaptchaToken("");

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {
+  approveComment,
   clearCommentReply,
   deleteComment,
   fetchComments,
@@ -43,6 +44,23 @@ export default function AdminComments() {
       } catch (error) {
         console.error("Failed to mark comment as read:", error);
       }
+    }
+  };
+
+  const handleApprove = async (comment) => {
+    setSaving(true);
+    try {
+      const updated = await approveComment(comment.id);
+      setComments((prev) =>
+        prev.map((c) => (String(c.id) === String(updated.id) ? updated : c))
+      );
+      if (selected && String(selected.id) === String(updated.id)) {
+        setSelected(updated);
+      }
+    } catch (error) {
+      alert(error.message);
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -99,6 +117,7 @@ export default function AdminComments() {
 
   if (loading) return <div className="admin-page__loading">Loading...</div>;
 
+  const pendingCount = comments.filter((c) => c.approved === false).length;
   const unreadCount = comments.filter((c) => !c.read).length;
   const unrepliedCount = comments.filter((c) => !c.reply).length;
 
@@ -109,6 +128,11 @@ export default function AdminComments() {
           <h1>Blog Comments</h1>
           <p>
             {comments.length} total
+            {pendingCount > 0 && (
+              <span className="admin-badge admin-badge--unread" style={{ marginLeft: "8px" }}>
+                {pendingCount} pending
+              </span>
+            )}
             {unreadCount > 0 && (
               <span className="admin-badge admin-badge--unread" style={{ marginLeft: "8px" }}>
                 {unreadCount} unread
@@ -140,6 +164,10 @@ export default function AdminComments() {
             </div>
             <div className="admin-message-view">
               <div className="admin-message-view__meta">
+                <p>
+                  <strong>Status:</strong>{" "}
+                  {selected.approved === false ? "Pending review" : "Published"}
+                </p>
                 <p>
                   <strong>Post:</strong>{" "}
                   {selected.post_slug ? (
@@ -177,6 +205,16 @@ export default function AdminComments() {
                   />
                 </div>
                 <div className="admin-message-view__actions">
+                  {selected.approved === false && (
+                    <button
+                      type="button"
+                      className="admin-btn admin-btn--primary"
+                      onClick={() => handleApprove(selected)}
+                      disabled={saving}
+                    >
+                      Approve & publish
+                    </button>
+                  )}
                   <button type="submit" className="admin-btn admin-btn--primary" disabled={saving}>
                     {selected.reply ? "Update Reply" : "Post Reply"}
                   </button>
@@ -229,10 +267,18 @@ export default function AdminComments() {
                   <td>
                     <span
                       className={`admin-badge ${
-                        comment.reply ? "admin-badge--published" : "admin-badge--draft"
+                        comment.approved === false
+                          ? "admin-badge--unread"
+                          : comment.reply
+                            ? "admin-badge--published"
+                            : "admin-badge--draft"
                       }`}
                     >
-                      {comment.reply ? "Replied" : "Open"}
+                      {comment.approved === false
+                        ? "Pending"
+                        : comment.reply
+                          ? "Published · Replied"
+                          : "Published"}
                     </span>
                     {!comment.read && (
                       <span
@@ -255,6 +301,15 @@ export default function AdminComments() {
                   <td>{new Date(comment.created_at).toLocaleDateString()}</td>
                   <td>
                     <div className="admin-table__actions">
+                      {comment.approved === false && (
+                        <button
+                          onClick={() => handleApprove(comment)}
+                          className="admin-btn admin-btn--small admin-btn--primary"
+                          disabled={saving}
+                        >
+                          Approve
+                        </button>
+                      )}
                       <button
                         onClick={() => handleView(comment)}
                         className="admin-btn admin-btn--small"

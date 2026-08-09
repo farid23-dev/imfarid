@@ -1,20 +1,45 @@
 import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
 
+const SCRIPT_SRC = import.meta.env.VITE_PLAUSIBLE_SCRIPT_SRC;
 const DOMAIN = import.meta.env.VITE_PLAUSIBLE_DOMAIN;
 
 /**
- * Loads Plausible only when VITE_PLAUSIBLE_DOMAIN is set.
- * Invisible — no UI chrome. SPA navigations send manual pageviews.
+ * Loads Plausible when configured.
+ * Prefer the new site-specific script (VITE_PLAUSIBLE_SCRIPT_SRC).
+ * Falls back to legacy script.js + data-domain if only DOMAIN is set.
+ * SPA navigations are auto-tracked by Plausible (History API).
  */
 export default function Analytics() {
-  const location = useLocation();
-
   useEffect(() => {
-    if (!DOMAIN || typeof document === "undefined") return undefined;
+    if (typeof document === "undefined" || typeof window === "undefined") {
+      return undefined;
+    }
 
     const existing = document.querySelector("script[data-imfarid-plausible]");
     if (existing) return undefined;
+
+    if (SCRIPT_SRC) {
+      window.plausible =
+        window.plausible ||
+        function () {
+          (window.plausible.q = window.plausible.q || []).push(arguments);
+        };
+      window.plausible.init =
+        window.plausible.init ||
+        function (i) {
+          window.plausible.o = i || {};
+        };
+      window.plausible.init();
+
+      const script = document.createElement("script");
+      script.async = true;
+      script.dataset.imfaridPlausible = "true";
+      script.src = SCRIPT_SRC;
+      document.head.appendChild(script);
+      return undefined;
+    }
+
+    if (!DOMAIN) return undefined;
 
     const script = document.createElement("script");
     script.defer = true;
@@ -25,12 +50,6 @@ export default function Analytics() {
 
     return undefined;
   }, []);
-
-  useEffect(() => {
-    if (!DOMAIN || typeof window === "undefined") return;
-    if (typeof window.plausible !== "function") return;
-    window.plausible("pageview");
-  }, [location.pathname, location.search]);
 
   return null;
 }

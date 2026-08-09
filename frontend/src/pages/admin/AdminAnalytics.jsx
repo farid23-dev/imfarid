@@ -108,8 +108,10 @@ PLAUSIBLE_API_KEY=your_api_key_here
 PLAUSIBLE_SHARED_LINK=https://plausible.io/share/imfarid.com?auth=...`}</pre>
             </li>
             <li>
-              In the frontend build env (or <code>frontend/.env</code> before build), set:
-              <pre>{`VITE_PLAUSIBLE_DOMAIN=imfarid.com`}</pre>
+              In the frontend build env (or <code>frontend/.env</code> before build), set the
+              script URL Plausible gives you:
+              <pre>{`VITE_PLAUSIBLE_SCRIPT_SRC=https://plausible.io/js/pa-xxxxx.js
+VITE_PLAUSIBLE_DOMAIN=imfarid.com`}</pre>
               Then rebuild the frontend and restart the API:
               <pre>{`pm2 restart imfarid-api --update-env
 cd /opt/imfarid/frontend && npm run build && rsync -a --delete dist/ /var/www/imfarid/`}</pre>

@@ -461,6 +461,10 @@
   border-color: rgba(46, 242, 200, 0.45);
 }
 
+.blog-comments__captcha {
+  margin-bottom: 0.25rem;
+}
+
 .blog-comments__submit {
   display: inline-flex;
   align-items: center;

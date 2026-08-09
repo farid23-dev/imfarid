@@ -10,6 +10,7 @@ import {
   markCommentRead,
   replyToComment,
 } from "../utils/commentsStore.js";
+import { verifyRecaptcha } from "../utils/recaptcha.js";
 
 const router = Router();
 
@@ -31,11 +32,16 @@ router.get("/post/:postId", (req, res) => {
 });
 
 // Public: submit a comment
-router.post("/", (req, res) => {
-  const { post_id, post_slug, post_title, name, message } = req.body || {};
+router.post("/", async (req, res) => {
+  const { post_id, post_slug, post_title, name, message, captchaToken } = req.body || {};
 
   if (!post_id || !name?.trim() || !message?.trim()) {
     return res.status(400).json({ error: "Name and comment are required" });
+  }
+
+  const captcha = await verifyRecaptcha(captchaToken);
+  if (!captcha.ok) {
+    return res.status(400).json({ error: captcha.error });
   }
 
   if (String(name).trim().length > MAX_NAME) {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { fetchPostComments, submitPostComment } from "../api";
 import { useLanguage } from "../i18n/LanguageContext";
+import Recaptcha, { isRecaptchaConfigured } from "./Recaptcha";
 import UserAvatar from "./UserAvatar";
 
 export default function CommentSection({ post }) {
@@ -9,6 +10,8 @@ export default function CommentSection({ post }) {
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
+  const [captchaToken, setCaptchaToken] = useState("");
+  const [captchaReset, setCaptchaReset] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState(null);
 
@@ -47,6 +50,16 @@ export default function CommentSection({ post }) {
       return;
     }
 
+    if (!isRecaptchaConfigured()) {
+      setStatus({ type: "error", text: t("captcha.notConfigured") });
+      return;
+    }
+
+    if (!captchaToken) {
+      setStatus({ type: "error", text: t("captcha.required") });
+      return;
+    }
+
     setSubmitting(true);
     try {
       const created = await submitPostComment({
@@ -55,13 +68,18 @@ export default function CommentSection({ post }) {
         post_title: post.title,
         name: name.trim(),
         message: message.trim(),
+        captchaToken,
       });
       setComments((prev) => [...prev, created]);
       setName("");
       setMessage("");
+      setCaptchaToken("");
+      setCaptchaReset((n) => n + 1);
       setStatus({ type: "success", text: t("comments.success") });
     } catch (error) {
       setStatus({ type: "error", text: error.message || t("comments.error") });
+      setCaptchaToken("");
+      setCaptchaReset((n) => n + 1);
     } finally {
       setSubmitting(false);
     }
@@ -150,6 +168,13 @@ export default function CommentSection({ post }) {
             rows={4}
             maxLength={2000}
             required
+          />
+        </div>
+        <div className="blog-comments__field blog-comments__captcha">
+          <Recaptcha
+            onChange={setCaptchaToken}
+            onExpire={() => setCaptchaToken("")}
+            resetSignal={captchaReset}
           />
         </div>
         <button type="submit" className="blog-comments__submit" disabled={submitting}>

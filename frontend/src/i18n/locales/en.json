@@ -265,6 +265,10 @@
     "required": "Please enter your name and comment.",
     "adminReply": "Reply from Farid"
   },
+  "captcha": {
+    "required": "Please complete the CAPTCHA before submitting.",
+    "notConfigured": "CAPTCHA is not configured yet. Add your reCAPTCHA keys to continue."
+  },
   "common": {
     "loading": "Loading...",
     "like": "Like",

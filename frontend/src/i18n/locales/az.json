@@ -265,6 +265,10 @@
     "required": "Zəhmət olmasa adınızı və şərhinizi yazın.",
     "adminReply": "Faridin cavabı"
   },
+  "captcha": {
+    "required": "Göndərməzdən əvvəl CAPTCHA-nı tamamlayın.",
+    "notConfigured": "CAPTCHA hələ konfiqurasiya olunmayıb. Davam etmək üçün reCAPTCHA açarlarını əlavə edin."
+  },
   "common": {
     "loading": "Yüklənir...",
     "like": "Bəyən",

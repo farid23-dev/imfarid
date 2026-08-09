@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { submitContactForm } from "../api";
 import Footer from "../components/Footer";
+import Recaptcha, { isRecaptchaConfigured } from "../components/Recaptcha";
 import TelegramIcon from "../components/TelegramIcon";
 import WhatsAppIcon from "../components/WhatsAppIcon";
 import { SOCIAL_LINKS } from "../constants/social";
@@ -16,6 +17,8 @@ export default function ContactPage() {
     subject: "",
     message: "",
   });
+  const [captchaToken, setCaptchaToken] = useState("");
+  const [captchaReset, setCaptchaReset] = useState(0);
   const [status, setStatus] = useState(null);
   const [statusMessage, setStatusMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -35,14 +38,32 @@ export default function ContactPage() {
     setIsSubmitting(true);
     setStatus(null);
 
+    if (!isRecaptchaConfigured()) {
+      setStatus("error");
+      setStatusMessage(t("captcha.notConfigured"));
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (!captchaToken) {
+      setStatus("error");
+      setStatusMessage(t("captcha.required"));
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
-      const result = await submitContactForm(formData);
+      const result = await submitContactForm({ ...formData, captchaToken });
       setStatus("success");
       setStatusMessage(result.message);
       setFormData({ name: "", email: "", subject: "", message: "" });
+      setCaptchaToken("");
+      setCaptchaReset((n) => n + 1);
     } catch (error) {
       setStatus("error");
       setStatusMessage(error.message || t("contactPage.errorFallback"));
+      setCaptchaToken("");
+      setCaptchaReset((n) => n + 1);
     } finally {
       setIsSubmitting(false);
     }
@@ -239,6 +260,14 @@ export default function ContactPage() {
                   rows="5"
                   placeholder={t("contactPage.messagePlaceholder")}
                 ></textarea>
+              </div>
+
+              <div className="contact-page__form-group contact-page__captcha">
+                <Recaptcha
+                  onChange={setCaptchaToken}
+                  onExpire={() => setCaptchaToken("")}
+                  resetSignal={captchaReset}
+                />
               </div>
 
               <button 

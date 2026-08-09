@@ -244,6 +244,24 @@ a.contact-page__card:hover {
   transform: none;
 }
 
+.contact-page__captcha {
+  margin-top: 0.25rem;
+}
+
+.recaptcha {
+  display: inline-block;
+  min-height: 78px;
+}
+
+.recaptcha-missing {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  font-size: 0.88rem;
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.1);
+  border-radius: 8px;
+}
+
 .contact-page__form-btn:disabled:hover {
   transform: none;
   box-shadow: none;

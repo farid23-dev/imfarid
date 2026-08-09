@@ -4,6 +4,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { Resend } from "resend";
 import { supabase } from "../config/supabase.js";
+import { verifyRecaptcha } from "../utils/recaptcha.js";
 
 const router = express.Router();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -88,12 +89,17 @@ router.post("/", async (req, res) => {
   console.log("Body:", req.body);
   console.log("Resend configured:", !!resend);
 
-  const { name, email, subject, message } = req.body;
+  const { name, email, subject, message, captchaToken } = req.body;
 
   if (!name || !email || !message) {
     return res.status(400).json({
       error: "Name, email, and message are required",
     });
+  }
+
+  const captcha = await verifyRecaptcha(captchaToken);
+  if (!captcha.ok) {
+    return res.status(400).json({ error: captcha.error });
   }
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

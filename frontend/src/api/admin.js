@@ -316,3 +316,14 @@ export async function fetchLikesSummary() {
   if (!response.ok) throw new Error("Failed to fetch likes summary");
   return response.json();
 }
+
+// === ANALYTICS ===
+export async function fetchAnalytics(period = "30d") {
+  const response = await fetch(
+    `${API_URL}/analytics?period=${encodeURIComponent(period)}`,
+    { headers: authHeaders() }
+  );
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.error || "Failed to fetch analytics");
+  return data;
+}

@@ -19,6 +19,7 @@ import AdminProjects from "./pages/admin/AdminProjects";
 import AdminMessages from "./pages/admin/AdminMessages";
 import AdminComments from "./pages/admin/AdminComments";
 import AdminExperiences from "./pages/admin/AdminExperiences";
+import AdminAnalytics from "./pages/admin/AdminAnalytics";
 
 export default function App() {
   return (
@@ -46,6 +47,7 @@ export default function App() {
           <Route path="messages" element={<AdminMessages />} />
           <Route path="comments" element={<AdminComments />} />
           <Route path="experiences" element={<AdminExperiences />} />
+          <Route path="analytics" element={<AdminAnalytics />} />
         </Route>
       </Routes>
     </BrowserRouter>

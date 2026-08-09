@@ -68,9 +68,12 @@ router.get("/", async (req, res) => {
 
       const { data, error } = await query;
 
-      if (!error && data && data.length > 0) {
-        return res.json(await withPostMeta(data));
+      if (error) {
+        console.error("Supabase fetch posts failed:", error.message);
+        return res.status(500).json({ error: "Failed to fetch posts from database" });
       }
+
+      return res.json(await withPostMeta(data || []));
     }
 
     const list = sortByOrder(includeDrafts ? posts : posts.filter((p) => p.published));
@@ -176,9 +179,16 @@ router.post("/", async (req, res) => {
 
   try {
     const now = new Date().toISOString();
-    const topSort = nextTopSortOrder(posts);
+    let topSort = nextTopSortOrder(posts);
 
     if (supabase) {
+      const { data: sortRows } = await supabase
+        .from("posts")
+        .select("sort_order")
+        .order("sort_order", { ascending: true })
+        .limit(1);
+      topSort = sortRows?.length ? (sortRows[0].sort_order ?? 0) - 1 : 0;
+
       const { data, error } = await supabase
         .from("posts")
         .insert([{
@@ -189,17 +199,21 @@ router.post("/", async (req, res) => {
           excerpt_az: excerpt_az || null,
           content,
           content_az: content_az || null,
-          cover_image,
+          cover_image: cover_image || null,
           published: published || false,
           sort_order: topSort,
         }])
         .select()
         .single();
 
-      if (!error && data) {
-        return res.status(201).json(data);
+      if (error || !data) {
+        console.error("Supabase create post failed:", error?.message);
+        return res.status(500).json({
+          error: error?.message || "Failed to save post to database",
+        });
       }
-      console.warn("Supabase create post failed, using memory:", error?.message);
+
+      return res.status(201).json(data);
     }
 
     const newPost = {
@@ -275,10 +289,14 @@ router.put("/:id", async (req, res) => {
         .select()
         .single();
 
-      if (!error && data) {
-        return res.json(data);
+      if (error) {
+        console.error("Supabase update post failed:", error.message);
+        return res.status(500).json({ error: error.message });
       }
-      console.warn("Supabase update post failed, using memory:", error?.message);
+      if (!data) {
+        return res.status(404).json({ error: "Post not found" });
+      }
+      return res.json(data);
     }
 
     const index = posts.findIndex((p) => String(p.id) === String(id));
@@ -314,15 +332,23 @@ router.delete("/:id", async (req, res) => {
 
   try {
     if (supabase) {
-      const { error } = await supabase.from("posts").delete().eq("id", id);
+      const { data, error } = await supabase
+        .from("posts")
+        .delete()
+        .eq("id", id)
+        .select("id");
 
-      if (!error) {
-        posts = posts.filter((p) => String(p.id) !== String(id));
-        await removeLikesForItem("posts", id);
-        await removeCommentsForPost(id);
-        return res.json({ message: "Post deleted successfully" });
+      if (error) {
+        console.error("Supabase delete post failed:", error.message);
+        return res.status(500).json({ error: error.message });
       }
-      console.warn("Supabase delete post failed, using memory:", error?.message);
+      if (!data?.length) {
+        return res.status(404).json({ error: "Post not found" });
+      }
+
+      await removeLikesForItem("posts", id);
+      await removeCommentsForPost(id);
+      return res.json({ message: "Post deleted successfully" });
     }
 
     const before = posts.length;
@@ -337,10 +363,7 @@ router.delete("/:id", async (req, res) => {
     res.json({ message: "Post deleted successfully" });
   } catch (error) {
     console.error("Error deleting post:", error);
-    posts = posts.filter((p) => String(p.id) !== String(id));
-    await removeLikesForItem("posts", id);
-    await removeCommentsForPost(id);
-    res.json({ message: "Post deleted successfully" });
+    res.status(500).json({ error: "Failed to delete post" });
   }
 });
 

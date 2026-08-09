@@ -44,15 +44,18 @@ router.get("/", async (req, res) => {
         .select("*")
         .order("sort_order", { ascending: true });
 
-      if (!error && data && data.length > 0) {
-        return res.json(data);
+      if (error) {
+        console.error("Supabase fetch experiences failed:", error.message);
+        return res.status(500).json({ error: "Failed to fetch experiences from database" });
       }
+
+      return res.json(data || []);
     }
 
     res.json(sortByOrder(experiences));
   } catch (error) {
     console.error("Error fetching experiences:", error);
-    res.json(sortByOrder(experiences));
+    res.status(500).json({ error: "Failed to fetch experiences" });
   }
 });
 
@@ -158,10 +161,13 @@ router.post("/", async (req, res) => {
         .select()
         .single();
 
-      if (!error && data) {
-        return res.status(201).json(data);
+      if (error || !data) {
+        console.error("Supabase create experience failed:", error?.message);
+        return res.status(500).json({
+          error: error?.message || "Failed to save experience to database",
+        });
       }
-      console.warn("Supabase create experience failed, using memory:", error?.message);
+      return res.status(201).json(data);
     }
 
     const newExp = {
@@ -249,10 +255,14 @@ router.put("/:id", async (req, res) => {
         .select()
         .single();
 
-      if (!error && data) {
-        return res.json(data);
+      if (error) {
+        console.error("Supabase update experience failed:", error.message);
+        return res.status(500).json({ error: error.message });
       }
-      console.warn("Supabase update experience failed, using memory:", error?.message);
+      if (!data) {
+        return res.status(404).json({ error: "Experience not found" });
+      }
+      return res.json(data);
     }
 
     const index = experiences.findIndex((e) => String(e.id) === String(id));
@@ -289,16 +299,20 @@ router.delete("/:id", async (req, res) => {
     const id = req.params.id;
 
     if (supabase) {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from("experiences")
         .delete()
-        .eq("id", id);
+        .eq("id", id)
+        .select("id");
 
-      if (!error) {
-        experiences = experiences.filter((e) => String(e.id) !== String(id));
-        return res.json({ success: true });
+      if (error) {
+        console.error("Supabase delete experience failed:", error.message);
+        return res.status(500).json({ error: error.message });
       }
-      console.warn("Supabase delete experience failed, using memory:", error?.message);
+      if (!data?.length) {
+        return res.status(404).json({ error: "Experience not found" });
+      }
+      return res.json({ success: true });
     }
 
     const before = experiences.length;
@@ -311,8 +325,7 @@ router.delete("/:id", async (req, res) => {
     res.json({ success: true });
   } catch (error) {
     console.error("Error deleting experience:", error);
-    experiences = experiences.filter((e) => String(e.id) !== String(req.params.id));
-    res.json({ success: true });
+    res.status(500).json({ error: "Failed to delete experience" });
   }
 });
 

@@ -42,7 +42,7 @@ export default function Hero() {
             </svg>
           </Link>
           <a
-            href="/Farid-Ismayilov-resume.pdf"
+            href="/Farid-Ismayilov-resume.pdf?v=2"
             download="Farid-Ismayilov-resume.pdf"
             type="application/pdf"
             className="btn btn--outline"

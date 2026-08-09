@@ -124,7 +124,7 @@ export default function AboutPage() {
               {t("aboutPage.getInTouch")}
             </Link>
             <a
-              href="/Farid-Ismayilov-resume.pdf"
+              href="/Farid-Ismayilov-resume.pdf?v=2"
               download="Farid-Ismayilov-resume.pdf"
               type="application/pdf"
               className="about-page__cta-btn about-page__cta-btn--secondary"

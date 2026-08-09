@@ -119,3 +119,47 @@ ALTER TABLE experiences ADD COLUMN IF NOT EXISTS location_az TEXT;
 ALTER TABLE experiences ADD COLUMN IF NOT EXISTS start_date_az TEXT;
 ALTER TABLE experiences ADD COLUMN IF NOT EXISTS end_date_az TEXT;
 ALTER TABLE experiences ADD COLUMN IF NOT EXISTS description_az TEXT[];
+
+-- Blog comments (durable; used instead of local JSON when Supabase is configured)
+CREATE TABLE IF NOT EXISTS blog_comments (
+  id BIGSERIAL PRIMARY KEY,
+  post_id TEXT NOT NULL,
+  post_slug TEXT DEFAULT '',
+  post_title TEXT DEFAULT '',
+  name TEXT NOT NULL,
+  message TEXT NOT NULL,
+  reply TEXT,
+  replied_at TIMESTAMP WITH TIME ZONE,
+  read BOOLEAN DEFAULT false,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS blog_comments_post_id_idx ON blog_comments (post_id);
+CREATE INDEX IF NOT EXISTS blog_comments_created_at_idx ON blog_comments (created_at DESC);
+
+-- Likes (posts & projects; one row per visitor)
+CREATE TABLE IF NOT EXISTS likes (
+  id BIGSERIAL PRIMARY KEY,
+  item_type TEXT NOT NULL CHECK (item_type IN ('posts', 'projects')),
+  item_id TEXT NOT NULL,
+  visitor_id TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE (item_type, item_id, visitor_id)
+);
+
+CREATE INDEX IF NOT EXISTS likes_item_idx ON likes (item_type, item_id);
+
+ALTER TABLE blog_comments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE likes ENABLE ROW LEVEL SECURITY;
+
+-- Public can read/create comments; admin ops use the service role key (bypasses RLS)
+CREATE POLICY "Public read blog comments" ON blog_comments FOR SELECT USING (true);
+CREATE POLICY "Public insert blog comments" ON blog_comments FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Public read likes" ON likes FOR SELECT USING (true);
+CREATE POLICY "Public insert likes" ON likes FOR INSERT WITH CHECK (true);
+CREATE POLICY "Public delete own likes" ON likes FOR DELETE USING (true);
+
+-- Uploads: create a public Storage bucket named "uploads" in the Supabase dashboard
+-- (Storage → New bucket → name: uploads → Public bucket).
+-- Optional: set SUPABASE_UPLOADS_BUCKET=uploads on the backend.

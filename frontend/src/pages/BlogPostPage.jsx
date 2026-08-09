@@ -5,6 +5,7 @@ import Footer from "../components/Footer";
 import LikeButton from "../components/LikeButton";
 import CommentSection from "../components/CommentSection";
 import { useLanguage } from "../i18n/LanguageContext";
+import { applyPageMeta } from "../utils/seo";
 import "../styles/blog-post-page.css";
 
 export default function BlogPostPage() {
@@ -27,6 +28,19 @@ export default function BlogPostPage() {
     }
     loadPost();
   }, [slug]);
+
+  useEffect(() => {
+    if (!post) return;
+    const title = localize(post, "title");
+    const excerpt = localize(post, "excerpt");
+    applyPageMeta({
+      title: t("seo.blogPostTitle").replace("{{title}}", title),
+      description: excerpt || t("seo.blog.description"),
+      path: `/blog/${post.slug || slug}`,
+      image: post.cover_image,
+      type: "article",
+    });
+  }, [post, localize, slug, t]);
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString(dateLocale, {

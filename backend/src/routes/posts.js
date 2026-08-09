@@ -9,11 +9,13 @@ import {
   removeCommentsForPost,
 } from "../utils/commentsStore.js";
 
-const withPostMeta = (items) => attachCommentCounts(attachLikeCounts("posts", items));
-const withSinglePostMeta = (post) => ({
+const withPostMeta = async (items) =>
+  await attachCommentCounts(await attachLikeCounts("posts", items));
+
+const withSinglePostMeta = async (post) => ({
   ...post,
-  like_count: getLikeCount("posts", post.id),
-  comment_count: getCommentCount(post.id),
+  like_count: await getLikeCount("posts", post.id),
+  comment_count: await getCommentCount(post.id),
 });
 
 const router = express.Router();
@@ -67,14 +69,14 @@ router.get("/", async (req, res) => {
       const { data, error } = await query;
 
       if (!error && data && data.length > 0) {
-        return res.json(withPostMeta(data));
+        return res.json(await withPostMeta(data));
       }
     }
 
     const list = sortByOrder(includeDrafts ? posts : posts.filter((p) => p.published));
 
     if (includeDrafts) {
-      return res.json(withPostMeta(list));
+      return res.json(await withPostMeta(list));
     }
 
     const postsPreview = list.map(
@@ -92,7 +94,7 @@ router.get("/", async (req, res) => {
       })
     );
 
-    res.json(withPostMeta(postsPreview));
+    res.json(await withPostMeta(postsPreview));
   } catch (error) {
     console.error("Error fetching posts:", error);
     res.status(500).json({ error: "Failed to fetch posts" });
@@ -129,18 +131,18 @@ router.get("/:slug", async (req, res) => {
         .single();
 
       if (!error && data) {
-        return res.json(withSinglePostMeta(data));
+        return res.json(await withSinglePostMeta(data));
       }
     }
 
     const post = posts.find((p) => p.slug === slug);
-    if (post) return res.json(withSinglePostMeta(post));
+    if (post) return res.json(await withSinglePostMeta(post));
 
     res.status(404).json({ error: "Post not found" });
   } catch (error) {
     console.error("Error fetching post:", error);
     const post = posts.find((p) => p.slug === slug);
-    if (post) return res.json(withSinglePostMeta(post));
+    if (post) return res.json(await withSinglePostMeta(post));
     res.status(500).json({ error: "Failed to fetch post" });
   }
 });
@@ -316,8 +318,8 @@ router.delete("/:id", async (req, res) => {
 
       if (!error) {
         posts = posts.filter((p) => String(p.id) !== String(id));
-        removeLikesForItem("posts", id);
-        removeCommentsForPost(id);
+        await removeLikesForItem("posts", id);
+        await removeCommentsForPost(id);
         return res.json({ message: "Post deleted successfully" });
       }
       console.warn("Supabase delete post failed, using memory:", error?.message);
@@ -330,14 +332,14 @@ router.delete("/:id", async (req, res) => {
       return res.status(404).json({ error: "Post not found" });
     }
 
-    removeLikesForItem("posts", id);
-    removeCommentsForPost(id);
+    await removeLikesForItem("posts", id);
+    await removeCommentsForPost(id);
     res.json({ message: "Post deleted successfully" });
   } catch (error) {
     console.error("Error deleting post:", error);
     posts = posts.filter((p) => String(p.id) !== String(id));
-    removeLikesForItem("posts", id);
-    removeCommentsForPost(id);
+    await removeLikesForItem("posts", id);
+    await removeCommentsForPost(id);
     res.json({ message: "Post deleted successfully" });
   }
 });

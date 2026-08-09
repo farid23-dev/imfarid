@@ -1,5 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Layout from "./components/Layout";
+import DocumentMeta from "./components/DocumentMeta";
+import Analytics from "./components/Analytics";
 import Home from "./pages/Home";
 import AboutPage from "./pages/AboutPage";
 import ServicesPage from "./pages/ServicesPage";
@@ -21,6 +23,8 @@ import AdminExperiences from "./pages/admin/AdminExperiences";
 export default function App() {
   return (
     <BrowserRouter>
+      <DocumentMeta />
+      <Analytics />
       <Routes>
         {/* Public routes */}
         <Route element={<Layout />}>

@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+
+# Point Search Console at your API host if /sitemap.xml is not proxied on the site domain:
+# https://YOUR_API_HOST/sitemap.xml
+Sitemap: https://imfarid.com/sitemap.xml

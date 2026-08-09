@@ -84,14 +84,14 @@ router.get("/", async (req, res) => {
         .order("sort_order", { ascending: true });
 
       if (!error && data && data.length > 0) {
-        return res.json(attachLikeCounts("projects", coerceProjects(data)));
+        return res.json(await attachLikeCounts("projects", coerceProjects(data)));
       }
     }
 
-    res.json(attachLikeCounts("projects", coerceProjects(sortByOrder(projects))));
+    res.json(await attachLikeCounts("projects", coerceProjects(sortByOrder(projects))));
   } catch (error) {
     console.error("Error fetching projects:", error);
-    res.json(attachLikeCounts("projects", coerceProjects(sortByOrder(projects))));
+    res.json(await attachLikeCounts("projects", coerceProjects(sortByOrder(projects))));
   }
 });
 
@@ -106,14 +106,14 @@ router.get("/featured", async (req, res) => {
         .order("sort_order", { ascending: true });
 
       if (!error && data && data.length > 0) {
-        return res.json(attachLikeCounts("projects", coerceProjects(data)));
+        return res.json(await attachLikeCounts("projects", coerceProjects(data)));
       }
     }
 
-    res.json(attachLikeCounts("projects", coerceProjects(sortByOrder(projects.filter((p) => p.featured)))));
+    res.json(await attachLikeCounts("projects", coerceProjects(sortByOrder(projects.filter((p) => p.featured)))));
   } catch (error) {
     console.error("Error fetching featured projects:", error);
-    res.json(attachLikeCounts("projects", coerceProjects(sortByOrder(projects.filter((p) => p.featured)))));
+    res.json(await attachLikeCounts("projects", coerceProjects(sortByOrder(projects.filter((p) => p.featured)))));
   }
 });
 
@@ -145,18 +145,27 @@ router.get("/:slug", async (req, res) => {
         .single();
 
       if (!error && data) {
-        return res.json({ ...coerceProject(data), like_count: getLikeCount("projects", data.id) });
+        return res.json({
+          ...coerceProject(data),
+          like_count: await getLikeCount("projects", data.id),
+        });
       }
     }
 
     const project = projects.find((p) => p.slug === req.params.slug);
     return project
-      ? res.json({ ...coerceProject(project), like_count: getLikeCount("projects", project.id) })
+      ? res.json({
+          ...coerceProject(project),
+          like_count: await getLikeCount("projects", project.id),
+        })
       : res.status(404).json({ error: "Not found" });
   } catch (error) {
     const project = projects.find((p) => p.slug === req.params.slug);
     return project
-      ? res.json({ ...coerceProject(project), like_count: getLikeCount("projects", project.id) })
+      ? res.json({
+          ...coerceProject(project),
+          like_count: await getLikeCount("projects", project.id),
+        })
       : res.status(404).json({ error: "Project not found" });
   }
 });
@@ -304,7 +313,7 @@ router.delete("/:id", async (req, res) => {
 
       if (!error) {
         projects = projects.filter((p) => String(p.id) !== String(id));
-        removeLikesForItem("projects", id);
+        await removeLikesForItem("projects", id);
         return res.json({ success: true });
       }
       console.warn("Supabase delete project failed, using memory:", error?.message);
@@ -317,7 +326,7 @@ router.delete("/:id", async (req, res) => {
       return res.status(404).json({ error: "Project not found" });
     }
 
-    removeLikesForItem("projects", id);
+    await removeLikesForItem("projects", id);
     res.json({ success: true });
   } catch (error) {
     console.error("Error deleting project:", error);
@@ -325,7 +334,7 @@ router.delete("/:id", async (req, res) => {
     const before = projects.length;
     projects = projects.filter((p) => String(p.id) !== String(id));
     if (projects.length < before) {
-      removeLikesForItem("projects", id);
+      await removeLikesForItem("projects", id);
       return res.json({ success: true });
     }
 

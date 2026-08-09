@@ -269,6 +269,36 @@
     "required": "Please complete the CAPTCHA before submitting.",
     "notConfigured": "CAPTCHA is not configured yet. Add your reCAPTCHA keys to continue."
   },
+  "seo": {
+    "defaultDescription": "Farid — Full-stack web developer, Google Ads mediabuyer, and future Android developer.",
+    "adminTitle": "Admin — imfarid.com",
+    "blogPostFallbackTitle": "Blog — Farid | imfarid.com",
+    "blogPostTitle": "{{title}} — Blog | imfarid.com",
+    "home": {
+      "title": "Farid — Full-stack Developer | imfarid.com",
+      "description": "Full-stack web developer and Google Ads media buyer based in Baku. Modern websites, performance campaigns, and Android in progress."
+    },
+    "about": {
+      "title": "About — Farid | imfarid.com",
+      "description": "Learn about Farid Ismayilov — full-stack developer, media buyer, and builder based in Baku, Azerbaijan."
+    },
+    "services": {
+      "title": "Services — Farid | imfarid.com",
+      "description": "Web development, Google Ads, Android, and IT operations services from Farid."
+    },
+    "projects": {
+      "title": "Projects — Farid | imfarid.com",
+      "description": "Selected freelance and public projects by Farid — websites and apps."
+    },
+    "contact": {
+      "title": "Contact — Farid | imfarid.com",
+      "description": "Get in touch with Farid for web, ads, or collaboration."
+    },
+    "blog": {
+      "title": "Blog — Farid | imfarid.com",
+      "description": "Notes on interests, hobbies, and daily life from Farid."
+    }
+  },
   "common": {
     "loading": "Loading...",
     "like": "Like",

@@ -36,40 +36,55 @@ const getOrCreateVisitorId = (req, res) => {
 };
 
 // Admin / dashboard summary
-router.get("/summary", (req, res) => {
-  res.json(getLikesSummary());
+router.get("/summary", async (req, res) => {
+  try {
+    res.json(await getLikesSummary());
+  } catch (error) {
+    console.error("Error fetching likes summary:", error);
+    res.status(500).json({ error: "Failed to fetch likes summary" });
+  }
 });
 
 // Get like state for one item
-router.get("/:type/:id", (req, res) => {
-  const { type, id } = req.params;
-  const visitorId = getOrCreateVisitorId(req, res);
+router.get("/:type/:id", async (req, res) => {
+  try {
+    const { type, id } = req.params;
+    const visitorId = getOrCreateVisitorId(req, res);
 
-  if (!["posts", "projects", "post", "project"].includes(type)) {
-    return res.status(400).json({ error: "Invalid type" });
+    if (!["posts", "projects", "post", "project"].includes(type)) {
+      return res.status(400).json({ error: "Invalid type" });
+    }
+
+    res.json({
+      count: await getLikeCount(type, id),
+      liked: await hasLiked(type, id, visitorId),
+    });
+  } catch (error) {
+    console.error("Error fetching like state:", error);
+    res.status(500).json({ error: "Failed to fetch like state" });
   }
-
-  res.json({
-    count: getLikeCount(type, id),
-    liked: hasLiked(type, id, visitorId),
-  });
 });
 
 // Toggle like (one like per visitor cookie)
-router.post("/:type/:id", (req, res) => {
-  const { type, id } = req.params;
-  const visitorId = getOrCreateVisitorId(req, res);
+router.post("/:type/:id", async (req, res) => {
+  try {
+    const { type, id } = req.params;
+    const visitorId = getOrCreateVisitorId(req, res);
 
-  if (!["posts", "projects", "post", "project"].includes(type)) {
-    return res.status(400).json({ error: "Invalid type" });
+    if (!["posts", "projects", "post", "project"].includes(type)) {
+      return res.status(400).json({ error: "Invalid type" });
+    }
+
+    const result = await toggleLike(type, id, visitorId);
+    if (result.error) {
+      return res.status(400).json({ error: result.error });
+    }
+
+    res.json(result);
+  } catch (error) {
+    console.error("Error toggling like:", error);
+    res.status(500).json({ error: "Failed to toggle like" });
   }
-
-  const result = toggleLike(type, id, visitorId);
-  if (result.error) {
-    return res.status(400).json({ error: result.error });
-  }
-
-  res.json(result);
 });
 
 export default router;

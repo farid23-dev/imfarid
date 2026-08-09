@@ -269,6 +269,36 @@
     "required": "Göndərməzdən əvvəl CAPTCHA-nı tamamlayın.",
     "notConfigured": "CAPTCHA hələ konfiqurasiya olunmayıb. Davam etmək üçün reCAPTCHA açarlarını əlavə edin."
   },
+  "seo": {
+    "defaultDescription": "Farid — Full-stack veb developer, Google Ads mediabuyer və gələcək Android developer.",
+    "adminTitle": "Admin — imfarid.com",
+    "blogPostFallbackTitle": "Bloq — Farid | imfarid.com",
+    "blogPostTitle": "{{title}} — Bloq | imfarid.com",
+    "home": {
+      "title": "Farid — Full-stack Developer | imfarid.com",
+      "description": "Bakıda yaşayan full-stack veb developer və Google Ads media buyer. Müasir saytlar, performans kampaniyaları və Android."
+    },
+    "about": {
+      "title": "Haqqımda — Farid | imfarid.com",
+      "description": "Farid İsmayılov haqqında — full-stack developer, media buyer və qurucu, Bakı, Azərbaycan."
+    },
+    "services": {
+      "title": "Xidmətlər — Farid | imfarid.com",
+      "description": "Fariddən veb development, Google Ads, Android və IT əməliyyatları xidmətləri."
+    },
+    "projects": {
+      "title": "Layihələr — Farid | imfarid.com",
+      "description": "Faridin seçilmiş freelance və ictimai layihələri — saytlar və tətbiqlər."
+    },
+    "contact": {
+      "title": "Əlaqə — Farid | imfarid.com",
+      "description": "Veb, reklam və ya əməkdaşlıq üçün Faridlə əlaqə saxlayın."
+    },
+    "blog": {
+      "title": "Bloq — Farid | imfarid.com",
+      "description": "Faridin maraqları, hobbi və gündəlik həyat qeydləri."
+    }
+  },
   "common": {
     "loading": "Yüklənir...",
     "like": "Bəyən",

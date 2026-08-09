@@ -57,7 +57,12 @@
 .navbar__brand span {
   color: var(--cyan);
   display: inline-block;
-  animation: dotPulse 2s ease-in-out infinite;
+}
+
+@media (min-width: 900px) {
+  .navbar__brand span {
+    animation: dotPulse 2s ease-in-out infinite;
+  }
 }
 
 @keyframes dotPulse {

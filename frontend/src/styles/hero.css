@@ -308,6 +308,36 @@
   }
 }
 
+@media (max-width: 900px) {
+  /* Continuous blur + transform animations choke mobile GPUs while the hero is on screen. */
+  .hero__bg-image {
+    animation: none;
+    transform: none;
+  }
+
+  .hero__grid {
+    animation: none;
+    opacity: 0.45;
+  }
+
+  .hero__orb,
+  .hero__glow {
+    display: none;
+  }
+
+  .hero__name {
+    animation: fadeSlideUp 0.8s ease both 0.2s;
+    background: none;
+    -webkit-background-clip: unset;
+    background-clip: unset;
+    color: var(--fg);
+  }
+
+  .hero__scroll-line {
+    animation: none;
+  }
+}
+
 @media (max-width: 640px) {
   .hero__scroll {
     display: none;
@@ -321,25 +351,5 @@
   .btn {
     width: 100%;
     max-width: 280px;
-  }
-
-  .hero__orb--1 {
-    width: 150px;
-    height: 150px;
-  }
-
-  .hero__orb--2 {
-    width: 120px;
-    height: 120px;
-  }
-
-  .hero__orb--3 {
-    width: 100px;
-    height: 100px;
-  }
-
-  .hero__glow {
-    width: 280px;
-    height: 180px;
   }
 }

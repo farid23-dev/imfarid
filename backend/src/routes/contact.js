@@ -207,14 +207,14 @@ router.put("/:id/read", async (req, res) => {
         .select()
         .maybeSingle();
 
-      if (error) {
-        console.error("Supabase mark read failed:", formatSupabaseError(error));
-        return res.status(500).json({ error: formatSupabaseError(error) });
-      }
-      if (data) {
+      if (!error && data) {
         return res.json(data);
       }
-      // Fall through for legacy local-only ids
+
+      // Legacy local-only id (or invalid uuid/serial for Postgres) — try file store
+      if (error) {
+        console.warn("Supabase mark read skipped, trying local file:", formatSupabaseError(error));
+      }
     }
 
     const msg = messages.find((m) => String(m.id) === String(id));
@@ -243,17 +243,17 @@ router.delete("/:id", async (req, res) => {
         .eq("id", id)
         .select("id");
 
-      if (error) {
-        console.error("Supabase delete failed:", formatSupabaseError(error));
-        return res.status(500).json({ error: formatSupabaseError(error) });
-      }
-
-      if (data?.length) {
+      if (!error && data?.length) {
         messages = messages.filter((m) => String(m.id) !== String(id));
         saveMessages(messages);
         return res.json({ message: "Message deleted successfully" });
       }
-      // Fall through for legacy local-only ids
+
+      // Legacy messages live only in local JSON (old Date.now ids).
+      // Supabase may error on invalid id type — still remove the file row.
+      if (error) {
+        console.warn("Supabase delete skipped, trying local file:", formatSupabaseError(error));
+      }
     }
 
     const before = messages.length;

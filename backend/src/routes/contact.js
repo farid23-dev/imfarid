@@ -10,7 +10,7 @@ const router = express.Router();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const messagesFile = path.join(__dirname, "../data/contact-messages.json");
 
-// File-backed storage so messages survive backend restarts
+/** Local JSON is only used when Supabase is not configured. */
 const loadMessages = () => {
   try {
     if (fs.existsSync(messagesFile)) {
@@ -35,8 +35,11 @@ let messages = loadMessages();
 const sortedMessages = () =>
   [...messages].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-// Initialize Resend if API key exists
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+
+const formatSupabaseError = (error) =>
+  [error?.message, error?.details, error?.hint, error?.code].filter(Boolean).join(" | ") ||
+  "Unknown Supabase error";
 
 const sendEmailNotification = async (contactData) => {
   if (!resend) {
@@ -85,11 +88,7 @@ const saveLocalMessage = (newMessage) => {
 
 // POST - Submit contact form
 router.post("/", async (req, res) => {
-  console.log("=== Contact form submission received ===");
-  console.log("Body:", req.body);
-  console.log("Resend configured:", !!resend);
-
-  const { name, email, subject, message, captchaToken } = req.body;
+  const { name, email, subject, message, captchaToken } = req.body || {};
 
   if (!name || !email || !message) {
     return res.status(400).json({
@@ -109,43 +108,49 @@ router.post("/", async (req, res) => {
     });
   }
 
-  const newMessage = {
-    name,
-    email,
-    subject: subject || "No Subject",
-    message,
+  const row = {
+    name: String(name).trim(),
+    email: String(email).trim(),
+    subject: String(subject || "No Subject").trim() || "No Subject",
+    message: String(message).trim(),
     read: false,
-    created_at: new Date().toISOString(),
   };
 
   try {
     if (supabase) {
       const { data, error } = await supabase
         .from("contact_messages")
-        .insert([newMessage])
+        .insert([row])
         .select()
         .single();
 
-      if (!error && data) {
-        console.log(`New contact message from ${name} (${email}) - saved to Supabase`);
-        // Also keep a local copy so admin still works if Supabase read policies fail
-        saveLocalMessage({ ...newMessage, id: data.id });
-        await sendEmailNotification({ name, email, subject, message });
-
-        return res.status(201).json({
-          success: true,
-          message: "Thank you for your message! I'll get back to you soon.",
-          id: data.id,
+      if (error || !data) {
+        console.error("Supabase contact insert failed:", formatSupabaseError(error));
+        // Still try email so you don't miss the lead
+        await sendEmailNotification(row);
+        return res.status(500).json({
+          error:
+            "Could not save your message to the database. Please try again or email me directly.",
+          detail: formatSupabaseError(error),
         });
       }
 
-      console.warn("Supabase insert failed, falling back to file storage:", error?.message);
+      console.log(`New contact message from ${row.name} (${row.email}) - saved to Supabase #${data.id}`);
+      await sendEmailNotification(row);
+
+      return res.status(201).json({
+        success: true,
+        message: "Thank you for your message! I'll get back to you soon.",
+        id: data.id,
+      });
     }
 
-    const saved = saveLocalMessage(newMessage);
-    console.log(`New contact message from ${name} (${email}) - stored in file`);
-
-    await sendEmailNotification({ name, email, subject, message });
+    const saved = saveLocalMessage({
+      ...row,
+      created_at: new Date().toISOString(),
+    });
+    console.log(`New contact message from ${row.name} (${row.email}) - stored in local file (no Supabase)`);
+    await sendEmailNotification(row);
 
     res.status(201).json({
       success: true,
@@ -154,21 +159,10 @@ router.post("/", async (req, res) => {
     });
   } catch (error) {
     console.error("Error saving contact message:", error);
-
-    try {
-      const saved = saveLocalMessage(newMessage);
-      console.log(`New contact message from ${name} (${email}) - stored in file (after error)`);
-
-      return res.status(201).json({
-        success: true,
-        message: "Thank you for your message! I'll get back to you soon.",
-        id: saved.id,
-      });
-    } catch (memError) {
-      res.status(500).json({
-        error: "Failed to send message. Please try again or email me directly.",
-      });
-    }
+    await sendEmailNotification(row);
+    res.status(500).json({
+      error: "Failed to send message. Please try again or email me directly.",
+    });
   }
 });
 
@@ -181,20 +175,22 @@ router.get("/", async (req, res) => {
         .select("*")
         .order("created_at", { ascending: false });
 
-      // Only use Supabase when it actually has messages
-      if (!error && Array.isArray(data) && data.length > 0) {
-        return res.json(data);
+      if (error) {
+        console.error("Supabase fetch contact messages failed:", formatSupabaseError(error));
+        return res.status(500).json({ error: "Failed to fetch messages from database" });
       }
 
-      if (error) {
-        console.warn("Supabase fetch failed, using file storage:", error.message);
-      }
+      // Include any legacy local-only rows that never made it into Supabase
+      const remote = data || [];
+      const remoteIds = new Set(remote.map((m) => String(m.id)));
+      const legacy = sortedMessages().filter((m) => !remoteIds.has(String(m.id)));
+      return res.json([...remote, ...legacy]);
     }
 
     res.json(sortedMessages());
   } catch (error) {
     console.error("Error fetching messages:", error);
-    res.json(sortedMessages());
+    res.status(500).json({ error: "Failed to fetch messages" });
   }
 });
 
@@ -209,17 +205,16 @@ router.put("/:id/read", async (req, res) => {
         .update({ read: true })
         .eq("id", id)
         .select()
-        .single();
+        .maybeSingle();
 
-      if (!error && data) {
-        const local = messages.find((m) => String(m.id) === String(id));
-        if (local) {
-          local.read = true;
-          saveMessages(messages);
-        }
+      if (error) {
+        console.error("Supabase mark read failed:", formatSupabaseError(error));
+        return res.status(500).json({ error: formatSupabaseError(error) });
+      }
+      if (data) {
         return res.json(data);
       }
-      console.warn("Supabase mark read failed, trying file storage:", error?.message);
+      // Fall through for legacy local-only ids
     }
 
     const msg = messages.find((m) => String(m.id) === String(id));
@@ -232,14 +227,6 @@ router.put("/:id/read", async (req, res) => {
     res.status(404).json({ error: "Message not found" });
   } catch (error) {
     console.error("Error updating message:", error);
-
-    const msg = messages.find((m) => String(m.id) === String(id));
-    if (msg) {
-      msg.read = true;
-      saveMessages(messages);
-      return res.json(msg);
-    }
-
     res.status(500).json({ error: "Failed to update message" });
   }
 });
@@ -250,24 +237,35 @@ router.delete("/:id", async (req, res) => {
 
   try {
     if (supabase) {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from("contact_messages")
         .delete()
-        .eq("id", id);
+        .eq("id", id)
+        .select("id");
 
       if (error) {
-        console.warn("Supabase delete failed, trying file storage:", error.message);
+        console.error("Supabase delete failed:", formatSupabaseError(error));
+        return res.status(500).json({ error: formatSupabaseError(error) });
       }
+
+      if (data?.length) {
+        messages = messages.filter((m) => String(m.id) !== String(id));
+        saveMessages(messages);
+        return res.json({ message: "Message deleted successfully" });
+      }
+      // Fall through for legacy local-only ids
     }
 
+    const before = messages.length;
     messages = messages.filter((m) => String(m.id) !== String(id));
+    if (messages.length === before) {
+      return res.status(404).json({ error: "Message not found" });
+    }
     saveMessages(messages);
     res.json({ message: "Message deleted successfully" });
   } catch (error) {
     console.error("Error deleting message:", error);
-    messages = messages.filter((m) => String(m.id) !== String(id));
-    saveMessages(messages);
-    res.json({ message: "Message deleted successfully" });
+    res.status(500).json({ error: "Failed to delete message" });
   }
 });
 
